@@ -16,14 +16,22 @@ namespace OBSNotifier
     internal partial class App : Application
     {
         public static OBSWebsocket obs;
-        public static PluginsManager plugins;
+        public static PluginManager plugins;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             obs = new OBSWebsocket();
 
             Settings.Load();
-            plugins = new PluginsManager();
+            plugins = new PluginManager();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            obs.Disconnect();
+            Settings.Instance.Save();
+            plugins?.Dispose();
+            plugins = null;
         }
     }
 }

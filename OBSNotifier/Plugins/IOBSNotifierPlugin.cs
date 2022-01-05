@@ -7,8 +7,7 @@ namespace OBSNotifier.Plugins
     {
         public uint OnScreenTime;
         public Enum Position;
-        public float OffsetX;
-        public float OffsetY;
+        public Point Offset;
         public string AdditionalData;
     }
 

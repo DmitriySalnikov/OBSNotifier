@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,10 +75,24 @@ namespace OBSNotifier
             }
         }
 
+        void UpdateNotification()
+        {
+            App.plugins.UpdateCurrentPluginSettings();
+            if (cb_preview.IsChecked == true)
+            {
+                App.plugins.CurrentPlugin.plugin.ShowPreview();
+            }
+        }
+
         private void Obs_ReplayBufferStateChanged(OBSWebsocket sender, OBSWebsocketDotNet.Types.OutputState type)
         {
             this.InvokeAction(() =>
             {
+                if (cb_preview.IsChecked == true)
+                {
+                    return;
+                }
+
                 var plugin = App.plugins.CurrentPlugin.plugin;
                 switch (type)
                 {
@@ -180,7 +195,6 @@ namespace OBSNotifier
 
                 // Update monitors list
                 {
-
                     bool selected = false;
 
                     foreach (var screen in WPFScreens.AllScreens())
@@ -197,6 +211,12 @@ namespace OBSNotifier
                     if (!selected)
                         cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
                 }
+                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
+
+                // Update sliders
+                sldr_position_offset_x.Value = Settings.Instance.NotificationOffset.X;
+                sldr_position_offset_y.Value = Settings.Instance.NotificationOffset.Y;
+                sldr_fade_delay.Value = Settings.Instance.NotificationFadeDelay;
 
                 // Update additional data text
                 tb_additional_data.Text = Settings.Instance.AdditionalData;
@@ -219,6 +239,23 @@ namespace OBSNotifier
                 Settings.Instance.DisplayID = string.Empty;
 
             Settings.Instance.Save();
+            UpdateNotification();
+        }
+
+        private void cb_use_safe_area_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.UseSafeDisplayArea = false;
+            Settings.Instance.Save();
+
+            UpdateNotification();
+        }
+
+        private void cb_use_safe_area_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.UseSafeDisplayArea = true;
+            Settings.Instance.Save();
+
+            UpdateNotification();
         }
 
         private void cb_notification_styles_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -230,6 +267,7 @@ namespace OBSNotifier
                 Settings.Instance.Save();
 
                 OnPluginChanged();
+                UpdateNotification();
             }
         }
 
@@ -237,27 +275,41 @@ namespace OBSNotifier
         {
             Settings.Instance.NotificationPosition = (string)cb_notification_position.SelectedItem;
             Settings.Instance.Save();
+
+            UpdateNotification();
         }
 
         private void sldr_position_offset_x_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Settings.Instance.NotificationOffset = new System.Drawing.PointF((float)e.NewValue, Settings.Instance.NotificationOffset.Y);
-            // TODO Save with timer
             Settings.Instance.Save();
+
+            UpdateNotification();
         }
 
         private void sldr_position_offset_y_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Settings.Instance.NotificationOffset = new System.Drawing.PointF(Settings.Instance.NotificationOffset.X, (float)e.NewValue);
-            // TODO Save with timer
             Settings.Instance.Save();
+
+            UpdateNotification();
+        }
+
+        private void sldr_fade_delay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Settings.Instance.NotificationFadeDelay = (int)Math.Round(e.NewValue / 100) * 100;
+            l_delay_sec.Text = (e.NewValue / 1000.0).ToString("F1", CultureInfo.InvariantCulture);
+            Settings.Instance.Save();
+
+            UpdateNotification();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // TODO Save with timer
             Settings.Instance.AdditionalData = tb_additional_data.Text;
             Settings.Instance.Save();
+
+            UpdateNotification();
         }
 
         private void btn_reset_style_Click(object sender, RoutedEventArgs e)
@@ -271,12 +323,23 @@ namespace OBSNotifier
             if (pluginData.plugin != null)
                 cb_notification_position.SelectedItem = Enum.GetName(pluginData.plugin.EnumPositionType, pluginData.defaultSettings.Position);
 
+            UpdateNotification();
         }
 
         private void btn_reset_position_offset_Click(object sender, RoutedEventArgs e)
         {
             sldr_position_offset_x.Value = 0;
             sldr_position_offset_y.Value = 0;
+
+            UpdateNotification();
+        }
+
+        private void btn_reset_position_offset_center_Click(object sender, RoutedEventArgs e)
+        {
+            sldr_position_offset_x.Value = 0.5;
+            sldr_position_offset_y.Value = 0.5;
+
+            UpdateNotification();
         }
 
         private void btn_reset_additional_data_Click(object sender, RoutedEventArgs e)
@@ -284,6 +347,23 @@ namespace OBSNotifier
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
                 tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+
+            UpdateNotification();
+        }
+
+        private void btn_reset_fade_delay_Click(object sender, RoutedEventArgs e)
+        {
+            sldr_fade_delay.Value = 2000;
+        }
+
+        private void cb_preview_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateNotification();
+        }
+
+        private void cb_preview_Unchecked(object sender, RoutedEventArgs e)
+        {
+            App.plugins.CurrentPlugin.plugin.HidePreview();
         }
     }
 }

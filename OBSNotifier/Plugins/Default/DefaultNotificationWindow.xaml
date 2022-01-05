@@ -3,15 +3,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Default Notification"
         WindowStyle="None"
         AllowsTransparency="True"
         Focusable="False"
-        Topmost="True" Width="162" Height="48">
-    <StackPanel x:Name="stackPanel" VerticalAlignment="Center">
-        <Label Content="Something happened" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-        <Label Content="Description" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="9"/>
+        Topmost="True" Width="162" Height="48" MouseDown="Window_MouseDown" ResizeMode="NoResize" ShowInTaskbar="False">
+    <Window.Resources>
+        <System:Double x:Key="windowOpacity" >1.0</System:Double>
+    </Window.Resources>
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="{StaticResource windowOpacity}"/>
+    </Window.Background>
+   
+    <StackPanel x:Name="stackPanel" VerticalAlignment="Center" IsHitTestVisible="False">
+        <Label x:Name="l_title" IsHitTestVisible="False" Content="Something happened" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontWeight="Bold">
+            <Label.Foreground>
+                <SolidColorBrush Color="Black" Opacity="{StaticResource windowOpacity}"/>
+            </Label.Foreground>
+        </Label>
+        <Label x:Name="l_desc" IsHitTestVisible="False" Content="Description" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="9">
+            <Label.Foreground>
+                <SolidColorBrush Color="Black" Opacity="{StaticResource windowOpacity}"/>
+            </Label.Foreground>
+        </Label>
 
     </StackPanel>
 </Window>

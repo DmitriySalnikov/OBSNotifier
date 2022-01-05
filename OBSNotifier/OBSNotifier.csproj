@@ -67,10 +67,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DeferredAction.cs" />
     <Compile Include="Plugins\Default\DefaultNotification.cs" />
     <Compile Include="Plugins\IOBSNotifierPlugin.cs" />
     <Compile Include="Plugins\NotificationType.cs" />
-    <Compile Include="Plugins\PluginsManager.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WPFScreens.cs" />

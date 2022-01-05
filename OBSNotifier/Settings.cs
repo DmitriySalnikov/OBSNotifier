@@ -13,13 +13,19 @@ namespace OBSNotifier
 
         [JsonIgnore]
         static string SaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.json");
+        
+        [JsonIgnore]
+        DeferredAction saveSettings = new DeferredAction(() => Instance.SaveInternal(), 1000);
 
         public Point SettingsWindowSize { get; set; } = new Point(0, 0);
         public Point SettingsWindowPosition { get; set; } = new Point(-1, -1);
         public string ServerAddress { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string DisplayID { get; set; } = string.Empty;
+        public bool UseSafeDisplayArea { get; set; } = true;
+
         // SEPARATE SETTINGS FOR ALL PLUGINS
+        public int NotificationFadeDelay { get; set; } = 2000;
         public string NotificationStyle { get; set; } = string.Empty;
         public string NotificationPosition { get; set; } = string.Empty;
         public PointF NotificationOffset { get; set; } = new PointF(0, 0);
@@ -34,6 +40,11 @@ namespace OBSNotifier
         }
 
         public void Save()
+        {
+            saveSettings.CallDeferred();
+        }
+        
+        void SaveInternal()
         {
             try
             {

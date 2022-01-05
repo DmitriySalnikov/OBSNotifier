@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace OBSNotifier.Plugins
 {
-    internal class PluginsManager : IDisposable
+    internal class PluginManager : IDisposable
     {
         public struct PluginData
         {
@@ -34,7 +34,7 @@ namespace OBSNotifier.Plugins
 
         const int PluginLoadingTimeout = 5000;
 
-        public PluginsManager()
+        public PluginManager()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace OBSNotifier.Plugins
 
                 // Load default plugins
                 {
-                    var ac = new AssemblyCatalog(Assembly.GetAssembly(typeof(PluginsManager)));
+                    var ac = new AssemblyCatalog(Assembly.GetAssembly(typeof(PluginManager)));
 #pragma warning disable S1481 // "Assembly.Load" should be used
                     // may throws ReflectionTypeLoadException
                     // but only when developing default plugins.
@@ -253,15 +253,23 @@ namespace OBSNotifier.Plugins
                 CurrentPlugin.plugin?.ForceCloseWindow();
 
                 CurrentPlugin = pluginData;
+                UpdateCurrentPluginSettings();
+
                 return true;
             }
 
             return false;
         }
 
-        ~PluginsManager()
+        public void UpdateCurrentPluginSettings()
         {
-            Dispose();
+            CurrentPlugin.plugin.PluginSettings = new OBSNotifierPluginSettings()
+            {
+                AdditionalData = Settings.Instance.AdditionalData,
+                Offset = new Point(Settings.Instance.NotificationOffset.X, Settings.Instance.NotificationOffset.Y),
+                OnScreenTime = Math.Min((uint)Settings.Instance.NotificationFadeDelay, 30000),
+                Position = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumPositionType, Settings.Instance.NotificationPosition),
+            };
         }
 
         public void Dispose()
@@ -280,6 +288,7 @@ namespace OBSNotifier.Plugins
 
             LoadedPlugins.Clear();
             LogWriter?.Close();
+            LogWriter = null;
 
             try
             {

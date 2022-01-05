@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OBSNotifier"
         mc:Ignorable="d"
-        Title="OBS Notifier" Height="550" Width="319" MinHeight="264" MinWidth="357" IsVisibleChanged="Window_IsVisibleChanged">
+        Title="OBS Notifier"
+        Height="651" Width="319"
+        MinHeight="264" MinWidth="357"
+        IsVisibleChanged="Window_IsVisibleChanged"
+        SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary Source="Resources.xaml"/>
     </Window.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="8,0,8,0">
-        <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
+        <StackPanel Margin="8,0,8,0">
 
             <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="In order for this application to work you need to connect to the obs-websocket plugin." VerticalAlignment="Top" FontWeight="Bold"/>
             <Label Content="Server address:" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
@@ -25,8 +29,12 @@
 
             <Label Content="Notification settigns" HorizontalAlignment="Center" FontWeight="Bold"/>
 
+            <CheckBox x:Name="cb_preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked"  Content="Preview" HorizontalAlignment="Right"/>
+
             <Label Content="Screen on which to display:"/>
             <ComboBox x:Name="cb_display_to_show" SelectionChanged="cb_display_to_show_SelectionChanged"/>
+            <CheckBox x:Name="cb_use_safe_area" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" VerticalContentAlignment="Center"/>
+
             <Label Content="Style:"/>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -55,9 +63,24 @@
                     <Slider x:Name="sldr_position_offset_x" ToolTip="X Offset" Maximum="1" LargeChange="0.1" SmallChange="0.001" ValueChanged="sldr_position_offset_x_ValueChanged"/>
                     <Slider x:Name="sldr_position_offset_y" ToolTip="Y Offset" Maximum="1" LargeChange="0.1" SmallChange="0.001" ValueChanged="sldr_position_offset_y_ValueChanged"/>
                 </StackPanel>
-                <Button x:Name="btn_reset_position_offset" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_position_offset_Click"/>
+                <StackPanel Grid.Column="2">
+                    <Button x:Name="btn_reset_position_offset" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Click="btn_reset_position_offset_Click"/>
+                    <Button x:Name="btn_reset_position_offset_center" Content=" ↔️ " ToolTip="Reset Center" HorizontalAlignment="Left" Click="btn_reset_position_offset_center_Click"/>
+                </StackPanel>
             </Grid>
-            
+            <Label Content="Fade Delay (Seconds):"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="0.1*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position_offset, Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+
+                <Slider x:Name="sldr_fade_delay" ToolTip="Delay before hiding notification" Maximum="10000" LargeChange="1000" SmallChange="100" ValueChanged="sldr_fade_delay_ValueChanged"  Grid.Column="0" VerticalAlignment="Center"/>
+                <TextBlock x:Name="l_delay_sec" Text="10.9" Grid.Column="1" HorizontalAlignment="Center"/>
+                <Button x:Name="btn_reset_fade_delay" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_fade_delay_Click"/>
+            </Grid>
+
             <Label Content="Additional data:"/>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -67,6 +90,7 @@
                 <TextBox x:Name="tb_additional_data" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="TextBox_TextChanged"/>
                 <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_additional_data_Click"/>
             </Grid>
+            <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
         </StackPanel>
     </ScrollViewer>
 </Window>
