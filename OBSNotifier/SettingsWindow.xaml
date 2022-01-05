@@ -1,0 +1,72 @@
+﻿<Window x:Class="OBSNotifier.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OBSNotifier"
+        mc:Ignorable="d"
+        Title="OBS Notifier" Height="550" Width="319" MinHeight="264" MinWidth="357" IsVisibleChanged="Window_IsVisibleChanged">
+    <Window.Resources>
+        <ResourceDictionary Source="Resources.xaml"/>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="8,0,8,0">
+        <StackPanel>
+
+            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="In order for this application to work you need to connect to the obs-websocket plugin." VerticalAlignment="Top" FontWeight="Bold"/>
+            <Label Content="Server address:" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
+            <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4444" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
+            <Label Content="Password:" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
+            <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
+            <Label Content="The password will be saved in a local file" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
+            <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="Button_Click"/>
+
+            <Separator Height="25"/>
+
+            <Label Content="Notification settigns" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+            <Label Content="Screen on which to display:"/>
+            <ComboBox x:Name="cb_display_to_show" SelectionChanged="cb_display_to_show_SelectionChanged"/>
+            <Label Content="Style:"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_style, Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="cb_notification_styles" Grid.ColumnSpan="1" SelectionChanged="cb_notification_styles_SelectionChanged" />
+                <Button x:Name="btn_reset_style" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_style_Click"/>
+            </Grid>
+            <Label Content="Position:"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position, Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="cb_notification_position" Grid.ColumnSpan="1" SelectionChanged="cb_notification_position_SelectionChanged" />
+                <Button x:Name="btn_reset_position" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_position_Click"/>
+            </Grid>
+            <Label Content="Position Offset:"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position_offset, Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.ColumnSpan="1">
+                    <Slider x:Name="sldr_position_offset_x" ToolTip="X Offset" Maximum="1" LargeChange="0.1" SmallChange="0.001" ValueChanged="sldr_position_offset_x_ValueChanged"/>
+                    <Slider x:Name="sldr_position_offset_y" ToolTip="Y Offset" Maximum="1" LargeChange="0.1" SmallChange="0.001" ValueChanged="sldr_position_offset_y_ValueChanged"/>
+                </StackPanel>
+                <Button x:Name="btn_reset_position_offset" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_position_offset_Click"/>
+            </Grid>
+            
+            <Label Content="Additional data:"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position_offset, Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="tb_additional_data" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="TextBox_TextChanged"/>
+                <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_additional_data_Click"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
