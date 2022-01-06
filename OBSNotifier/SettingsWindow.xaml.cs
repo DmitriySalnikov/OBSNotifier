@@ -18,18 +18,13 @@ using OBSWebsocketDotNet;
 
 namespace OBSNotifier
 {
-    public partial class MainWindow : Window
+    public partial class SettingsWindow : Window
     {
-        public MainWindow()
+        public SettingsWindow()
         {
             InitializeComponent();
 
             UpdateConnectButton();
-
-            // TODO disconnect
-            App.obs.Connected += Obs_Connected; ;
-            App.obs.Disconnected += Obs_Disconnected;
-            App.obs.ReplayBufferStateChanged += Obs_ReplayBufferStateChanged;
 
             foreach (var p in App.plugins.LoadedPlugins)
             {
@@ -59,19 +54,38 @@ namespace OBSNotifier
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
             {
-                cb_notification_position.Items.Clear();
-                var names = Enum.GetNames(pluginData.plugin.EnumPositionType);
+                cb_notification_options.Items.Clear();
+                
+                if (pluginData.plugin.EnumOptionsType != null)
+                {
 
-                foreach (var e in names)
-                    cb_notification_position.Items.Add(e);
+                    var names = Enum.GetNames(pluginData.plugin.EnumOptionsType);
 
-                if (names.Contains(Settings.Instance.NotificationPosition))
-                    cb_notification_position.SelectedItem = Settings.Instance.NotificationPosition;
-                else
-                    cb_notification_position.SelectedItem = Enum.GetName(pluginData.plugin.EnumPositionType, pluginData.defaultSettings.Position);
+                    foreach (var e in names)
+                        cb_notification_options.Items.Add(e);
+
+                    if (names.Contains(Settings.Instance.NotificationOption))
+                        cb_notification_options.SelectedItem = Settings.Instance.NotificationOption;
+                    else
+                        cb_notification_options.SelectedItem = Enum.GetName(pluginData.plugin.EnumOptionsType, pluginData.defaultSettings.Option);
+                }
 
                 if (Settings.Instance.AdditionalData == null)
                     tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+
+                var groups_map = new Dictionary<Plugins.DefaultPluginSettings, FrameworkElement>()
+                {
+                    {Plugins.DefaultPluginSettings.Options, group_options},
+                    {Plugins.DefaultPluginSettings.Offset, group_offset},
+                    {Plugins.DefaultPluginSettings.FadeDelay, group_delay},
+                    {Plugins.DefaultPluginSettings.AdditionalData, group_additional_data},
+                    {Plugins.DefaultPluginSettings.CustomSettings, group_open_plugin_settings},
+                };
+
+                foreach (var p in groups_map)
+                {
+                    p.Value.Visibility = (pluginData.plugin.AvailableDefaultSettings & p.Key) == p.Key ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
 
@@ -81,34 +95,8 @@ namespace OBSNotifier
             if (cb_preview.IsChecked == true)
             {
                 App.plugins.CurrentPlugin.plugin.ShowPreview();
+                Settings.Instance.IsPreviewShowing = true;
             }
-        }
-
-        private void Obs_ReplayBufferStateChanged(OBSWebsocket sender, OBSWebsocketDotNet.Types.OutputState type)
-        {
-            this.InvokeAction(() =>
-            {
-                if (cb_preview.IsChecked == true)
-                {
-                    return;
-                }
-
-                var plugin = App.plugins.CurrentPlugin.plugin;
-                switch (type)
-                {
-                    case OBSWebsocketDotNet.Types.OutputState.Starting:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Started:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Stopping:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Stopped:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Saved:
-                        plugin.ShowNotification(Plugins.NotificationType.ReplaySaved, "Replay Saved", "");
-                        break;
-                }
-            });
         }
 
         private void Obs_Connected(object sender, EventArgs e)
@@ -121,44 +109,24 @@ namespace OBSNotifier
             UpdateConnectButton();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void btn_connect_Click(object sender, RoutedEventArgs e)
         {
             if (!App.obs.IsConnected)
             {
-                var adrs = tb_address.Text;
-                try
+                if (App.ConnectToOBS(tb_address.Text, tb_password.Password))
                 {
-                    if (string.IsNullOrWhiteSpace(adrs))
-                        adrs = "ws://localhost:4444";
-                    if (!adrs.StartsWith("ws://"))
-                        adrs = "ws://" + adrs;
-                    var pass = tb_password.Password;
-
-                    App.obs.Connect(adrs, pass);
-
+                    Settings.Instance.IsConnected = true;
                     Settings.Instance.ServerAddress = tb_address.Text;
-                    Settings.Instance.Password = Utils.EncryptString(pass);
-                }
-                catch (AuthFailureException)
-                {
-                    MessageBox.Show("Authentication failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
-                catch (ErrorResponseException ex)
-                {
-                    MessageBox.Show("Connect failed : " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
-                }
-                catch (Exception ex)
-                {
-
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    return;
+                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
+                    Settings.Instance.Save();
                 }
             }
             else
             {
                 App.obs.Disconnect();
+
+                Settings.Instance.IsConnected = false;
+                Settings.Instance.Save();
             }
         }
 
@@ -166,18 +134,22 @@ namespace OBSNotifier
         {
             if ((bool)e.NewValue)
             {
+                // OBS Events
+                App.obs.Connected += Obs_Connected;
+                App.obs.Disconnected += Obs_Disconnected;
+
                 // Update size
-                if (Settings.Instance.SettingsWindowSize != new System.Drawing.Point())
+                if (Settings.Instance.SettingsWindowRect.Size != new System.Drawing.Size())
                 {
-                    Width = Settings.Instance.SettingsWindowSize.X;
-                    Height = Settings.Instance.SettingsWindowSize.Y;
+                    Width = Settings.Instance.SettingsWindowRect.Size.Width;
+                    Height = Settings.Instance.SettingsWindowRect.Size.Height;
                 }
 
                 // Update position
-                if (Settings.Instance.SettingsWindowPosition != new System.Drawing.Point(-1, -1))
+                if (Settings.Instance.SettingsWindowRect.Location != new System.Drawing.Point(-1, -1))
                 {
-                    Left = Settings.Instance.SettingsWindowPosition.X;
-                    Top = Settings.Instance.SettingsWindowPosition.Y;
+                    Left = Settings.Instance.SettingsWindowRect.Location.X;
+                    Top = Settings.Instance.SettingsWindowRect.Location.Y;
 
                     var screen = WPFScreens.GetScreenFrom(this);
                     if (screen != null && !screen.DeviceBounds.Contains(Left, Top))
@@ -185,7 +157,7 @@ namespace OBSNotifier
                         Left = 0;
                         Top = 0;
 
-                        Settings.Instance.SettingsWindowPosition = new System.Drawing.Point();
+                        Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle(new System.Drawing.Point(), Settings.Instance.SettingsWindowRect.Size);
                     }
                 }
 
@@ -223,10 +195,16 @@ namespace OBSNotifier
             }
             else
             {
-                // Save window size
-                Settings.Instance.SettingsWindowSize = new System.Drawing.Point((int)Width, (int)Height);
-                Settings.Instance.SettingsWindowPosition = new System.Drawing.Point((int)Left, (int)Top);
+                // OBS Disconnect
+                App.obs.Connected -= Obs_Connected;
+                App.obs.Disconnected -= Obs_Disconnected;
 
+                // hide preview
+                App.plugins.CurrentPlugin.plugin.HidePreview();
+                Settings.Instance.IsPreviewShowing = false;
+
+                // Save window size
+                Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
                 Settings.Instance.Save();
             }
         }
@@ -271,9 +249,9 @@ namespace OBSNotifier
             }
         }
 
-        private void cb_notification_position_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cb_notification_options_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Settings.Instance.NotificationPosition = (string)cb_notification_position.SelectedItem;
+            Settings.Instance.NotificationOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -317,11 +295,11 @@ namespace OBSNotifier
             cb_notification_styles.SelectedItem = "Default";
         }
 
-        private void btn_reset_position_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_options_Click(object sender, RoutedEventArgs e)
         {
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
-                cb_notification_position.SelectedItem = Enum.GetName(pluginData.plugin.EnumPositionType, pluginData.defaultSettings.Position);
+                cb_notification_options.SelectedItem = Enum.GetName(pluginData.plugin.EnumOptionsType, pluginData.defaultSettings.Option);
 
             UpdateNotification();
         }
@@ -364,6 +342,7 @@ namespace OBSNotifier
         private void cb_preview_Unchecked(object sender, RoutedEventArgs e)
         {
             App.plugins.CurrentPlugin.plugin.HidePreview();
+            Settings.Instance.IsPreviewShowing = false;
         }
     }
 }

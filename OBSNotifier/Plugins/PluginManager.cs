@@ -15,6 +15,11 @@ namespace OBSNotifier.Plugins
 {
     internal class PluginManager : IDisposable
     {
+        enum None
+        {
+            None
+        }
+
         public struct PluginData
         {
             public IOBSNotifierPlugin plugin;
@@ -49,7 +54,7 @@ namespace OBSNotifier.Plugins
 
             CreateTempDirectory();
 
-            WriteLog("============Plugin Manager Loading Begin===========");
+            WriteLog(":Plugin Manager Loading Begin");
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
@@ -139,13 +144,13 @@ namespace OBSNotifier.Plugins
                                 continue;
                             }
 
+                            WriteLog($"Found plugin: {pp.PluginName}");
+
                             if (LoadedPlugins.FindIndex((ppp) => ppp.plugin.PluginName == pp.PluginName) != -1)
                             {
                                 WriteLog("A plugin with the same name already exists..");
                                 continue;
                             }
-
-                            WriteLog(pp.PluginName);
 
                             if (!pp.PluginInit((s) => WriteLog($"{pp.PluginName}: {s}")))
                             {
@@ -179,13 +184,15 @@ namespace OBSNotifier.Plugins
                 WriteLog(ex.Message);
             }
 
-            WriteLog("============Plugin Manager Loading End===========");
+            WriteLog("\n:Plugin Manager Loading End");
 
-            WriteLog("##### Loaded Plugins:");
+            WriteLog("# Loaded Plugins:");
             foreach (var p in LoadedPlugins)
             {
                 WriteLog($"Name: {p.plugin.PluginName}, Class: {p.pluginClass}");
             }
+            WriteLog("# End");
+            WriteLog("\n:Plugin logs will be shown below");
         }
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
@@ -250,7 +257,7 @@ namespace OBSNotifier.Plugins
         {
             if (pluginData.plugin != null)
             {
-                CurrentPlugin.plugin?.ForceCloseWindow();
+                CurrentPlugin.plugin?.ForceCloseAllRelativeToPlugin();
 
                 CurrentPlugin = pluginData;
                 UpdateCurrentPluginSettings();
@@ -263,12 +270,22 @@ namespace OBSNotifier.Plugins
 
         public void UpdateCurrentPluginSettings()
         {
+            Enum plugin_option;
+            try
+            {
+                plugin_option = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumOptionsType, Settings.Instance.NotificationOption);
+            }
+            catch
+            {
+                plugin_option = None.None;
+            }
+
             CurrentPlugin.plugin.PluginSettings = new OBSNotifierPluginSettings()
             {
                 AdditionalData = Settings.Instance.AdditionalData,
                 Offset = new Point(Settings.Instance.NotificationOffset.X, Settings.Instance.NotificationOffset.Y),
                 OnScreenTime = Math.Min((uint)Settings.Instance.NotificationFadeDelay, 30000),
-                Position = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumPositionType, Settings.Instance.NotificationPosition),
+                Option = plugin_option,
             };
         }
 

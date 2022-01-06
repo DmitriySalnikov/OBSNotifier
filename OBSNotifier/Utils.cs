@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace OBSNotifier
 {
@@ -13,9 +14,9 @@ namespace OBSNotifier
             Center
         }
 
-        public static void InvokeAction(this Window wnd, Action act)
+        public static void InvokeAction(this DispatcherObject disp, Action act)
         {
-            wnd.Dispatcher.BeginInvoke(act);
+            disp.Dispatcher.BeginInvoke(act);
         }
 
         public static string EncryptString(string plainText)

@@ -70,7 +70,7 @@
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Plugins\Default\DefaultNotification.cs" />
     <Compile Include="Plugins\IOBSNotifierPlugin.cs" />
-    <Compile Include="Plugins\NotificationType.cs" />
+    <Compile Include="Plugins\PluginEnums.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
@@ -125,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

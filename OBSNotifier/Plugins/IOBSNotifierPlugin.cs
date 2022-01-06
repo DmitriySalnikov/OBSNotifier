@@ -6,7 +6,7 @@ namespace OBSNotifier.Plugins
     public struct OBSNotifierPluginSettings
     {
         public uint OnScreenTime;
-        public Enum Position;
+        public Enum Option;
         public Point Offset;
         public string AdditionalData;
     }
@@ -17,9 +17,13 @@ namespace OBSNotifier.Plugins
         string PluginAuthor { get; }
         string PluginDescription { get; }
         /// <summary>
-        /// The type of enumeration of items for settings
+        /// Define which default settings will be available for this plugin
         /// </summary>
-        Type EnumPositionType { get; }
+        DefaultPluginSettings AvailableDefaultSettings { get; }
+        /// <summary>
+        /// The type of enumeration of items for settings. Can be null
+        /// </summary>
+        Type EnumOptionsType { get; }
         /// <summary>
         /// A set of common settings for the plugin
         /// </summary>
@@ -38,7 +42,7 @@ namespace OBSNotifier.Plugins
         /// <summary>
         /// Calling when switching to another plugin to delete unused resources such as windows
         /// </summary>
-        void ForceCloseWindow();
+        void ForceCloseAllRelativeToPlugin();
         /// <summary>
         /// Show or Update preview window with new settings
         /// </summary>

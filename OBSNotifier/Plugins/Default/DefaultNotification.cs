@@ -19,9 +19,9 @@ namespace OBSNotifier.Plugins.Default
             Center
         }
 
-        Timer close_timer = null;
         Action<string> logWriter = null;
         DefaultNotificationWindow window = null;
+        DefaultNotificationWindow previewWindow = null;
 
         public string PluginName => "Default";
 
@@ -29,10 +29,12 @@ namespace OBSNotifier.Plugins.Default
 
         public string PluginDescription => "This is the default notification plugin";
 
+        public DefaultPluginSettings AvailableDefaultSettings => DefaultPluginSettings.AllNoCustomSettings;
+
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "BackgroundColor = #FFFFFF\nForegroundColor = #000000",
-            Position = Positions.TopLeft,
+            AdditionalData = "BackgroundColor = #FFFFFF\nForegroundColor = #000000\nWidth = 180\nHeight = 52",
+            Option = Positions.TopLeft,
             Offset = new Point(),
             OnScreenTime = 2000,
         };
@@ -43,7 +45,7 @@ namespace OBSNotifier.Plugins.Default
             set => _pluginSettings = value;
         }
 
-        public Type EnumPositionType => typeof(Positions);
+        public Type EnumOptionsType => typeof(Positions);
 
         public bool PluginInit(Action<string> logWriter)
         {
@@ -54,6 +56,10 @@ namespace OBSNotifier.Plugins.Default
         public void PluginDispose()
         {
             window?.Close();
+            previewWindow?.Close();
+
+            window = null;
+            previewWindow = null;
         }
 
         public bool ShowNotification(NotificationType type, string title, string description)
@@ -61,36 +67,42 @@ namespace OBSNotifier.Plugins.Default
             if (window == null)
                 window = new DefaultNotificationWindow(this);
 
+            window.Closing += Window_Closing;
             window.ShowNotif(title, description);
-
-            close_timer?.Dispose();
-            close_timer = new Timer((ev) =>
-            {
-                var w = window;
-                window?.InvokeAction(() => w?.Close());
-                window = null;
-            }, null, _pluginSettings.OnScreenTime, Timeout.Infinite);
 
             return true;
         }
 
         public void ShowPreview()
         {
-            if (window == null)
-                window = new DefaultNotificationWindow(this);
+            if (previewWindow == null)
+                previewWindow = new DefaultNotificationWindow(this);
+            previewWindow.ShowPreview();
+        }
 
-            window.ShowPreview();
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (window == sender)
+                window = null;
         }
 
         public void HidePreview()
         {
-            window?.Close();
-            window = null;
+            previewWindow?.Close();
+            previewWindow = null;
         }
 
-        public void ForceCloseWindow()
+        public void ForceCloseAllRelativeToPlugin()
         {
-            window?.Close();
+            if (window != null)
+            {
+                window.Closing -= Window_Closing;
+                window.Close();
+            }
+            window = null;
+
+            previewWindow?.Close();
+            previewWindow = null;
         }
     }
 }
