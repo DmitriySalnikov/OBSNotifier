@@ -5,6 +5,15 @@ using System.Windows.Threading;
 
 namespace OBSNotifier
 {
+    internal class EnumNameAttribute : Attribute
+    {
+        public string Name { get; set; }
+        public EnumNameAttribute(string name)
+        {
+            Name = name;
+        }
+    }
+
     internal static class Utils
     {
         public enum AnchorPoint

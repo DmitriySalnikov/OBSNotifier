@@ -17,6 +17,8 @@
                 <Storyboard>
                     <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:3" Completed="DoubleAnimation_Completed_out">
                         <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+                        <!-- Next key is init delay -->
+                        <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.05"/>
                         <!-- Next key is Fade length -->
                         <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.2"/>
                         <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0"/>
@@ -27,7 +29,7 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Viewbox Margin="4,4,4,4">
+    <Viewbox x:Name="MainViewbox" Margin="4,4,4,4">
         <StackPanel x:Name="stackPanel" VerticalAlignment="Center" IsHitTestVisible="False" SnapsToDevicePixels="True">
             <Viewbox StretchDirection="DownOnly">
                 <TextBlock x:Name="l_title" IsHitTestVisible="False" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontStretch="Normal" FontStyle="Normal" LineStackingStrategy="MaxHeight" TextTrimming="None" TextWrapping="NoWrap" ClipToBounds="True" TextAlignment="Center"/>

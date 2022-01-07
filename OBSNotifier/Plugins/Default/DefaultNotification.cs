@@ -33,7 +33,7 @@ namespace OBSNotifier.Plugins.Default
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "BackgroundColor = #FFFFFF\nForegroundColor = #000000\nWidth = 180\nHeight = 52",
+            AdditionalData = "BackgroundColor = #FFFFFF\nForegroundColor = #000000\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4",
             Option = Positions.TopLeft,
             Offset = new Point(),
             OnScreenTime = 2000,
@@ -46,6 +46,8 @@ namespace OBSNotifier.Plugins.Default
         }
 
         public Type EnumOptionsType => typeof(Positions);
+
+        public NotificationType DefaultActiveNotifications => NotificationType.All;
 
         public bool PluginInit(Action<string> logWriter)
         {
@@ -62,7 +64,7 @@ namespace OBSNotifier.Plugins.Default
             previewWindow = null;
         }
 
-        public bool ShowNotification(NotificationType type, string title, string description)
+        public bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null)
         {
             if (window == null)
                 window = new DefaultNotificationWindow(this);
@@ -104,6 +106,10 @@ namespace OBSNotifier.Plugins.Default
             previewWindow?.Close();
             previewWindow = null;
         }
+
+        public void OpenCustomSettings() { }
+
+        public string GetCustomSettingsDataToSave() => null;
     }
 }
 

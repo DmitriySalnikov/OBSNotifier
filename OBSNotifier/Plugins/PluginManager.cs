@@ -240,7 +240,7 @@ namespace OBSNotifier.Plugins
             }
         }
 
-        static void WriteLog(string txt)
+        public static void WriteLog(string txt)
         {
             Console.WriteLine(txt);
             LogWriter?.WriteLine(txt);
@@ -270,21 +270,44 @@ namespace OBSNotifier.Plugins
 
         public void UpdateCurrentPluginSettings()
         {
+            // Validate current plugin option
             Enum plugin_option;
             try
             {
-                plugin_option = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumOptionsType, Settings.Instance.NotificationOption);
+                plugin_option = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumOptionsType, Settings.Instance.CurrentPluginSettings.SelectedOption);
             }
             catch
             {
                 plugin_option = None.None;
             }
 
+            // Set notification types to default
+            if (Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes == null)
+            {
+                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = CurrentPlugin.plugin.DefaultActiveNotifications;
+                Settings.Instance.Save();
+            }
+
+            // Set additional data to default 
+            if (Settings.Instance.CurrentPluginSettings.AdditionalData == null)
+            {
+                Settings.Instance.CurrentPluginSettings.AdditionalData = CurrentPlugin.defaultSettings.AdditionalData;
+                Settings.Instance.Save();
+            }
+
+            // Set custom settings to default 
+            if (Settings.Instance.CurrentPluginSettings.CustomSettings == null)
+            {
+                Settings.Instance.CurrentPluginSettings.CustomSettings= CurrentPlugin.defaultSettings.CustomSettings;
+                Settings.Instance.Save();
+            }
+
             CurrentPlugin.plugin.PluginSettings = new OBSNotifierPluginSettings()
             {
-                AdditionalData = Settings.Instance.AdditionalData,
-                Offset = new Point(Settings.Instance.NotificationOffset.X, Settings.Instance.NotificationOffset.Y),
-                OnScreenTime = Math.Min((uint)Settings.Instance.NotificationFadeDelay, 30000),
+                AdditionalData = Settings.Instance.CurrentPluginSettings.AdditionalData,
+                CustomSettings = Settings.Instance.CurrentPluginSettings.CustomSettings,
+                Offset = new Point(Settings.Instance.CurrentPluginSettings.Offset.X, Settings.Instance.CurrentPluginSettings.Offset.Y),
+                OnScreenTime = Math.Min((uint)Settings.Instance.CurrentPluginSettings.OnScreenTime, 30000),
                 Option = plugin_option,
             };
         }

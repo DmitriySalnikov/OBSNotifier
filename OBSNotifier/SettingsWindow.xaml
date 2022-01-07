@@ -45,6 +45,9 @@
                 <Button x:Name="btn_reset_style" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_style_Click"/>
             </Grid>
 
+            <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
+            <Button Content="Select Active Notifications" Click="btn_select_active_notifications_Click"/>
+
             <StackPanel x:Name="group_options">
                 <Label Content="Options:"/>
                 <Grid>
@@ -104,7 +107,7 @@
 
             <StackPanel x:Name="group_open_plugin_settings">
                 <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
-                <Button Content="Open Plugin Settings"/>
+                <Button Content="Open Plugin Settings" Click="btn_open_plugin_settings_Click"/>
             </StackPanel>
             <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
         </StackPanel>

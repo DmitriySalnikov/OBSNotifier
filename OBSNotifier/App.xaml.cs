@@ -18,6 +18,7 @@ namespace OBSNotifier
     {
         public static OBSWebsocket obs;
         public static PluginManager plugins;
+        public static NotificationManager notifications;
 
         System.Windows.Forms.NotifyIcon trayIcon;
         SettingsWindow settingsWindow;
@@ -28,10 +29,10 @@ namespace OBSNotifier
             obs = new OBSWebsocket();
             obs.Connected += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
-            obs.ReplayBufferStateChanged += Obs_ReplayBufferStateChanged;
 
             Settings.Load();
             plugins = new PluginManager();
+            notifications = new NotificationManager(this, obs);
 
             // Select current plugin
             if (!plugins.SelectCurrent(Settings.Instance.NotificationStyle))
@@ -116,31 +117,5 @@ namespace OBSNotifier
         {
             // TODO change icon
         }
-
-        private void Obs_ReplayBufferStateChanged(OBSWebsocket sender, OBSWebsocketDotNet.Types.OutputState type)
-        {
-            var plugin = plugins.CurrentPlugin.plugin;
-            if (Settings.Instance.IsPreviewShowing || plugin == null)
-                return;
-
-            this.InvokeAction(() =>
-            {
-                switch (type)
-                {
-                    case OBSWebsocketDotNet.Types.OutputState.Starting:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Started:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Stopping:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Stopped:
-                        break;
-                    case OBSWebsocketDotNet.Types.OutputState.Saved:
-                        plugin.ShowNotification(NotificationType.ReplaySaved, "Replay Saved", "");
-                        break;
-                }
-            });
-        }
-
     }
 }

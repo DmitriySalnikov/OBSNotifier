@@ -8,12 +8,22 @@ namespace OBSNotifier
 {
     class Settings
     {
+        public class PluginSettings
+        {
+            public int OnScreenTime { get; set; } = 2000;
+            public string SelectedOption { get; set; } = string.Empty;
+            public PointF Offset { get; set; } = new PointF(0, 0);
+            public string AdditionalData { get; set; } = null;
+            public string CustomSettings { get; set; } = null;
+            public NotificationType? ActiveNotificationTypes { get; set; } = null;
+        }
+
         [JsonIgnore]
         static public Settings Instance { get; private set; } = null;
 
         [JsonIgnore]
         static string SaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.json");
-        
+
         [JsonIgnore]
         DeferredAction saveSettings = new DeferredAction(() => Instance.SaveInternal(), 1000);
         [JsonIgnore]
@@ -25,13 +35,21 @@ namespace OBSNotifier
         public string DisplayID { get; set; } = string.Empty;
         public bool IsConnected { get; set; } = false;
         public bool UseSafeDisplayArea { get; set; } = true;
-
-        // SEPARATE SETTINGS FOR ALL PLUGINS
-        public int NotificationFadeDelay { get; set; } = 2000;
         public string NotificationStyle { get; set; } = string.Empty;
-        public string NotificationOption { get; set; } = string.Empty;
-        public PointF NotificationOffset { get; set; } = new PointF(0, 0);
-        public string AdditionalData { get; set; } = null;
+
+        public Dictionary<string, PluginSettings> PerPluginSettings { get; set; } = new Dictionary<string, PluginSettings>();
+        
+        [JsonIgnore]
+        public PluginSettings CurrentPluginSettings
+        {
+            get
+            {
+                if(!PerPluginSettings.ContainsKey(NotificationStyle))
+                    PerPluginSettings[NotificationStyle] = new PluginSettings();
+
+                return PerPluginSettings[NotificationStyle];
+            }
+        }
 
         #region Save/Load
 
@@ -45,7 +63,7 @@ namespace OBSNotifier
         {
             saveSettings.CallDeferred();
         }
-        
+
         void SaveInternal()
         {
             try

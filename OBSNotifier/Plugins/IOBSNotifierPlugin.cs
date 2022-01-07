@@ -9,6 +9,7 @@ namespace OBSNotifier.Plugins
         public Enum Option;
         public Point Offset;
         public string AdditionalData;
+        public string CustomSettings;
     }
 
     public interface IOBSNotifierPlugin
@@ -28,6 +29,10 @@ namespace OBSNotifier.Plugins
         /// A set of common settings for the plugin
         /// </summary>
         OBSNotifierPluginSettings PluginSettings { get; set; }
+        /// <summary>
+        /// Default types of active notifications
+        /// </summary>
+        NotificationType DefaultActiveNotifications { get; }
 
         /// <summary>
         /// Called during plugin initialization
@@ -58,7 +63,17 @@ namespace OBSNotifier.Plugins
         /// <param name="type">Notification type</param>
         /// <param name="title">Title</param>
         /// <param name="description">Description</param>
+        /// <param name="originalData">The original OBS callback arguments, so you can show them as you wish</param>
         /// <returns></returns>
-        bool ShowNotification(NotificationType type, string title, string description);
+        bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null);
+        /// <summary>
+        /// Calling on Custom Settings Button pressed
+        /// </summary>
+        void OpenCustomSettings();
+        /// <summary>
+        /// Default mechanism for saving plugin settings data into <see cref="OBSNotifierPluginSettings.CustomSettings"/>
+        /// </summary>
+        /// <returns>Any string with your settings or null</returns>
+        string GetCustomSettingsDataToSave();
     }
 }

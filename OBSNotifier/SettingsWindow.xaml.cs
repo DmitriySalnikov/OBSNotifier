@@ -26,18 +26,15 @@ namespace OBSNotifier
 
             UpdateConnectButton();
 
-            foreach (var p in App.plugins.LoadedPlugins)
+            // Plugins list
             {
-                cb_notification_styles.Items.Add(p.plugin.PluginName);
-            }
+                foreach (var p in App.plugins.LoadedPlugins)
+                    cb_notification_styles.Items.Add(p.plugin.PluginName);
 
-            if (cb_notification_styles.Items.Contains(Settings.Instance.NotificationStyle))
-            {
-                cb_notification_styles.SelectedItem = Settings.Instance.NotificationStyle;
-            }
-            else
-            {
-                cb_notification_styles.SelectedItem = "Default";
+                if (cb_notification_styles.Items.Contains(Settings.Instance.NotificationStyle))
+                    cb_notification_styles.SelectedItem = Settings.Instance.NotificationStyle;
+                else
+                    cb_notification_styles.SelectedItem = "Default";
             }
         }
 
@@ -54,8 +51,9 @@ namespace OBSNotifier
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
             {
+                // Update options list
                 cb_notification_options.Items.Clear();
-                
+
                 if (pluginData.plugin.EnumOptionsType != null)
                 {
 
@@ -64,15 +62,26 @@ namespace OBSNotifier
                     foreach (var e in names)
                         cb_notification_options.Items.Add(e);
 
-                    if (names.Contains(Settings.Instance.NotificationOption))
-                        cb_notification_options.SelectedItem = Settings.Instance.NotificationOption;
+                    if (names.Contains(Settings.Instance.CurrentPluginSettings.SelectedOption))
+                        cb_notification_options.SelectedItem = Settings.Instance.CurrentPluginSettings.SelectedOption;
                     else
                         cb_notification_options.SelectedItem = Enum.GetName(pluginData.plugin.EnumOptionsType, pluginData.defaultSettings.Option);
                 }
 
-                if (Settings.Instance.AdditionalData == null)
+                // additional data
+                if (Settings.Instance.CurrentPluginSettings.AdditionalData == null)
                     tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+                else
+                    tb_additional_data.Text = pluginData.plugin.PluginSettings.AdditionalData;
 
+                // offset
+                sldr_position_offset_x.Value = pluginData.plugin.PluginSettings.Offset.X;
+                sldr_position_offset_y.Value = pluginData.plugin.PluginSettings.Offset.Y;
+
+                // fade time
+                sldr_fade_delay.Value = pluginData.plugin.PluginSettings.OnScreenTime;
+
+                // Update visibility of settings groups
                 var groups_map = new Dictionary<Plugins.DefaultPluginSettings, FrameworkElement>()
                 {
                     {Plugins.DefaultPluginSettings.Options, group_options},
@@ -84,7 +93,7 @@ namespace OBSNotifier
 
                 foreach (var p in groups_map)
                 {
-                    p.Value.Visibility = (pluginData.plugin.AvailableDefaultSettings & p.Key) == p.Key ? Visibility.Visible : Visibility.Collapsed;
+                    p.Value.Visibility = pluginData.plugin.AvailableDefaultSettings.HasFlag(p.Key) ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
         }
@@ -184,14 +193,6 @@ namespace OBSNotifier
                         cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
                 }
                 cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
-
-                // Update sliders
-                sldr_position_offset_x.Value = Settings.Instance.NotificationOffset.X;
-                sldr_position_offset_y.Value = Settings.Instance.NotificationOffset.Y;
-                sldr_fade_delay.Value = Settings.Instance.NotificationFadeDelay;
-
-                // Update additional data text
-                tb_additional_data.Text = Settings.Instance.AdditionalData;
             }
             else
             {
@@ -251,7 +252,7 @@ namespace OBSNotifier
 
         private void cb_notification_options_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Settings.Instance.NotificationOption = (string)cb_notification_options.SelectedItem;
+            Settings.Instance.CurrentPluginSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -259,7 +260,7 @@ namespace OBSNotifier
 
         private void sldr_position_offset_x_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Instance.NotificationOffset = new System.Drawing.PointF((float)e.NewValue, Settings.Instance.NotificationOffset.Y);
+            Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF((float)e.NewValue, Settings.Instance.CurrentPluginSettings.Offset.Y);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -267,7 +268,7 @@ namespace OBSNotifier
 
         private void sldr_position_offset_y_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Instance.NotificationOffset = new System.Drawing.PointF(Settings.Instance.NotificationOffset.X, (float)e.NewValue);
+            Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF(Settings.Instance.CurrentPluginSettings.Offset.X, (float)e.NewValue);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -275,7 +276,7 @@ namespace OBSNotifier
 
         private void sldr_fade_delay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Instance.NotificationFadeDelay = (int)Math.Round(e.NewValue / 100) * 100;
+            Settings.Instance.CurrentPluginSettings.OnScreenTime = (int)Math.Round(e.NewValue / 100) * 100;
             l_delay_sec.Text = (e.NewValue / 1000.0).ToString("F1", CultureInfo.InvariantCulture);
             Settings.Instance.Save();
 
@@ -284,10 +285,33 @@ namespace OBSNotifier
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Instance.AdditionalData = tb_additional_data.Text;
+            Settings.Instance.CurrentPluginSettings.AdditionalData = tb_additional_data.Text;
             Settings.Instance.Save();
 
             UpdateNotification();
+        }
+
+        private void btn_select_active_notifications_Click(object sender, RoutedEventArgs e)
+        {
+            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes??App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
+
+            var an = new ActiveNotifications(notifs);
+            an.Left = Left + Width / 2 - an.Width / 2;
+            an.Top = Top + Height / 2 - an.Height / 2;
+
+            var screen = WPFScreens.GetScreenFrom(this);
+            if (screen != null && !screen.DeviceBounds.Contains(an.Left, an.Top))
+                an.Top = Top;
+
+            if (an.ShowDialog() == true)
+            {
+                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = an.GetActiveNotification();
+                Settings.Instance.Save();
+
+                UpdateNotification();
+            }
+
+            an.Close();
         }
 
         private void btn_reset_style_Click(object sender, RoutedEventArgs e)
@@ -332,6 +356,18 @@ namespace OBSNotifier
         private void btn_reset_fade_delay_Click(object sender, RoutedEventArgs e)
         {
             sldr_fade_delay.Value = 2000;
+        }
+
+        private void btn_open_plugin_settings_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.plugins.CurrentPlugin.plugin!=null)
+            {
+                App.plugins.CurrentPlugin.plugin?.OpenCustomSettings();
+                Settings.Instance.CurrentPluginSettings.CustomSettings = App.plugins.CurrentPlugin.plugin.GetCustomSettingsDataToSave();
+                Settings.Instance.Save();
+
+                UpdateNotification();
+            }
         }
 
         private void cb_preview_Checked(object sender, RoutedEventArgs e)

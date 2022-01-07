@@ -19,15 +19,13 @@ namespace OBSNotifier.Plugins.Default
         public static readonly RoutedEvent FadeInOutEvent = EventManager.RegisterRoutedEvent("FadeInOut", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(DefaultNotificationWindow));
         public event RoutedEventHandler FadeInOut { add => AddHandler(FadeInOutEvent, value); remove => RemoveHandler(FadeInOutEvent, value); }
 
-        public DefaultNotificationWindow()
-        {
-            InitializeComponent();
-        }
+        DeferredAction hide;
 
         public DefaultNotificationWindow(DefaultNotification plugin)
         {
             InitializeComponent();
 
+            hide = new DeferredAction(() => this.InvokeAction(() => Hide()), 100);
             owner = plugin;
         }
 
@@ -79,6 +77,26 @@ namespace OBSNotifier.Plugins.Default
                                     Height = val;
                                 break;
                             }
+                        case "Margin":
+                            {
+                                var split = args[1].Trim().Split(',');
+                                if (split.Length == 1)
+                                {
+                                    if (double.TryParse(split[0], out double val))
+                                        MainViewbox.Margin = new Thickness(val);
+                                }
+                                else if (split.Length == 4)
+                                {
+                                    if (double.TryParse(split[0], out double val1) &&
+                                        double.TryParse(split[1], out double val2) &&
+                                        double.TryParse(split[2], out double val3) &&
+                                        double.TryParse(split[3], out double val4))
+                                    {
+                                        MainViewbox.Margin = new Thickness(val1, val2, val3, val4);
+                                    }
+                                }
+                                break;
+                            }
                     }
                 }
             }
@@ -106,10 +124,11 @@ namespace OBSNotifier.Plugins.Default
             var d_anim = (FadeAnimBoard.Storyboard.Children[0] as DoubleAnimationUsingKeyFrames);
             var keys = d_anim.KeyFrames;
             var dur = TimeSpan.FromMilliseconds(owner.PluginSettings.OnScreenTime);
-            var fade = keys[1].KeyTime.TimeSpan;
-            d_anim.Duration = fade + dur + fade;
-            keys[2].KeyTime = fade + dur;
-            keys[3].KeyTime = fade + dur + fade;
+            var init_time = keys[1].KeyTime.TimeSpan; // Use second key as init time
+            var fade = keys[2].KeyTime.TimeSpan; // Use third key as fade in/out time
+            d_anim.Duration = init_time + fade + dur + fade + init_time;
+            keys[3].KeyTime = init_time + fade + dur;
+            keys[4].KeyTime = init_time + fade + dur + fade;
 
             FadeAnimBoard.Storyboard.Begin(this, true);
 
@@ -127,7 +146,12 @@ namespace OBSNotifier.Plugins.Default
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!IsPreviewNotif)
-                Hide();
+            {
+                FadeAnimBoard.Storyboard.Seek(TimeSpan.Zero, TimeSeekOrigin.Duration);
+                FadeAnimBoard.Storyboard.Stop(this);
+                Opacity = 0;
+                hide.CallDeferred();
+            }
         }
 
         private void DoubleAnimation_Completed_out(object sender, EventArgs e)
