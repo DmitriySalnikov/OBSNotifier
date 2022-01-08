@@ -2,19 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using OBSNotifier.Plugins.Default;
-using OBSWebsocketDotNet;
 
 namespace OBSNotifier
 {
@@ -298,14 +287,11 @@ namespace OBSNotifier
             var an = new ActiveNotifications(notifs);
             an.Left = Left + Width / 2 - an.Width / 2;
             an.Top = Top + Height / 2 - an.Height / 2;
-
-            var screen = WPFScreens.GetScreenFrom(this);
-            if (screen != null && !screen.DeviceBounds.Contains(an.Left, an.Top))
-                an.Top = Top;
+            Utils.FixWindowLocation(an, WPFScreens.GetScreenFrom(this));
 
             if (an.ShowDialog() == true)
             {
-                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = an.GetActiveNotification();
+                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = an.GetActiveNotifications();
                 Settings.Instance.Save();
 
                 UpdateNotification();

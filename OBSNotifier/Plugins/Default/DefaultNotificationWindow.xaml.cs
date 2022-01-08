@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -102,9 +96,8 @@ namespace OBSNotifier.Plugins.Default
             }
 
             // Position
-            Point pos = new Point();
             var anchor = (Utils.AnchorPoint)Enum.Parse(typeof(Utils.AnchorPoint), ((DefaultNotification.Positions)owner.PluginSettings.Option).ToString());
-            pos = Utils.GetWindowPosition(anchor, new Point(Width, Height), owner.PluginSettings.Offset);
+            Point pos = Utils.GetWindowPosition(anchor, new Size(Width, Height), owner.PluginSettings.Offset);
 
             Left = pos.X;
             Top = pos.Y;

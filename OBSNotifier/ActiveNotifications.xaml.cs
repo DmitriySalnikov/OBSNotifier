@@ -1,16 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace OBSNotifier
 {
@@ -19,7 +10,7 @@ namespace OBSNotifier
     /// </summary>
     public partial class ActiveNotifications : Window
     {
-        readonly Dictionary<NotificationType, CheckBox> activeNotification = new Dictionary<NotificationType, CheckBox>();
+        readonly Dictionary<NotificationType, CheckBox> activeNotifications = new Dictionary<NotificationType, CheckBox>();
         readonly NotificationType currentNotifications;
 
         public ActiveNotifications(NotificationType currentNotifications)
@@ -27,41 +18,32 @@ namespace OBSNotifier
             InitializeComponent();
 
             this.currentNotifications = currentNotifications;
+
+            foreach (var e in NotificationManager.NotificationsData)
             {
-                var type = typeof(NotificationType);
-                var name = typeof(EnumNameAttribute);
-                foreach (NotificationType e in Enum.GetValues(type))
+                var cb = new CheckBox
                 {
-                    if (e == NotificationType.None)
-                        continue;
-                    if (e == NotificationType.Minimal)
-                        break;
+                    Content = e.Value.Name,
+                    IsChecked = currentNotifications.HasFlag(e.Key)
+                };
 
-                    var member = type.GetMember(e.ToString())[0];
-                    var cb = new CheckBox
-                    {
-                        Content = (Attribute.GetCustomAttribute(member, name) as EnumNameAttribute).Name,
-                        IsChecked = currentNotifications.HasFlag(e)
-                    };
-
-                    lb_notifs.Items.Add(cb);
-                    activeNotification.Add(e, cb);
-                }
+                lb_notifs.Items.Add(cb);
+                activeNotifications.Add(e.Key, cb);
             }
         }
 
         void UpdateValues(NotificationType notifs)
         {
-            foreach (var an in activeNotification)
+            foreach (var an in activeNotifications)
             {
                 an.Value.IsChecked = notifs.HasFlag(an.Key);
             }
         }
 
-        public NotificationType GetActiveNotification()
+        public NotificationType GetActiveNotifications()
         {
             var res = NotificationType.None;
-            foreach (var n in activeNotification)
+            foreach (var n in activeNotifications)
             {
                 if (n.Value.IsChecked == true)
                     res |= n.Key;

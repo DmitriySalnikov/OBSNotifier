@@ -1,13 +1,7 @@
 ﻿using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Xml.Linq;
 
 namespace OBSNotifier
 {
@@ -34,14 +28,13 @@ namespace OBSNotifier
             plugins = new PluginManager();
             notifications = new NotificationManager(this, obs);
 
+            // Clear unused
+            if (Settings.Instance.ClearUnusedPluginSettings())
+                Settings.Instance.Save();
+
             // Select current plugin
             if (!plugins.SelectCurrent(Settings.Instance.NotificationStyle))
                 Settings.Instance.NotificationStyle = string.Empty;
-
-            if (Settings.Instance.IsConnected && !obs.IsConnected)
-            {
-                ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
-            }
 
             trayIcon = new System.Windows.Forms.NotifyIcon();
             trayIcon.Icon = OBSNotifier.Properties.Resources.icon;
@@ -62,6 +55,10 @@ namespace OBSNotifier
             trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu(new System.Windows.Forms.MenuItem[] {
                 new System.Windows.Forms.MenuItem("Exit", (s,e) => Shutdown()),
             });
+
+            // Connect to obs if previously connected
+            if (Settings.Instance.IsConnected && !obs.IsConnected)
+                ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

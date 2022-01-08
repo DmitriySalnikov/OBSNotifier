@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
+using System.IO;
 
 namespace OBSNotifier
 {
@@ -37,14 +37,14 @@ namespace OBSNotifier
         public bool UseSafeDisplayArea { get; set; } = true;
         public string NotificationStyle { get; set; } = string.Empty;
 
-        public Dictionary<string, PluginSettings> PerPluginSettings { get; set; } = new Dictionary<string, PluginSettings>();
-        
+        public Dictionary<string, PluginSettings> PerPluginSettings { get; } = new Dictionary<string, PluginSettings>();
+
         [JsonIgnore]
         public PluginSettings CurrentPluginSettings
         {
             get
             {
-                if(!PerPluginSettings.ContainsKey(NotificationStyle))
+                if (!PerPluginSettings.ContainsKey(NotificationStyle))
                     PerPluginSettings[NotificationStyle] = new PluginSettings();
 
                 return PerPluginSettings[NotificationStyle];
@@ -57,6 +57,25 @@ namespace OBSNotifier
         {
             if (Instance == null)
                 Instance = this;
+        }
+
+        public bool ClearUnusedPluginSettings()
+        {
+            List<string> to_delete = new List<string>();
+            foreach (var p in PerPluginSettings)
+            {
+                if (App.plugins.LoadedPlugins.FindIndex((i) => i.plugin.PluginName == p.Key) == -1)
+                {
+                    to_delete.Add(p.Key);
+                }
+            }
+
+            foreach (var p in to_delete)
+            {
+                PerPluginSettings.Remove(p);
+            }
+
+            return to_delete.Count > 0;
         }
 
         public void Save()

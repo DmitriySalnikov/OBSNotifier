@@ -5,22 +5,12 @@ using System.Windows.Threading;
 
 namespace OBSNotifier
 {
-    internal class EnumNameAttribute : Attribute
-    {
-        public string Name { get; set; }
-        public EnumNameAttribute(string name)
-        {
-            Name = name;
-        }
-    }
-
-    internal static class Utils
+    public static class Utils
     {
         public enum AnchorPoint
         {
-            //Left, Top, Right, Bottom,
-            TopLeft, TopRight, BottomRight, BottomLeft,
-            Center
+            TopLeft = 0, TopRight = 1, BottomRight = 2, BottomLeft = 3,
+            Center = 4,
         }
 
         public static void InvokeAction(this DispatcherObject disp, Action act)
@@ -44,7 +34,53 @@ namespace OBSNotifier
             return Encoding.Unicode.GetString(data);
         }
 
-        public static Point GetWindowPosition(AnchorPoint anchor, Point size, Point offset)
+        /// <summary>
+        /// Fix the position of the window that goes beyond the borders of the window's screen
+        /// </summary>
+        /// <param name="wnd"></param>
+        public static void FixWindowLocation(Window wnd)
+        {
+            FixWindowLocation(wnd, WPFScreens.GetScreenFrom(wnd));
+        }
+
+        /// <summary>
+        /// Fix the position of a window that goes beyond the boundaries of the <paramref name="screen"/>
+        /// </summary>
+        /// <param name="wnd"></param>
+        /// <param name="screen"></param>
+        public static void FixWindowLocation(Window wnd, WPFScreens screen)
+        {
+            var rect = screen.WorkingArea;
+
+            if (rect.Size.Width < wnd.Width || rect.Size.Height < wnd.Height)
+            {
+                if (rect.Size.Width < wnd.Width)
+                    wnd.Left = rect.Left;
+                if (rect.Size.Height < wnd.Height)
+                    wnd.Top = rect.Top;
+                return;
+            }
+
+            if (wnd.Left < rect.Left)
+                wnd.Left = rect.Left;
+            if (wnd.Top < rect.Top)
+                wnd.Top = rect.Top;
+
+            if (wnd.Left + wnd.Width > rect.Right)
+                wnd.Left = rect.Right - wnd.Width;
+            if (wnd.Top + wnd.Height > rect.Bottom)
+                wnd.Top = rect.Bottom - wnd.Height;
+        }
+
+        /// <summary>
+        /// Returns the location of the window inside the currently selected notification screen.
+        /// The location of the window will depend on the selected <see cref="AnchorPoint"/> and the offset from it.
+        /// </summary>
+        /// <param name="anchor"></param>
+        /// <param name="size"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public static Point GetWindowPosition(AnchorPoint anchor, Size size, Point offset)
         {
             WPFScreens screen = null;
             foreach (var s in WPFScreens.AllScreens())
@@ -53,15 +89,29 @@ namespace OBSNotifier
                     screen = s;
             }
 
+            return GetWindowPosition(screen, anchor, size, offset);
+        }
+
+        /// <summary>
+        /// Returns the location of the window inside the screen.
+        /// The location of the window will depend on the selected <see cref="AnchorPoint"/> and the offset from it.
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <param name="anchor"></param>
+        /// <param name="size"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public static Point GetWindowPosition(WPFScreens screen, AnchorPoint anchor, Size size, Point offset)
+        {
             if (screen == null)
                 return new Point();
 
             var rect = Settings.Instance.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
 
             var boundsPos = rect.TopLeft;
-            var boundsPosEnd = new Point(rect.BottomRight.X - size.X, rect.BottomRight.Y - size.Y);
-            var offsetX = (rect.Width - size.X) * offset.X;
-            var offsetY = (rect.Height - size.Y) * offset.Y;
+            var boundsPosEnd = new Point(rect.BottomRight.X - size.Width, rect.BottomRight.Y - size.Height);
+            var offsetX = (rect.Width - size.Width) * offset.X;
+            var offsetY = (rect.Height - size.Height) * offset.Y;
 
             switch (anchor)
             {

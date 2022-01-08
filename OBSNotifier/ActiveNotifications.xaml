@@ -22,7 +22,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Button x:Name="btn_select_all" Content="Select All" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" Click="btn_select_all_Click"/>
-            <Button x:Name="btn_select_none" Content="Clear Selection" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Click="btn_select_none_Click"/>
+            <Button x:Name="btn_select_none" Content="Select None" Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Click="btn_select_none_Click"/>
             <Button x:Name="btn_reset_to_current" Content="Reset to current" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Click="btn_reset_to_current_Click"/>
             <Button x:Name="btn_reset" Content="Reset to default" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Click="btn_reset_Click"/>
         </Grid>
