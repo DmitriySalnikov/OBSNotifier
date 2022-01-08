@@ -105,8 +105,6 @@ namespace OBSNotifier
                 {
                     notificationsData = new Dictionary<NotificationType, NotificationDescriptionAttribute>();
                     var type = typeof(NotificationType);
-                    var v = Enum.GetValues(type);
-                    var l = (ulong)NotificationType.AudioSourceMuted;
                     foreach (NotificationType e in Enum.GetValues(type))
                     {
                         if (SkipNotifTypes.Contains(e))

@@ -159,6 +159,8 @@ namespace OBSNotifier
                     }
                 }
 
+                Utils.FixWindowLocation(this, WPFScreens.GetScreenFrom(this));
+
                 // Server & Password
                 tb_address.Text = Settings.Instance.ServerAddress;
                 tb_password.Password = Utils.DecryptString(Settings.Instance.Password);

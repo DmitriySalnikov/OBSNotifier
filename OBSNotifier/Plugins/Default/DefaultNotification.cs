@@ -28,7 +28,7 @@ namespace OBSNotifier.Plugins.Default
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "BackgroundColor = #FFFFFF\nForegroundColor = #000000\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4",
+            AdditionalData = "Blocks = 3\nBackgroundColor = #4C4C4C\nForegroundColor = #D8D8D8\nOutlineColor = #59000000\nRadius = 4.0\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4",
             Option = Positions.TopLeft,
             Offset = new Point(),
             OnScreenTime = 2000,

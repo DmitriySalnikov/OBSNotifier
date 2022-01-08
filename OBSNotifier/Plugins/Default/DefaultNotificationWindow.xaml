@@ -8,35 +8,11 @@
         Title="Default Notification"
         WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
         Opacity="1.0"
-        Width="180" Height="52"
-        MouseDown="Window_MouseDown">
+        Width="180" Height="102"
+        Background="{x:Null}">
 
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="local:DefaultNotificationWindow.FadeInOut">
-            <BeginStoryboard x:Name="FadeAnimBoard" HandoffBehavior="SnapshotAndReplace">
-                <Storyboard>
-                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:3" Completed="DoubleAnimation_Completed_out">
-                        <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
-                        <!-- Next key is init delay -->
-                        <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.05"/>
-                        <!-- Next key is Fade length -->
-                        <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.2"/>
-                        <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0"/>
-                        <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
-                    </DoubleAnimationUsingKeyFrames>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </Window.Triggers>
-
-    <Viewbox x:Name="MainViewbox" Margin="4,4,4,4">
-        <StackPanel x:Name="stackPanel" VerticalAlignment="Center" IsHitTestVisible="False" SnapsToDevicePixels="True">
-            <Viewbox StretchDirection="DownOnly">
-                <TextBlock x:Name="l_title" IsHitTestVisible="False" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontStretch="Normal" FontStyle="Normal" LineStackingStrategy="MaxHeight" TextTrimming="None" TextWrapping="NoWrap" ClipToBounds="True" TextAlignment="Center"/>
-            </Viewbox>
-            <Viewbox StretchDirection="DownOnly">
-                <TextBlock x:Name="l_desc" IsHitTestVisible="False" Text="Description" FontSize="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
-            </Viewbox>
-        </StackPanel>
-    </Viewbox>
+    <StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">
+        <local:DefaultNotificationBlock/>
+        <local:DefaultNotificationBlock/>
+    </StackPanel>
 </Window>

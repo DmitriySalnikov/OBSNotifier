@@ -73,6 +73,9 @@
     <Compile Include="DeferredAction.cs" />
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Plugins\Default\DefaultNotification.cs" />
+    <Compile Include="Plugins\Default\DefaultNotificationBlock.xaml.cs">
+      <DependentUpon>DefaultNotificationBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Plugins\IOBSNotifierPlugin.cs" />
     <Compile Include="Plugins\PluginEnums.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
@@ -80,6 +83,10 @@
     <Compile Include="Utils.cs" />
     <Compile Include="WPFScreens.cs" />
     <Page Include="ActiveNotifications.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Plugins\Default\DefaultNotificationBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

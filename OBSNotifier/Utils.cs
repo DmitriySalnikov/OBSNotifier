@@ -73,6 +73,25 @@ namespace OBSNotifier
         }
 
         /// <summary>
+        /// Returns the current <see cref="WPFScreens"/> selected in the application settings
+        /// </summary>
+        /// <returns></returns>
+        public static WPFScreens GetCurrentNotificationScreen()
+        {
+            foreach (var s in WPFScreens.AllScreens())
+            {
+                if (s.DeviceName == Settings.Instance.DisplayID)
+                    return s;
+            }
+            return null;
+        }
+
+        public static Rect GetCurrentDisplayBounds(WPFScreens screen)
+        {
+            return Settings.Instance.UseSafeDisplayArea? screen.WorkingArea: screen.DeviceBounds;
+        }
+
+        /// <summary>
         /// Returns the location of the window inside the currently selected notification screen.
         /// The location of the window will depend on the selected <see cref="AnchorPoint"/> and the offset from it.
         /// </summary>
@@ -82,14 +101,7 @@ namespace OBSNotifier
         /// <returns></returns>
         public static Point GetWindowPosition(AnchorPoint anchor, Size size, Point offset)
         {
-            WPFScreens screen = null;
-            foreach (var s in WPFScreens.AllScreens())
-            {
-                if (s.DeviceName == Settings.Instance.DisplayID)
-                    screen = s;
-            }
-
-            return GetWindowPosition(screen, anchor, size, offset);
+            return GetWindowPosition(GetCurrentNotificationScreen(), anchor, size, offset);
         }
 
         /// <summary>
@@ -106,7 +118,7 @@ namespace OBSNotifier
             if (screen == null)
                 return new Point();
 
-            var rect = Settings.Instance.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
+            var rect = GetCurrentDisplayBounds(screen);
 
             var boundsPos = rect.TopLeft;
             var boundsPosEnd = new Point(rect.BottomRight.X - size.Width, rect.BottomRight.Y - size.Height);
