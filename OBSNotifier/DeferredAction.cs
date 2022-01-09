@@ -15,6 +15,12 @@ namespace OBSNotifier
             this.delay = delay;
         }
 
+        public void Cancel()
+        {
+            close_timer?.Dispose();
+            close_timer = null;
+        }
+
         public void CallDeferred()
         {
             close_timer?.Dispose();

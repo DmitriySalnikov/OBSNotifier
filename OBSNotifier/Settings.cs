@@ -78,9 +78,12 @@ namespace OBSNotifier
             return to_delete.Count > 0;
         }
 
-        public void Save()
+        public void Save(bool forceSave = false)
         {
-            saveSettings.CallDeferred();
+            if (forceSave)
+                SaveInternal();
+            else
+                saveSettings.CallDeferred();
         }
 
         void SaveInternal()

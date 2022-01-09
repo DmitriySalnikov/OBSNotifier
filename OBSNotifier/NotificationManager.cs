@@ -26,32 +26,34 @@ namespace OBSNotifier
         Connected = 1L << 0,
         [NotificationDescription("Disconnected from OBS")]
         Disconnected = 1L << 1,
+        [NotificationDescription("Lost Connection to OBS", "Trying to reconnect")]
+        LostConnection = 1L << 2,
 
         [NotificationDescription("Replay Started")]
-        ReplayStarted = 1L << 2,
+        ReplayStarted = 1L << 5,
         [NotificationDescription("Replay Stopped")]
-        ReplayStopped = 1L << 3,
+        ReplayStopped = 1L << 6,
         [NotificationDescription("Replay Saved")]
-        ReplaySaved = 1L << 4,
+        ReplaySaved = 1L << 7,
 
         [NotificationDescription("Recording Started")]
-        RecordingStarted = 1L << 5,
+        RecordingStarted = 1L << 8,
         [NotificationDescription("Recording Stopped")]
-        RecordingStopped = 1L << 6,
+        RecordingStopped = 1L << 9,
         [NotificationDescription("Recording Paused")]
-        RecordingPaused = 1L << 7,
+        RecordingPaused = 1L << 10,
         [NotificationDescription("Recording Resumed")]
-        RecordingResumed = 1L << 8,
+        RecordingResumed = 1L << 11,
 
         [NotificationDescription("Streaming Started")]
-        StreamingStarted = 1L << 9,
+        StreamingStarted = 1L << 12,
         [NotificationDescription("Streaming Stopped")]
-        StreamingStopped = 1L << 10,
+        StreamingStopped = 1L << 13,
 
         [NotificationDescription("Virtual Camera Started")]
-        VirtualCameraStarted = 1L << 11,
+        VirtualCameraStarted = 1L << 14,
         [NotificationDescription("Virtual Camera Stopped")]
-        VirtualCameraStopped = 1L << 12,
+        VirtualCameraStopped = 1L << 15,
 
         [NotificationDescription("Scene Switched", "Current: {0}")]
         SceneSwitched = 1L << 24,
@@ -66,13 +68,14 @@ namespace OBSNotifier
         [NotificationDescription("Audio is Turned On", "Source: {0}")]
         AudioSourceUnmuted = 1L << 35,
 
-        Minimal = ReplaySaved |
+        Minimal = Connected | Disconnected | LostConnection |
+            ReplaySaved |
             RecordingStarted | RecordingStopped |
             StreamingStarted | StreamingStopped |
             SceneSwitched |
             AudioSourceMuted | AudioSourceUnmuted,
 
-        All = Connected | Disconnected |
+        All = Connected | Disconnected | LostConnection |
             ReplayStarted | ReplayStopped | ReplaySaved |
             RecordingPaused | RecordingResumed | RecordingStarted | RecordingStopped |
             StreamingStarted | StreamingStopped |
@@ -125,8 +128,7 @@ namespace OBSNotifier
             this.obs = obs;
             this.app = app;
 
-            obs.Connected += Obs_Connected;
-            obs.Disconnected += Obs_Disconnected;
+            App.ConnectionStateChanged += App_ConnectionStateChanged;
 
             obs.RecordingStateChanged +=Obs_RecordingStateChanged;
             obs.RecordingPaused += Obs_RecordingPaused;
@@ -183,14 +185,29 @@ namespace OBSNotifier
         #endregion
 
         #region OBS Connection
-        private void Obs_Connected(object sender, EventArgs e)
+        private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
         {
-            InvokeNotif(() => ShowNotifDefault(NotificationType.Connected));
-        }
+            if (App.IsNeedToSkipNextConnectionNotifications)
+            {
+                App.IsNeedToSkipNextConnectionNotifications = false;
+                return;
+            }
 
-        private void Obs_Disconnected(object sender, EventArgs e)
-        {
-            InvokeNotif(() => ShowNotifDefault(NotificationType.Disconnected));
+            InvokeNotif(() =>
+            {
+                switch (e)
+                {
+                    case App.ConnectionState.Connected:
+                        ShowNotifDefault(NotificationType.Connected);
+                        break;
+                    case App.ConnectionState.Disconnected:
+                        ShowNotifDefault(NotificationType.Disconnected);
+                        break;
+                    case App.ConnectionState.TryingToReconnect:
+                        ShowNotifDefault(NotificationType.LostConnection);
+                        break;
+                }
+            });
         }
         #endregion
 

@@ -79,6 +79,8 @@ namespace OBSNotifier.Plugins.Default
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            (sender as DefaultNotificationWindow).Closing -= Window_Closing;
+
             if (window == sender)
                 window = null;
         }

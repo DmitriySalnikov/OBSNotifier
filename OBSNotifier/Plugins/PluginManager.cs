@@ -253,7 +253,11 @@ namespace OBSNotifier.Plugins
         {
             if (pluginData.plugin != null)
             {
+                if (pluginData.plugin == CurrentPlugin.plugin)
+                    return true;
+
                 CurrentPlugin.plugin?.ForceCloseAllRelativeToPlugin();
+                (Application.Current as App).gc_collect.CallDeferred();
 
                 CurrentPlugin = pluginData;
                 UpdateCurrentPluginSettings();

@@ -8,7 +8,7 @@
         Title="Default Notification"
         WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
         Opacity="1.0"
-        Width="180" Height="102"
+        Width="180" Height="104"
         Background="{x:Null}">
 
     <StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">

@@ -25,10 +25,6 @@ namespace OBSNotifier.Plugins.Default
         public bool IsPreviewNotif = false;
         int VerticalBlocksCount = 1;
 
-        public static readonly RoutedEvent FadeInOutEvent = EventManager.RegisterRoutedEvent("FadeInOut", RoutingStrategy.Direct, typeof(RoutedEventHandler), typeof(DefaultNotificationWindow));
-        public event RoutedEventHandler FadeInOut { add => AddHandler(FadeInOutEvent, value); remove => RemoveHandler(FadeInOutEvent, value); }
-
-        //DeferredAction gc_collect = new DeferredAction(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
         bool IsPositionedOnTop { get => (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopLeft || (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopRight; }
 
         NotifBlockSettings CurrentNotifBlockSettings;
@@ -54,6 +50,10 @@ namespace OBSNotifier.Plugins.Default
 
         protected override void OnClosed(EventArgs e)
         {
+            VerticalBlocksCount = 0;
+            RemoveUnusedBlocks();
+            owner = null;
+
             base.OnClosed(e);
         }
 

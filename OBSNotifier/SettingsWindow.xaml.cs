@@ -15,6 +15,8 @@ namespace OBSNotifier
 
             UpdateConnectButton();
 
+            App.ConnectionStateChanged += App_ConnectionStateChanged;
+
             // Plugins list
             {
                 foreach (var p in App.plugins.LoadedPlugins)
@@ -25,14 +27,6 @@ namespace OBSNotifier
                 else
                     cb_notification_styles.SelectedItem = "Default";
             }
-        }
-
-        void UpdateConnectButton()
-        {
-            if (App.obs.IsConnected)
-                btn_connect.Content = "Disconnect";
-            else
-                btn_connect.Content = "Connect";
         }
 
         void OnPluginChanged()
@@ -87,6 +81,23 @@ namespace OBSNotifier
             }
         }
 
+        void UpdateConnectButton()
+        {
+            if (App.obs.IsConnected)
+                btn_connect.Content = "Disconnect";
+            else
+            {
+                if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
+                {
+                    btn_connect.Content = "Trying to reconnect... Cancel?";
+                }
+                else
+                {
+                    btn_connect.Content = "Connect";
+                }
+            }
+        }
+
         void UpdateNotification()
         {
             App.plugins.UpdateCurrentPluginSettings();
@@ -97,12 +108,7 @@ namespace OBSNotifier
             }
         }
 
-        private void Obs_Connected(object sender, EventArgs e)
-        {
-            UpdateConnectButton();
-        }
-
-        private void Obs_Disconnected(object sender, EventArgs e)
+        private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
         {
             UpdateConnectButton();
         }
@@ -111,31 +117,36 @@ namespace OBSNotifier
         {
             if (!App.obs.IsConnected)
             {
-                if (App.ConnectToOBS(tb_address.Text, tb_password.Password))
+                if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
                 {
-                    Settings.Instance.IsConnected = true;
-                    Settings.Instance.ServerAddress = tb_address.Text;
-                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
-                    Settings.Instance.Save();
+                    App.DisconnectFromOBS();
+                }
+                else
+                {
+                    if (App.ConnectToOBS(tb_address.Text, tb_password.Password))
+                    {
+                        Settings.Instance.ServerAddress = tb_address.Text;
+                        Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
+                        Settings.Instance.Save();
+                    }
+                    else
+                    {
+                        Settings.Instance.IsConnected = false;
+                    }
                 }
             }
             else
             {
-                App.obs.Disconnect();
-
-                Settings.Instance.IsConnected = false;
-                Settings.Instance.Save();
+                App.DisconnectFromOBS();
             }
+
+            UpdateConnectButton();
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue)
             {
-                // OBS Events
-                App.obs.Connected += Obs_Connected;
-                App.obs.Disconnected += Obs_Disconnected;
-
                 // Update size
                 if (Settings.Instance.SettingsWindowRect.Size != new System.Drawing.Size())
                 {
@@ -187,10 +198,6 @@ namespace OBSNotifier
             }
             else
             {
-                // OBS Disconnect
-                App.obs.Connected -= Obs_Connected;
-                App.obs.Disconnected -= Obs_Disconnected;
-
                 // hide preview
                 App.plugins.CurrentPlugin.plugin.HidePreview();
                 Settings.Instance.IsPreviewShowing = false;
