@@ -102,6 +102,11 @@ namespace OBSNotifier
             "pulse_input_capture",
             "pulse_output_capture",
             "alsa_input_capture",
+
+            // idk if this is really used somewhere
+            // https://github.com/obsproject/obs-studio/blob/19ced32c584ac8788953b68d28293ae65d59f0a4/UI/importers/xsplit.cpp#L268
+            "dshow_input",
+            "dshow_output",
         };
 
         PluginManager.PluginData CurrentPlugin { get => App.plugins.CurrentPlugin; }

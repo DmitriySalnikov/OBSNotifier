@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -142,7 +145,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="icon.ico" />
+    <None Include="Images\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\obs_notifier_64px.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\obs_notifier_connected_64px.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\obs_notifier_reconnect_64px.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

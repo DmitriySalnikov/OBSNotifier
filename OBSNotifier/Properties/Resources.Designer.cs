@@ -69,5 +69,35 @@ namespace OBSNotifier.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon obs_notifier_64px {
+            get {
+                object obj = ResourceManager.GetObject("obs_notifier_64px", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon obs_notifier_connected_64px {
+            get {
+                object obj = ResourceManager.GetObject("obs_notifier_connected_64px", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon obs_notifier_reconnect_64px {
+            get {
+                object obj = ResourceManager.GetObject("obs_notifier_reconnect_64px", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

@@ -53,8 +53,9 @@ namespace OBSNotifier
             if (!plugins.SelectCurrent(Settings.Instance.NotificationStyle))
                 Settings.Instance.NotificationStyle = string.Empty;
 
+            // Create tray icon
             trayIcon = new System.Windows.Forms.NotifyIcon();
-            trayIcon.Icon = OBSNotifier.Properties.Resources.icon;
+            trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
             trayIcon.Visible = true;
             trayIcon.DoubleClick += (s, ev) =>
                 {
@@ -86,6 +87,9 @@ namespace OBSNotifier
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             StopReconnection();
+
+            settingsWindow?.Close();
+            settingsWindow = null;
 
             obs.Disconnect();
             Settings.Instance.Save(true);
@@ -131,12 +135,15 @@ namespace OBSNotifier
             switch (CurrentConnectionState)
             {
                 case ConnectionState.Connected:
+                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_connected_64px;
                     trayIcon.Text = "OBS Notifier:\nConnected";
                     break;
                 case ConnectionState.Disconnected:
+                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
                     trayIcon.Text = "OBS Notifier:\nNot connected";
                     break;
                 case ConnectionState.TryingToReconnect:
+                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_reconnect_64px;
                     trayIcon.Text = "OBS Notifier:\nTrying to reconnect";
                     break;
             }
