@@ -12,7 +12,6 @@ namespace OBSNotifier.Plugins.Default
     public partial class DefaultNotificationBlock : UserControl, IDisposable
     {
         BeginStoryboard notifFade;
-        uint duration = 0;
         bool isPreview = false;
         public delegate void VoidHandler(object sender, EventArgs e);
         public event VoidHandler Finished;
@@ -20,25 +19,11 @@ namespace OBSNotifier.Plugins.Default
         public DefaultNotificationBlock()
         {
             InitializeComponent();
-        }
 
-        public DefaultNotificationBlock(DefaultNotificationWindow owner)
-        {
-            InitializeComponent();
-
-            isPreview = owner.IsPreviewNotif;
-            duration = owner.owner.PluginSettings.OnScreenTime;
             notifFade = g_notif.Resources["FadeAnimBoard"] as BeginStoryboard;
         }
 
-        public void HideNotif()
-        {
-            notifFade.Storyboard.Stop(g_notif);
-            g_notif.Opacity = 0;
-            Visibility = Visibility.Collapsed;
-        }
-
-        public void SetupNotif(DefaultNotificationWindow.NotifBlockSettings settings, string title, string desc)
+        void UpdateParams(DefaultNotificationWindow.NotifBlockSettings settings, NotificationType type, string title, string desc)
         {
             r_notif.Fill = new SolidColorBrush(settings.Background);
             r_notif.Stroke = new SolidColorBrush(settings.Outline);
@@ -51,15 +36,48 @@ namespace OBSNotifier.Plugins.Default
             Height = settings.Height;
 
             l_title.Text = title;
-            l_desc.Text = desc;
+
+            if ((NotificationType.RecordingStarted | NotificationType.RecordingStopped | NotificationType.ReplaySaved)
+                .HasFlag(type))
+                l_desc.Text = Utils.GetShortPath(desc, (uint)settings.MaxPathChars);
+            else
+                l_desc.Text = desc;
+
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public void HideNotif()
+        {
+            notifFade.Storyboard.Stop(g_notif);
+            g_notif.Opacity = 0;
+            Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowPreview(DefaultNotificationWindow.NotifBlockSettings settings, double opacity)
+        {
+            isPreview = true;
+            notifFade.Storyboard.Stop(g_notif);
+            g_notif.Opacity = opacity;
+            Visibility = Visibility.Visible;
+            UpdateParams(settings, NotificationType.None, "Preview Notification", "Some description");
+        }
+
+        public void HidePreview()
+        {
+            isPreview = false;
+            HideNotif();
+        }
+
+        public void SetupNotif(DefaultNotificationWindow.NotifBlockSettings settings, NotificationType type, string title, string desc)
+        {
+            UpdateParams(settings, type, title, desc);
 
             Visibility = Visibility.Visible;
             notifFade.Storyboard.Stop(g_notif);
 
             var d_anim = (notifFade.Storyboard.Children[0] as DoubleAnimationUsingKeyFrames);
             var keys = d_anim.KeyFrames;
-            var dur = TimeSpan.FromMilliseconds(duration);
+            var dur = TimeSpan.FromMilliseconds(settings.Duration);
             var init_time = keys[1].KeyTime.TimeSpan; // Use second key as init time
             var fade = keys[2].KeyTime.TimeSpan; // Use third key as fade in/out time
             d_anim.Duration = init_time + fade + dur + fade + init_time;
@@ -75,6 +93,10 @@ namespace OBSNotifier.Plugins.Default
             {
                 HideNotif();
                 Finished?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                HidePreview();
             }
         }
 

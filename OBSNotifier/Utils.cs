@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
@@ -13,6 +14,11 @@ namespace OBSNotifier
             Center = 4,
         }
 
+        /// <summary>
+        /// Simple invoke wrapper
+        /// </summary>
+        /// <param name="disp"></param>
+        /// <param name="act"></param>
         public static void InvokeAction(this DispatcherObject disp, Action act)
         {
             disp.Dispatcher.BeginInvoke(act);
@@ -86,9 +92,13 @@ namespace OBSNotifier
             return null;
         }
 
+        /// <summary>
+        /// Returns the bounds of the <see cref="WPFScreens"/> based on the selected settings
+        /// </summary>
+        /// <returns></returns>
         public static Rect GetCurrentDisplayBounds(WPFScreens screen)
         {
-            return Settings.Instance.UseSafeDisplayArea? screen.WorkingArea: screen.DeviceBounds;
+            return Settings.Instance.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
         }
 
         /// <summary>
@@ -139,6 +149,34 @@ namespace OBSNotifier
                     return new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY);
             }
             return new Point();
+        }
+
+        /// <summary>
+        /// Get a trimmed file path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="chars"></param>
+        /// <returns></returns>
+        public static string GetShortPath(string path, uint chars)
+        {
+            var short_name = "";
+            if (path.Length > chars)
+            {
+                short_name = path.Substring(path.Length - (int)chars);
+                var slash_pos = short_name.IndexOf(Path.DirectorySeparatorChar);
+                if (slash_pos == -1)
+                    slash_pos = short_name.IndexOf(Path.AltDirectorySeparatorChar);
+
+                if (slash_pos == -1)
+                    short_name = "..." + short_name;
+                else
+                    short_name = "..." + short_name.Substring(slash_pos);
+            }
+            else
+            {
+                short_name = path;
+            }
+            return short_name;
         }
     }
 }

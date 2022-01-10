@@ -16,7 +16,6 @@ namespace OBSNotifier.Plugins.Default
 
         Action<string> logWriter = null;
         DefaultNotificationWindow window = null;
-        DefaultNotificationWindow previewWindow = null;
 
         public string PluginName => "Default";
 
@@ -28,7 +27,7 @@ namespace OBSNotifier.Plugins.Default
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "Blocks = 3\nBackgroundColor = #4C4C4C\nForegroundColor = #D8D8D8\nOutlineColor = #59000000\nRadius = 4.0\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4",
+            AdditionalData = "Blocks = 3\nBackgroundColor = #4C4C4C\nForegroundColor = #D8D8D8\nOutlineColor = #59000000\nRadius = 4.0\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4\nMaxPathChars = 32",
             Option = Positions.TopLeft,
             Offset = new Point(),
             OnScreenTime = 2000,
@@ -53,10 +52,7 @@ namespace OBSNotifier.Plugins.Default
         public void PluginDispose()
         {
             window?.Close();
-            previewWindow?.Close();
-
             window = null;
-            previewWindow = null;
         }
 
         public bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null)
@@ -65,16 +61,17 @@ namespace OBSNotifier.Plugins.Default
                 window = new DefaultNotificationWindow(this);
 
             window.Closing += Window_Closing;
-            window.ShowNotif(title, description);
+            window.ShowNotif(type, title, description);
 
             return true;
         }
 
         public void ShowPreview()
         {
-            if (previewWindow == null)
-                previewWindow = new DefaultNotificationWindow(this);
-            previewWindow.ShowPreview();
+            if (window == null)
+                window = new DefaultNotificationWindow(this);
+
+            window.ShowPreview();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -87,8 +84,7 @@ namespace OBSNotifier.Plugins.Default
 
         public void HidePreview()
         {
-            previewWindow?.Close();
-            previewWindow = null;
+            window?.HidePreview();
         }
 
         public void ForceCloseAllRelativeToPlugin()
@@ -99,9 +95,6 @@ namespace OBSNotifier.Plugins.Default
                 window.Close();
             }
             window = null;
-
-            previewWindow?.Close();
-            previewWindow = null;
         }
 
         public void OpenCustomSettings() { }

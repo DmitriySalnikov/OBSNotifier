@@ -13,10 +13,12 @@ namespace OBSNotifier.Plugins.Default
             public Color Background;
             public Color Foreground;
             public Color Outline;
+            public double Duration;
             public double Radius;
             public double Width;
             public double Height;
             public Thickness Margin;
+            public int MaxPathChars;
         }
 
         public DefaultNotification owner = null;
@@ -26,6 +28,7 @@ namespace OBSNotifier.Plugins.Default
         int VerticalBlocksCount = 1;
 
         bool IsPositionedOnTop { get => (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopLeft || (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopRight; }
+        DeferredAction hide_delay;
 
         NotifBlockSettings CurrentNotifBlockSettings;
         readonly NotifBlockSettings DefaultNotifBlockSettings = new NotifBlockSettings()
@@ -33,16 +36,19 @@ namespace OBSNotifier.Plugins.Default
             Background = (Color)ColorConverter.ConvertFromString("#4C4C4C"),
             Foreground = (Color)ColorConverter.ConvertFromString("#D8D8D8"),
             Outline = (Color)ColorConverter.ConvertFromString("#59000000"),
+            Duration = 2000,
             Radius = 4,
             Width = 180,
             Height = 52,
             Margin = new Thickness(4),
+            MaxPathChars = 32,
         };
 
         public DefaultNotificationWindow(DefaultNotification plugin)
         {
             InitializeComponent();
 
+            hide_delay = new DeferredAction(() => Hide(), 200, this);
             sp_main_panel.Children.Clear();
             CurrentNotifBlockSettings = DefaultNotifBlockSettings;
             owner = plugin;
@@ -53,11 +59,12 @@ namespace OBSNotifier.Plugins.Default
             VerticalBlocksCount = 0;
             RemoveUnusedBlocks();
             owner = null;
+            hide_delay.Dispose();
 
             base.OnClosed(e);
         }
 
-        void UpdateWindow()
+        void UpdateParameters()
         {
             // Additional Params
             if (owner.PluginSettings.AdditionalData.GetHashCode() != addDataHash)
@@ -125,13 +132,9 @@ namespace OBSNotifier.Plugins.Default
                             case "Radius":
                                 {
                                     if (double.TryParse(args[1].Trim(), out double val))
-                                    {
                                         CurrentNotifBlockSettings.Radius = val;
-                                    }
                                     else
-                                    {
                                         CurrentNotifBlockSettings.Radius = DefaultNotifBlockSettings.Radius;
-                                    }
                                     break;
                                 }
                             case "Width":
@@ -160,6 +163,14 @@ namespace OBSNotifier.Plugins.Default
                                         CurrentNotifBlockSettings.Height = DefaultNotifBlockSettings.Height;
                                         Height = DefaultNotifBlockSettings.Height * VerticalBlocksCount;
                                     }
+                                    break;
+                                }
+                            case "MaxPathChars":
+                                {
+                                    if (int.TryParse(args[1].Trim(), out int val))
+                                        CurrentNotifBlockSettings.MaxPathChars = val;
+                                    else
+                                        CurrentNotifBlockSettings.MaxPathChars = DefaultNotifBlockSettings.MaxPathChars;
                                     break;
                                 }
                             case "Margin":
@@ -193,6 +204,8 @@ namespace OBSNotifier.Plugins.Default
                 RemoveUnusedBlocks();
             }
 
+            CurrentNotifBlockSettings.Duration = owner.PluginSettings.OnScreenTime;
+
             // Position
             var pe = (DefaultNotification.Positions)owner.PluginSettings.Option;
             var anchor = (Utils.AnchorPoint)Enum.Parse(typeof(Utils.AnchorPoint), pe.ToString());
@@ -204,13 +217,14 @@ namespace OBSNotifier.Plugins.Default
             Top = pos.Y;
         }
 
-        public void ShowNotif(string title, string desc)
+        public void ShowNotif(NotificationType type, string title, string desc)
         {
-            IsPreviewNotif = false;
+            if (IsPreviewNotif)
+                return;
 
             if (sp_main_panel.Children.Count < VerticalBlocksCount)
             {
-                var nnb = new DefaultNotificationBlock(this);
+                var nnb = new DefaultNotificationBlock();
                 nnb.Finished += Nb_Finished;
 
                 if (IsPositionedOnTop)
@@ -231,9 +245,9 @@ namespace OBSNotifier.Plugins.Default
             else
                 sp_main_panel.Children.Add(nb);
 
-            UpdateWindow();
-            nb.SetupNotif(CurrentNotifBlockSettings, title, desc);
-            Show();
+            UpdateParameters();
+            nb.SetupNotif(CurrentNotifBlockSettings, type, title, desc);
+            ShowWithLocationFix();
         }
 
         void RemoveUnusedBlocks()
@@ -252,6 +266,16 @@ namespace OBSNotifier.Plugins.Default
             }
         }
 
+        void CreateMissingBlocks()
+        {
+            while (sp_main_panel.Children.Count < VerticalBlocksCount)
+            {
+                var nnb = new DefaultNotificationBlock();
+                nnb.Finished += Nb_Finished;
+                sp_main_panel.Children.Add(nnb);
+            }
+        }
+
         private void Nb_Finished(object sender, EventArgs e)
         {
             var nb = sender as DefaultNotificationBlock;
@@ -266,11 +290,43 @@ namespace OBSNotifier.Plugins.Default
             Hide();
         }
 
+        void ShowWithLocationFix()
+        {
+            hide_delay.Cancel();
+            Show();
+            if (!IsPositionedOnTop)
+            {
+                var delta = Height - ActualHeight;
+                if (delta > 0)
+                    Top += delta;
+            }
+        }
+
         public void ShowPreview()
         {
             IsPreviewNotif = true;
-            UpdateWindow();
-            Show();
+            UpdateParameters();
+            CreateMissingBlocks();
+
+            if (IsPositionedOnTop)
+                for (int i = 0; i < sp_main_panel.Children.Count; i++)
+                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, 1 - ((double)i+2) / sp_main_panel.Children.Count);
+            else
+                for (int i = sp_main_panel.Children.Count - 1; i >= 0; i--)
+                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, ((double)i+2) / sp_main_panel.Children.Count);
+
+            ShowWithLocationFix();
+        }
+
+        public void HidePreview()
+        {
+            IsPreviewNotif = false;
+            UpdateParameters();
+
+            foreach (DefaultNotificationBlock c in sp_main_panel.Children)
+                c.HidePreview();
+
+            hide_delay.CallDeferred();
         }
     }
 }

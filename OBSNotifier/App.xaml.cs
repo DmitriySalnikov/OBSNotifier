@@ -95,6 +95,12 @@ namespace OBSNotifier
 
             trayIcon?.Dispose();
             trayIcon = null;
+
+            gc_collect.Dispose();
+            gc_collect = null;
+
+            close_reconnect.Dispose();
+            close_reconnect = null;
         }
 
         static void ChangeConnectionState(ConnectionState newState)

@@ -208,6 +208,12 @@ namespace OBSNotifier
             }
         }
 
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized)
+                Close();
+        }
+
         private void cb_display_to_show_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)

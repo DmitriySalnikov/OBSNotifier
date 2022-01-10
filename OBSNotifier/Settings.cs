@@ -59,6 +59,12 @@ namespace OBSNotifier
                 Instance = this;
         }
 
+        ~Settings()
+        {
+            saveSettings.Dispose();
+            saveSettings = null;
+        }
+        
         public bool ClearUnusedPluginSettings()
         {
             List<string> to_delete = new List<string>();

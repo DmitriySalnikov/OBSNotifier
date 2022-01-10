@@ -9,6 +9,7 @@
         Height="651" Width="319"
         MinHeight="264" MinWidth="357"
         IsVisibleChanged="Window_IsVisibleChanged"
+        StateChanged="Window_StateChanged"
         SnapsToDevicePixels="True">
     <Window.Resources>
         <ResourceDictionary Source="Resources.xaml"/>

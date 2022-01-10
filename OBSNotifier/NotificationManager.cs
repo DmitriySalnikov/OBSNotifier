@@ -33,12 +33,12 @@ namespace OBSNotifier
         ReplayStarted = 1L << 5,
         [NotificationDescription("Replay Stopped")]
         ReplayStopped = 1L << 6,
-        [NotificationDescription("Replay Saved")]
+        [NotificationDescription("Replay Saved", "{0}")]
         ReplaySaved = 1L << 7,
 
-        [NotificationDescription("Recording Started")]
+        [NotificationDescription("Recording Started", "{0}")]
         RecordingStarted = 1L << 8,
-        [NotificationDescription("Recording Stopped")]
+        [NotificationDescription("Recording Stopped", "{0}")]
         RecordingStopped = 1L << 9,
         [NotificationDescription("Recording Paused")]
         RecordingPaused = 1L << 10,
@@ -90,6 +90,20 @@ namespace OBSNotifier
         readonly OBSWebsocket obs;
         readonly App app;
 
+        string prev_record_name;
+
+        // https://github.com/obsproject/obs-studio/blob/fab293a6862dbe6aca9eb1bde0b00fad2d2cd785/UI/window-basic-main.cpp#L3098
+        readonly List<string> obs_audio_types = new List<string>
+        {
+            "wasapi_input_capture",
+            "wasapi_output_capture",
+            "coreaudio_input_capture",
+            "coreaudio_output_capture",
+            "pulse_input_capture",
+            "pulse_output_capture",
+            "alsa_input_capture",
+        };
+
         PluginManager.PluginData CurrentPlugin { get => App.plugins.CurrentPlugin; }
 
         #region NotifData
@@ -137,6 +151,7 @@ namespace OBSNotifier
             obs.StreamingStateChanged += Obs_StreamingStateChanged;
 
             obs.ReplayBufferStateChanged += Obs_ReplayBufferStateChanged;
+            obs.ReplayBufferSaved += Obs_ReplayBufferSaved;
 
             obs.VirtualCameraStarted += Obs_VirtualCameraStarted;
             obs.VirtualCameraStopped += Obs_VirtualCameraStopped;
@@ -150,6 +165,11 @@ namespace OBSNotifier
         }
 
         #region Utils
+        void ResetVals()
+        {
+            prev_record_name = "";
+        }
+
         void InvokeNotif(Action act)
         {
             if (IsDisabled()) return;
@@ -182,6 +202,11 @@ namespace OBSNotifier
             if (IsActive(type))
                 CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
         }
+
+        string FormatterOneArg(string format, object[] data)
+        {
+            return string.Format(format, data[0]);
+        }
         #endregion
 
         #region OBS Connection
@@ -198,9 +223,11 @@ namespace OBSNotifier
                 switch (e)
                 {
                     case App.ConnectionState.Connected:
+                        ResetVals();
                         ShowNotifDefault(NotificationType.Connected);
                         break;
                     case App.ConnectionState.Disconnected:
+                        ResetVals();
                         ShowNotifDefault(NotificationType.Disconnected);
                         break;
                     case App.ConnectionState.TryingToReconnect:
@@ -224,15 +251,18 @@ namespace OBSNotifier
 
         private void Obs_RecordingStateChanged(OBSWebsocket sender, OutputState type)
         {
+            if (type == OutputState.Started)
+                prev_record_name = obs.GetRecordingStatus().RecordingFilename;
+
             InvokeNotif(() =>
             {
                 switch (type)
                 {
                     case OutputState.Started:
-                        ShowNotifDefault(NotificationType.RecordingStarted);
+                        ShowNotifDefault(NotificationType.RecordingStarted, FormatterOneArg, prev_record_name);
                         break;
                     case OutputState.Stopped:
-                        ShowNotifDefault(NotificationType.RecordingStopped);
+                        ShowNotifDefault(NotificationType.RecordingStopped, FormatterOneArg, prev_record_name);
                         break;
                 }
             });
@@ -270,11 +300,13 @@ namespace OBSNotifier
                     case OutputState.Stopped:
                         ShowNotifDefault(NotificationType.ReplayStopped);
                         break;
-                    case OutputState.Saved:
-                        ShowNotifDefault(NotificationType.ReplaySaved);
-                        break;
                 }
             });
+        }
+
+        private void Obs_ReplayBufferSaved(OBSWebsocket sender, string replayFilename)
+        {
+            InvokeNotif(() => ShowNotifDefault(NotificationType.ReplaySaved, FormatterOneArg, replayFilename));
         }
         #endregion
 
@@ -293,29 +325,33 @@ namespace OBSNotifier
         #region Scenes
         private void Obs_SceneChanged(OBSWebsocket sender, string newSceneName)
         {
-            InvokeNotif(() => ShowNotifDefault(NotificationType.SceneSwitched, (s, o) => string.Format(s, o[0]), newSceneName));
+            InvokeNotif(() => ShowNotifDefault(NotificationType.SceneSwitched, FormatterOneArg, newSceneName));
         }
 
         private void Obs_SceneCollectionChanged(object sender, EventArgs e)
         {
-            InvokeNotif(() => ShowNotifDefault(NotificationType.SceneCollectionSwitched, (s, o) => string.Format(s, o[0]), obs.GetCurrentSceneCollection()));
+            InvokeNotif(() => ShowNotifDefault(NotificationType.SceneCollectionSwitched, FormatterOneArg, obs.GetCurrentSceneCollection()));
         }
         #endregion
 
         #region Profiles
         private void Obs_ProfileChanged(object sender, EventArgs e)
         {
-            InvokeNotif(() => ShowNotifDefault(NotificationType.ProfileSwitched, (s, o) => string.Format(s, o[0]), obs.GetCurrentProfile()));
+            InvokeNotif(() => ShowNotifDefault(NotificationType.ProfileSwitched, FormatterOneArg, obs.GetCurrentProfile()));
         }
         #endregion
 
         #region Audio
         private void Obs_SourceMuteStateChanged(OBSWebsocket sender, string sourceName, bool muted)
         {
+            var src = obs.GetSourcesList().Find((s) => s.Name==sourceName);
+            if (src == null || !obs_audio_types.Contains(src.TypeID))
+                return;
+
             if (muted)
-                InvokeNotif(() => ShowNotifDefault(NotificationType.AudioSourceMuted, (s, o) => string.Format(s, o[0]), sourceName));
+                InvokeNotif(() => ShowNotifDefault(NotificationType.AudioSourceMuted, FormatterOneArg, sourceName));
             else
-                InvokeNotif(() => ShowNotifDefault(NotificationType.AudioSourceUnmuted, (s, o) => string.Format(s, o[0]), sourceName));
+                InvokeNotif(() => ShowNotifDefault(NotificationType.AudioSourceUnmuted, FormatterOneArg, sourceName));
         }
         #endregion
     }
