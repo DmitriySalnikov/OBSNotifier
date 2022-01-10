@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OBS Notifier")]
-[assembly: AssemblyDescription("This is a program for displaying notifications from OBS.\nIn order for the program to work, you need to install the `obs-websocket` 4.9.1 plugin in your OBS.")]
+[assembly: AssemblyTitle("NvidiaLikeNotification")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Dmitriy Salnikov")]
-[assembly: AssemblyProduct("OBS Notifier")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("NvidiaLikeNotification")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -32,9 +32,13 @@ namespace OBSNotifier
         static DeferredAction close_reconnect = new DeferredAction(() => StopReconnection(), 500);
         static Task reconnectThread;
         static CancellationTokenSource reconnectCancellationToken;
+        AboutBox1 aboutBox;
 
         private void Application_Startup(object sender, StartupEventArgs ee)
         {
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
             CurrentConnectionState = ConnectionState.Disconnected;
 
             obs = new OBSWebsocket();
@@ -57,20 +61,10 @@ namespace OBSNotifier
             trayIcon = new System.Windows.Forms.NotifyIcon();
             trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
             trayIcon.Visible = true;
-            trayIcon.DoubleClick += (s, ev) =>
-                {
-                    if (settingsWindow == null)
-                    {
-                        settingsWindow = new SettingsWindow();
-                        settingsWindow.Closed += (ss, evv) => { settingsWindow = null; gc_collect.CallDeferred(); };
-                        settingsWindow.Show();
-                    }
-                    else
-                    {
-                        settingsWindow.Close();
-                    }
-                };
+            trayIcon.DoubleClick += OpenSettingsWindow;
             trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu(new System.Windows.Forms.MenuItem[] {
+                new System.Windows.Forms.MenuItem("Open Settings", OpenSettingsWindow),
+                new System.Windows.Forms.MenuItem("About", ShowAboutWindow),
                 new System.Windows.Forms.MenuItem("Exit", (s,e) => Shutdown()),
             });
 
@@ -84,12 +78,40 @@ namespace OBSNotifier
             UpdateTrayStatus();
         }
 
+        void ShowAboutWindow(object sender, EventArgs e)
+        {
+            if (aboutBox != null)
+                return;
+
+            aboutBox = new AboutBox1();
+            aboutBox.FormClosed += (s, ev) => aboutBox = null;
+            aboutBox.ShowDialog();
+        }
+
+        void OpenSettingsWindow(object sender, EventArgs e)
+        {
+            if (settingsWindow == null)
+            {
+                settingsWindow = new SettingsWindow();
+                settingsWindow.Closed += (ss, evv) => { settingsWindow = null; gc_collect.CallDeferred(); };
+                settingsWindow.Show();
+            }
+            else
+            {
+                settingsWindow.Close();
+            }
+        }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             StopReconnection();
 
             settingsWindow?.Close();
             settingsWindow = null;
+
+            aboutBox?.Close();
+            aboutBox?.Dispose();
+            aboutBox = null;
 
             obs.Disconnect();
             Settings.Instance.Save(true);
@@ -228,7 +250,6 @@ namespace OBSNotifier
         private void Obs_Connected(object sender, EventArgs e)
         {
             ChangeConnectionState(ConnectionState.Connected);
-            // TODO change icon
         }
 
         private void Obs_Disconnected(object sender, EventArgs e)
@@ -237,7 +258,6 @@ namespace OBSNotifier
                 ChangeConnectionState(ConnectionState.TryingToReconnect);
             else
                 ChangeConnectionState(ConnectionState.Disconnected);
-            // TODO change icon
         }
     }
 }

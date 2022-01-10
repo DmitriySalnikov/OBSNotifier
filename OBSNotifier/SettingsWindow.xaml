@@ -17,7 +17,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
         <StackPanel Margin="8,0,8,0">
-            
+
             <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="In order for this application to work you need to connect to the obs-websocket plugin." VerticalAlignment="Top" FontWeight="Bold"/>
             <Label Content="Server address:" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
             <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4444" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
@@ -37,14 +37,7 @@
             <CheckBox x:Name="cb_use_safe_area" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" VerticalContentAlignment="Center"/>
 
             <Label Content="Style:"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_style, Mode=OneWay}"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox x:Name="cb_notification_styles" Grid.ColumnSpan="1" SelectionChanged="cb_notification_styles_SelectionChanged" />
-                <Button x:Name="btn_reset_style" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_style_Click"/>
-            </Grid>
+            <ComboBox x:Name="cb_notification_styles" Grid.ColumnSpan="1" SelectionChanged="cb_notification_styles_SelectionChanged" />
 
             <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
             <Button Content="Select Active Notifications" Click="btn_select_active_notifications_Click"/>

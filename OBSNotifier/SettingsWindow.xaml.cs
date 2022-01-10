@@ -256,6 +256,7 @@ namespace OBSNotifier
 
         private void cb_notification_options_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // TODO check for programmatically changed values
             Settings.Instance.CurrentPluginSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
@@ -315,11 +316,6 @@ namespace OBSNotifier
             an.Close();
         }
 
-        private void btn_reset_style_Click(object sender, RoutedEventArgs e)
-        {
-            cb_notification_styles.SelectedItem = "Default";
-        }
-
         private void btn_reset_options_Click(object sender, RoutedEventArgs e)
         {
             var pluginData = App.plugins.CurrentPlugin;
@@ -331,8 +327,9 @@ namespace OBSNotifier
 
         private void btn_reset_position_offset_Click(object sender, RoutedEventArgs e)
         {
-            sldr_position_offset_x.Value = 0;
-            sldr_position_offset_y.Value = 0;
+            var pluginData = App.plugins.CurrentPlugin;
+            sldr_position_offset_x.Value = pluginData.defaultSettings.Offset.X;
+            sldr_position_offset_y.Value = pluginData.defaultSettings.Offset.Y;
 
             UpdateNotification();
         }
@@ -356,7 +353,7 @@ namespace OBSNotifier
 
         private void btn_reset_fade_delay_Click(object sender, RoutedEventArgs e)
         {
-            sldr_fade_delay.Value = 2000;
+            sldr_fade_delay.Value = App.plugins.CurrentPlugin.defaultSettings.OnScreenTime;
         }
 
         private void btn_open_plugin_settings_Click(object sender, RoutedEventArgs e)

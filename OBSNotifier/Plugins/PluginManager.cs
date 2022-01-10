@@ -193,12 +193,23 @@ namespace OBSNotifier.Plugins
 
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            string DllName = new AssemblyName(args.Name).Name + ".dll";
+            // https://stackoverflow.com/a/4977761/8980874
+            lock (this)
+            {
+                AssemblyName askedAssembly = new AssemblyName(args.Name);
 
-            if (args.RequestingAssembly!= null)
-                return LoadFromFile(Path.Combine(Path.GetDirectoryName(args.RequestingAssembly.Location), DllName));
-            else
+                string[] fields = args.Name.Split(',');
+                string name = fields[0];
+                string culture = fields[2];
+                // failing to ignore queries for satellite resource assemblies or using [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)] 
+                // in AssemblyInfo.cs will crash the program on non en-US based system cultures.
+                if (name.EndsWith(".resources") && !culture.EndsWith("neutral")) return null;
+
+                if (args.RequestingAssembly != null)
+                    return LoadFromFile(Path.Combine(Path.GetDirectoryName(args.RequestingAssembly.Location), askedAssembly.Name));
+
                 return null;
+            }
         }
 
         private Assembly LoadFromFile(string file)
@@ -278,7 +289,7 @@ namespace OBSNotifier.Plugins
             }
             catch
             {
-                plugin_option = None.None;
+                plugin_option = CurrentPlugin.defaultSettings.Option;
             }
 
             // Set notification types to default

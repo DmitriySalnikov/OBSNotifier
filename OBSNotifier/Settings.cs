@@ -44,10 +44,10 @@ namespace OBSNotifier
         {
             get
             {
-                if (!PerPluginSettings.ContainsKey(NotificationStyle))
-                    PerPluginSettings[NotificationStyle] = new PluginSettings();
+                if (!PerPluginSettings.ContainsKey(App.plugins.CurrentPlugin.plugin.PluginName))
+                    PerPluginSettings[App.plugins.CurrentPlugin.plugin.PluginName] = new PluginSettings();
 
-                return PerPluginSettings[NotificationStyle];
+                return PerPluginSettings[App.plugins.CurrentPlugin.plugin.PluginName];
             }
         }
 

@@ -9,7 +9,7 @@ namespace OBSNotifier.Plugins.Default
     /// <summary>
     /// Interaction logic for NotificationBlock.xaml
     /// </summary>
-    public partial class DefaultNotificationBlock : UserControl, IDisposable
+    internal partial class DefaultNotificationBlock : UserControl, IDisposable
     {
         BeginStoryboard notifFade;
         bool isPreview = false;
@@ -29,8 +29,8 @@ namespace OBSNotifier.Plugins.Default
             r_notif.Stroke = new SolidColorBrush(settings.Outline);
             r_notif.RadiusX = settings.Radius;
             r_notif.RadiusY = settings.Radius;
-            l_title.Foreground = new SolidColorBrush(settings.Foreground);
-            l_desc.Foreground = new SolidColorBrush(settings.Foreground);
+            l_title.Foreground = new SolidColorBrush(settings.TextColor);
+            l_desc.Foreground = new SolidColorBrush(settings.TextColor);
             MainViewbox.Margin = settings.Margin;
             Width = settings.Width;
             Height = settings.Height;

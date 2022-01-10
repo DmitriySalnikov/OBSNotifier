@@ -6,12 +6,12 @@ using System.Windows.Media.Animation;
 
 namespace OBSNotifier.Plugins.Default
 {
-    public partial class DefaultNotificationWindow : Window
+    internal partial class DefaultNotificationWindow : Window
     {
         public struct NotifBlockSettings
         {
             public Color Background;
-            public Color Foreground;
+            public Color TextColor;
             public Color Outline;
             public double Duration;
             public double Radius;
@@ -22,7 +22,7 @@ namespace OBSNotifier.Plugins.Default
         }
 
         public DefaultNotification owner = null;
-        int addDataHash = 0;
+        int addDataHash = -1;
 
         public bool IsPreviewNotif = false;
         int VerticalBlocksCount = 1;
@@ -34,7 +34,7 @@ namespace OBSNotifier.Plugins.Default
         readonly NotifBlockSettings DefaultNotifBlockSettings = new NotifBlockSettings()
         {
             Background = (Color)ColorConverter.ConvertFromString("#4C4C4C"),
-            Foreground = (Color)ColorConverter.ConvertFromString("#D8D8D8"),
+            TextColor = (Color)ColorConverter.ConvertFromString("#D8D8D8"),
             Outline = (Color)ColorConverter.ConvertFromString("#59000000"),
             Duration = 2000,
             Radius = 4,
@@ -82,15 +82,9 @@ namespace OBSNotifier.Plugins.Default
                             case "Blocks":
                                 {
                                     if (int.TryParse(args[1].Trim(), out int val))
-                                    {
                                         VerticalBlocksCount = val;
-                                        Height = val * CurrentNotifBlockSettings.Height;
-                                    }
                                     else
-                                    {
-                                        VerticalBlocksCount = 3;
-                                        Height = CurrentNotifBlockSettings.Height * VerticalBlocksCount;
-                                    }
+                                        VerticalBlocksCount = 1;
                                     break;
                                 }
                             case "BackgroundColor":
@@ -105,15 +99,15 @@ namespace OBSNotifier.Plugins.Default
                                     }
                                     break;
                                 }
-                            case "ForegroundColor":
+                            case "TextColor":
                                 {
                                     try
                                     {
-                                        CurrentNotifBlockSettings.Foreground = (Color)ColorConverter.ConvertFromString(args[1].Trim());
+                                        CurrentNotifBlockSettings.TextColor = (Color)ColorConverter.ConvertFromString(args[1].Trim());
                                     }
                                     catch
                                     {
-                                        CurrentNotifBlockSettings.Foreground = DefaultNotifBlockSettings.Foreground;
+                                        CurrentNotifBlockSettings.TextColor = DefaultNotifBlockSettings.TextColor;
                                     }
                                     break;
                                 }
@@ -140,29 +134,17 @@ namespace OBSNotifier.Plugins.Default
                             case "Width":
                                 {
                                     if (int.TryParse(args[1].Trim(), out int val))
-                                    {
                                         CurrentNotifBlockSettings.Width = val;
-                                        Width = val;
-                                    }
                                     else
-                                    {
                                         CurrentNotifBlockSettings.Width = DefaultNotifBlockSettings.Width;
-                                        Width = CurrentNotifBlockSettings.Width;
-                                    }
                                     break;
                                 }
                             case "Height":
                                 {
                                     if (int.TryParse(args[1].Trim(), out int val))
-                                    {
                                         CurrentNotifBlockSettings.Height = val;
-                                        Height = val * VerticalBlocksCount;
-                                    }
                                     else
-                                    {
                                         CurrentNotifBlockSettings.Height = DefaultNotifBlockSettings.Height;
-                                        Height = DefaultNotifBlockSettings.Height * VerticalBlocksCount;
-                                    }
                                     break;
                                 }
                             case "MaxPathChars":
@@ -192,9 +174,7 @@ namespace OBSNotifier.Plugins.Default
                                         }
                                     }
                                     else
-                                    {
                                         CurrentNotifBlockSettings.Margin = DefaultNotifBlockSettings.Margin;
-                                    }
                                     break;
                                 }
                         }
@@ -205,6 +185,8 @@ namespace OBSNotifier.Plugins.Default
             }
 
             CurrentNotifBlockSettings.Duration = owner.PluginSettings.OnScreenTime;
+            Height = CurrentNotifBlockSettings.Height * VerticalBlocksCount;
+            Width = CurrentNotifBlockSettings.Width;
 
             // Position
             var pe = (DefaultNotification.Positions)owner.PluginSettings.Option;
@@ -310,10 +292,10 @@ namespace OBSNotifier.Plugins.Default
 
             if (IsPositionedOnTop)
                 for (int i = 0; i < sp_main_panel.Children.Count; i++)
-                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, 1 - ((double)i+2) / sp_main_panel.Children.Count);
+                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, (sp_main_panel.Children.Count - (double)i) / sp_main_panel.Children.Count);
             else
                 for (int i = sp_main_panel.Children.Count - 1; i >= 0; i--)
-                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, ((double)i+2) / sp_main_panel.Children.Count);
+                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, ((double)i+1) / sp_main_panel.Children.Count);
 
             ShowWithLocationFix();
         }
@@ -321,11 +303,9 @@ namespace OBSNotifier.Plugins.Default
         public void HidePreview()
         {
             IsPreviewNotif = false;
-            UpdateParameters();
 
             foreach (DefaultNotificationBlock c in sp_main_panel.Children)
                 c.HidePreview();
-
             hide_delay.CallDeferred();
         }
     }
