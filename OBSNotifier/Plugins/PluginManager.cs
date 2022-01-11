@@ -281,11 +281,13 @@ namespace OBSNotifier.Plugins
 
         public void UpdateCurrentPluginSettings()
         {
+            var pluginSetting = Settings.Instance.CurrentPluginSettings;
+
             // Validate current plugin option
             Enum plugin_option;
             try
             {
-                plugin_option = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumOptionsType, Settings.Instance.CurrentPluginSettings.SelectedOption);
+                plugin_option = (Enum)Enum.Parse(CurrentPlugin.plugin.EnumOptionsType, pluginSetting.SelectedOption);
             }
             catch
             {
@@ -293,32 +295,29 @@ namespace OBSNotifier.Plugins
             }
 
             // Set notification types to default
-            if (Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes == null)
+            if (pluginSetting.ActiveNotificationTypes == null)
             {
-                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = CurrentPlugin.plugin.DefaultActiveNotifications;
+                pluginSetting.ActiveNotificationTypes = CurrentPlugin.plugin.DefaultActiveNotifications;
                 Settings.Instance.Save();
             }
 
-            // Set additional data to default 
-            if (Settings.Instance.CurrentPluginSettings.AdditionalData == null)
+            // Save defaults
+            if (pluginSetting.FirstLoad)
             {
-                Settings.Instance.CurrentPluginSettings.AdditionalData = CurrentPlugin.defaultSettings.AdditionalData;
-                Settings.Instance.Save();
-            }
-
-            // Set custom settings to default 
-            if (Settings.Instance.CurrentPluginSettings.CustomSettings == null)
-            {
-                Settings.Instance.CurrentPluginSettings.CustomSettings= CurrentPlugin.defaultSettings.CustomSettings;
-                Settings.Instance.Save();
+                pluginSetting.FirstLoad = false;
+                pluginSetting.AdditionalData = CurrentPlugin.defaultSettings.AdditionalData;
+                pluginSetting.CustomSettings = CurrentPlugin.defaultSettings.CustomSettings;
+                pluginSetting.Offset = CurrentPlugin.defaultSettings.Offset;
+                pluginSetting.OnScreenTime = CurrentPlugin.defaultSettings.OnScreenTime;
+                pluginSetting.SelectedOption = plugin_option.ToString();
             }
 
             CurrentPlugin.plugin.PluginSettings = new OBSNotifierPluginSettings()
             {
-                AdditionalData = Settings.Instance.CurrentPluginSettings.AdditionalData,
-                CustomSettings = Settings.Instance.CurrentPluginSettings.CustomSettings,
-                Offset = new Point(Settings.Instance.CurrentPluginSettings.Offset.X, Settings.Instance.CurrentPluginSettings.Offset.Y),
-                OnScreenTime = Math.Min((uint)Settings.Instance.CurrentPluginSettings.OnScreenTime, 30000),
+                AdditionalData = pluginSetting.AdditionalData,
+                CustomSettings = pluginSetting.CustomSettings,
+                Offset = new Point(pluginSetting.Offset.X, pluginSetting.Offset.Y),
+                OnScreenTime = Math.Min((uint)pluginSetting.OnScreenTime, 30000),
                 Option = plugin_option,
             };
         }

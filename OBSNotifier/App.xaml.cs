@@ -1,7 +1,6 @@
 ﻿using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -73,7 +72,12 @@ namespace OBSNotifier
 
             // Select current plugin
             if (!plugins.SelectCurrent(Settings.Instance.NotificationStyle))
-                Settings.Instance.NotificationStyle = string.Empty;
+            {
+                // Select the default plugin if the previously used plugin is not found
+                Settings.Instance.NotificationStyle = "Default";
+                Settings.Instance.Save();
+                plugins.SelectCurrent(Settings.Instance.NotificationStyle);
+            }
 
             // Create tray icon
             trayIcon = new System.Windows.Forms.NotifyIcon();
@@ -86,11 +90,23 @@ namespace OBSNotifier
                 new System.Windows.Forms.MenuItem("Exit", (s,e) => Shutdown()),
             });
 
-            // Connect to obs if previously connected
-            if (Settings.Instance.IsConnected && !obs.IsConnected)
+            if (Settings.Instance.FirstRun)
             {
-                IsNeedToSkipNextConnectionNotifications = true;
-                ChangeConnectionState(ConnectionState.TryingToReconnect);
+                Settings.Instance.FirstRun = false;
+                Settings.Instance.DisplayID = WPFScreens.Primary.DeviceName;
+                Settings.Instance.Save();
+
+                trayIcon.ShowBalloonTip(3000, "OBS Notifier Info", "The OBS notifier will always be in the tray while it's running", System.Windows.Forms.ToolTipIcon.Info);
+                OpenSettingsWindow(this, null);
+            }
+            else
+            {
+                // Connect to obs if previously connected
+                if (Settings.Instance.IsConnected && !obs.IsConnected)
+                {
+                    IsNeedToSkipNextConnectionNotifications = true;
+                    ChangeConnectionState(ConnectionState.TryingToReconnect);
+                }
             }
 
             UpdateTrayStatus();

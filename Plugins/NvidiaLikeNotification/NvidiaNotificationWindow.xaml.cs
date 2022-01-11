@@ -1,5 +1,4 @@
-﻿using NvidiaLikeNotification.Properties;
-using OBSNotifier;
+﻿using OBSNotifier;
 using System;
 using System.Windows;
 using System.Windows.Media;
@@ -56,6 +55,7 @@ namespace NvidiaLikeNotification
         protected override void OnClosed(EventArgs e)
         {
             owner = null;
+            anim.Storyboard.Stop(this);
             hide_delay.Dispose();
             hide_delay = null;
 
@@ -339,8 +339,6 @@ namespace NvidiaLikeNotification
         {
             if (!CurrentParams.IsPreviewNotif)
                 anim.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
-            else
-                HidePreview();
         }
     }
 }

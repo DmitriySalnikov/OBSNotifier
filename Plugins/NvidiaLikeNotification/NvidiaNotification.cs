@@ -23,7 +23,7 @@ namespace NvidiaLikeNotification
 
         public string PluginDescription => "Simple notification similar to Nvidia's notifications";
 
-        public DefaultPluginSettings AvailableDefaultSettings => DefaultPluginSettings.FadeDelay | DefaultPluginSettings.Options | DefaultPluginSettings.Offset | DefaultPluginSettings.AdditionalData;
+        public DefaultPluginSettings AvailableDefaultSettings => DefaultPluginSettings.AllNoCustomSettings;
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
@@ -58,9 +58,11 @@ namespace NvidiaLikeNotification
         public bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null)
         {
             if (window == null)
+            {
                 window = new NvidiaNotificationWindow(this);
+                window.Closing += Window_Closing;
+            }
 
-            window.Closing += Window_Closing;
             window.ShowNotif(type, title, description);
 
             return true;
@@ -69,7 +71,10 @@ namespace NvidiaLikeNotification
         public void ShowPreview()
         {
             if (window == null)
+            {
                 window = new NvidiaNotificationWindow(this);
+                window.Closing += Window_Closing;
+            }
 
             window.ShowPreview();
         }

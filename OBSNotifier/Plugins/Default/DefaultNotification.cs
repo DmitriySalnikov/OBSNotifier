@@ -58,18 +58,22 @@ namespace OBSNotifier.Plugins.Default
         public bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null)
         {
             if (window == null)
+            {
                 window = new DefaultNotificationWindow(this);
+                window.Closing += Window_Closing;
+            }
 
-            window.Closing += Window_Closing;
             window.ShowNotif(type, title, description);
-
             return true;
         }
 
         public void ShowPreview()
         {
             if (window == null)
+            {
                 window = new DefaultNotificationWindow(this);
+                window.Closing += Window_Closing;
+            }
 
             window.ShowPreview();
         }

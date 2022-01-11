@@ -27,14 +27,23 @@ namespace OBSNotifier
                     cb_notification_styles.Items.Add(p.plugin.PluginName);
 
                 if (cb_notification_styles.Items.Contains(Settings.Instance.NotificationStyle))
+                {
                     cb_notification_styles.SelectedItem = Settings.Instance.NotificationStyle;
+                }
                 else
+                {
+                    Settings.Instance.NotificationStyle = "Default";
+                    Settings.Instance.Save();
+
                     cb_notification_styles.SelectedItem = "Default";
 
-                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
+                    if (App.plugins.SelectCurrent((string)cb_notification_styles.SelectedItem))
+                        cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
+                }
 
-                OnPluginChanged();
+                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
             }
+            OnPluginChanged();
 
             IsChangedByCode = false;
         }
@@ -175,7 +184,12 @@ namespace OBSNotifier
                     }
 
                     if (!selected)
+                    {
                         cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
+
+                        Settings.Instance.DisplayID = WPFScreens.Primary.DeviceName;
+                        Settings.Instance.Save();
+                    }
                 }
 
                 // checkboxes
@@ -316,7 +330,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF((float)e.NewValue, Settings.Instance.CurrentPluginSettings.Offset.Y);
+            Settings.Instance.CurrentPluginSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentPluginSettings.Offset.Y);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -326,7 +340,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF(Settings.Instance.CurrentPluginSettings.Offset.X, (float)e.NewValue);
+            Settings.Instance.CurrentPluginSettings.Offset = new Point(Settings.Instance.CurrentPluginSettings.Offset.X, e.NewValue);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -338,7 +352,7 @@ namespace OBSNotifier
 
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.OnScreenTime = (int)Math.Round(e.NewValue / 100) * 100;
+            Settings.Instance.CurrentPluginSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
             Settings.Instance.Save();
 
             UpdateNotification();

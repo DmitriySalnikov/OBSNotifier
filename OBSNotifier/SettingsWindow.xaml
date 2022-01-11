@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OBSNotifier"
         mc:Ignorable="d"
         Title="OBS Notifier"
-        Height="692" Width="319"
+        Height="692" Width="357"
         MinHeight="264" MinWidth="357"
         IsVisibleChanged="Window_IsVisibleChanged"
         StateChanged="Window_StateChanged"

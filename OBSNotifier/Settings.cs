@@ -10,11 +10,12 @@ namespace OBSNotifier
     {
         public class PluginSettings
         {
-            public int OnScreenTime { get; set; } = 2000;
+            public bool FirstLoad = true;
+            public uint OnScreenTime { get; set; } = 2000;
             public string SelectedOption { get; set; } = string.Empty;
-            public PointF Offset { get; set; } = new PointF(0, 0);
-            public string AdditionalData { get; set; } = null;
-            public string CustomSettings { get; set; } = null;
+            public System.Windows.Point Offset { get; set; } = new System.Windows.Point(0, 0);
+            public string AdditionalData { get; set; } = string.Empty;
+            public string CustomSettings { get; set; } = string.Empty;
             public NotificationType? ActiveNotificationTypes { get; set; } = null;
         }
 
@@ -29,6 +30,7 @@ namespace OBSNotifier
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
+        public bool FirstRun = true;
         public Rectangle SettingsWindowRect { get; set; } = new Rectangle(-1, -1, 0, 0);
         public string ServerAddress { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
@@ -65,7 +67,7 @@ namespace OBSNotifier
             saveSettings.Dispose();
             saveSettings = null;
         }
-        
+
         public bool ClearUnusedPluginSettings()
         {
             List<string> to_delete = new List<string>();

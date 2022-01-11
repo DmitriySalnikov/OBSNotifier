@@ -89,7 +89,7 @@ namespace OBSNotifier
                 if (s.DeviceName == Settings.Instance.DisplayID)
                     return s;
             }
-            return null;
+            return WPFScreens.Primary;
         }
 
         /// <summary>

@@ -26,6 +26,7 @@ namespace OBSNotifier.Plugins.Default
 
         public void Dispose()
         {
+            notifFade.Storyboard.Stop(g_notif);
             notifFade.Storyboard.Completed -= Animation_Completed;
             MouseDown -= Window_MouseDown;
             notifFade = null;
