@@ -9,7 +9,8 @@
         WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
         Opacity="1.0" SnapsToDevicePixels="True"
         Width="300" Height="90"
-        Background="{x:Null}">
+        Background="{x:Null}"
+        MouseDown="Window_MouseDown">
 
     <Window.Resources>
         <BeginStoryboard x:Key="nvidia_anim">

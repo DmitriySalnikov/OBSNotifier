@@ -57,6 +57,7 @@ namespace NvidiaLikeNotification
         {
             owner = null;
             hide_delay.Dispose();
+            hide_delay = null;
 
             base.OnClosed(e);
         }
@@ -312,7 +313,6 @@ namespace NvidiaLikeNotification
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;
 
             // update animation and force it to change values
-            anim.Storyboard.Stop(this);
             UpdateAnimationParameters();
             anim.Storyboard.Begin(this, true);
 
@@ -324,12 +324,9 @@ namespace NvidiaLikeNotification
             CurrentParams.IsPreviewNotif = false;
 
             // update animation and force it to change values
-            anim.Storyboard.Stop(this);
-            var d = CurrentParams.Duration;
-            CurrentParams.Duration = 0;
             UpdateAnimationParameters();
-            CurrentParams.Duration = d;
             anim.Storyboard.Begin(this, true);
+            anim.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
         }
 
         private void Animation_Finished(object sender, EventArgs e)
@@ -341,7 +338,7 @@ namespace NvidiaLikeNotification
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!CurrentParams.IsPreviewNotif)
-                hide_delay.CallDeferred();
+                anim.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
             else
                 HidePreview();
         }
