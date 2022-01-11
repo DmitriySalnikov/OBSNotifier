@@ -9,6 +9,8 @@ namespace OBSNotifier
 {
     public partial class SettingsWindow : Window
     {
+        bool IsChangedByCode = false;
+
         public SettingsWindow()
         {
             InitializeComponent();
@@ -16,6 +18,8 @@ namespace OBSNotifier
             UpdateConnectButton();
 
             App.ConnectionStateChanged += App_ConnectionStateChanged;
+
+            IsChangedByCode = true;
 
             // Plugins list
             {
@@ -26,11 +30,46 @@ namespace OBSNotifier
                     cb_notification_styles.SelectedItem = Settings.Instance.NotificationStyle;
                 else
                     cb_notification_styles.SelectedItem = "Default";
+
+                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
+
+                OnPluginChanged();
+            }
+
+            IsChangedByCode = false;
+        }
+
+        void UpdateConnectButton()
+        {
+            if (App.obs.IsConnected)
+                btn_connect.Content = "Disconnect";
+            else
+            {
+                if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
+                {
+                    btn_connect.Content = "Trying to reconnect... Cancel?";
+                }
+                else
+                {
+                    btn_connect.Content = "Connect";
+                }
+            }
+        }
+
+        void UpdateNotification()
+        {
+            App.plugins.UpdateCurrentPluginSettings();
+            if (cb_preview.IsChecked == true)
+            {
+                App.plugins.CurrentPlugin.plugin.ShowPreview();
+                Settings.Instance.IsPreviewShowing = true;
             }
         }
 
         void OnPluginChanged()
         {
+            IsChangedByCode = true;
+
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
             {
@@ -63,6 +102,7 @@ namespace OBSNotifier
 
                 // fade time
                 sldr_fade_delay.Value = pluginData.plugin.PluginSettings.OnScreenTime;
+                sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, pluginData.plugin.PluginSettings.OnScreenTime));
 
                 // Update visibility of settings groups
                 var groups_map = new Dictionary<Plugins.DefaultPluginSettings, FrameworkElement>()
@@ -79,33 +119,81 @@ namespace OBSNotifier
                     p.Value.Visibility = pluginData.plugin.AvailableDefaultSettings.HasFlag(p.Key) ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
+
+            IsChangedByCode = false;
         }
 
-        void UpdateConnectButton()
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (App.obs.IsConnected)
-                btn_connect.Content = "Disconnect";
+            IsChangedByCode = true;
+
+            if ((bool)e.NewValue)
+            {
+                // Update size
+                if (Settings.Instance.SettingsWindowRect.Size != new System.Drawing.Size())
+                {
+                    Width = Settings.Instance.SettingsWindowRect.Size.Width;
+                    Height = Settings.Instance.SettingsWindowRect.Size.Height;
+                }
+
+                // Update position
+                if (Settings.Instance.SettingsWindowRect.Location != new System.Drawing.Point(-1, -1))
+                {
+                    Left = Settings.Instance.SettingsWindowRect.Location.X;
+                    Top = Settings.Instance.SettingsWindowRect.Location.Y;
+
+                    var screen = WPFScreens.GetScreenFrom(this);
+                    if (screen != null && !screen.DeviceBounds.Contains(Left, Top))
+                    {
+                        Left = 0;
+                        Top = 0;
+
+                        Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle(new System.Drawing.Point(), Settings.Instance.SettingsWindowRect.Size);
+                        Settings.Instance.Save();
+                    }
+                }
+
+                Utils.FixWindowLocation(this, WPFScreens.GetScreenFrom(this));
+
+                // Server & Password
+                tb_address.Text = Settings.Instance.ServerAddress;
+                tb_password.Password = Utils.DecryptString(Settings.Instance.Password);
+
+                // Update monitors list
+                {
+                    bool selected = false;
+
+                    foreach (var screen in WPFScreens.AllScreens())
+                    {
+                        cb_display_to_show.Items.Add(screen.DeviceName);
+
+                        if (screen.DeviceName == Settings.Instance.DisplayID)
+                        {
+                            cb_display_to_show.SelectedItem = screen.DeviceName;
+                            selected = true;
+                        }
+                    }
+
+                    if (!selected)
+                        cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
+                }
+
+                // checkboxes
+                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
+                cb_close_on_closing.IsChecked = Settings.Instance.IsCloseOnOBSClosing;
+            }
             else
             {
-                if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
-                {
-                    btn_connect.Content = "Trying to reconnect... Cancel?";
-                }
-                else
-                {
-                    btn_connect.Content = "Connect";
-                }
-            }
-        }
+                // hide preview
+                App.plugins.CurrentPlugin.plugin.HidePreview();
+                Settings.Instance.IsPreviewShowing = false;
 
-        void UpdateNotification()
-        {
-            App.plugins.UpdateCurrentPluginSettings();
-            if (cb_preview.IsChecked == true)
-            {
-                App.plugins.CurrentPlugin.plugin.ShowPreview();
-                Settings.Instance.IsPreviewShowing = true;
+                // Save window size
+                Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
+                Settings.Instance.Save();
             }
+
+            IsChangedByCode = false;
         }
 
         private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
@@ -143,71 +231,6 @@ namespace OBSNotifier
             UpdateConnectButton();
         }
 
-        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool)e.NewValue)
-            {
-                // Update size
-                if (Settings.Instance.SettingsWindowRect.Size != new System.Drawing.Size())
-                {
-                    Width = Settings.Instance.SettingsWindowRect.Size.Width;
-                    Height = Settings.Instance.SettingsWindowRect.Size.Height;
-                }
-
-                // Update position
-                if (Settings.Instance.SettingsWindowRect.Location != new System.Drawing.Point(-1, -1))
-                {
-                    Left = Settings.Instance.SettingsWindowRect.Location.X;
-                    Top = Settings.Instance.SettingsWindowRect.Location.Y;
-
-                    var screen = WPFScreens.GetScreenFrom(this);
-                    if (screen != null && !screen.DeviceBounds.Contains(Left, Top))
-                    {
-                        Left = 0;
-                        Top = 0;
-
-                        Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle(new System.Drawing.Point(), Settings.Instance.SettingsWindowRect.Size);
-                    }
-                }
-
-                Utils.FixWindowLocation(this, WPFScreens.GetScreenFrom(this));
-
-                // Server & Password
-                tb_address.Text = Settings.Instance.ServerAddress;
-                tb_password.Password = Utils.DecryptString(Settings.Instance.Password);
-
-                // Update monitors list
-                {
-                    bool selected = false;
-
-                    foreach (var screen in WPFScreens.AllScreens())
-                    {
-                        cb_display_to_show.Items.Add(screen.DeviceName);
-
-                        if (screen.DeviceName == Settings.Instance.DisplayID)
-                        {
-                            cb_display_to_show.SelectedItem = screen.DeviceName;
-                            selected = true;
-                        }
-                    }
-
-                    if (!selected)
-                        cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
-                }
-                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
-            }
-            else
-            {
-                // hide preview
-                App.plugins.CurrentPlugin.plugin.HidePreview();
-                Settings.Instance.IsPreviewShowing = false;
-
-                // Save window size
-                Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
-                Settings.Instance.Save();
-            }
-        }
-
         private void Window_StateChanged(object sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
@@ -216,6 +239,8 @@ namespace OBSNotifier
 
         private void cb_display_to_show_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (IsChangedByCode) return;
+
             if (e.AddedItems.Count > 0)
                 Settings.Instance.DisplayID = e.AddedItems[0].ToString();
             else
@@ -225,8 +250,26 @@ namespace OBSNotifier
             UpdateNotification();
         }
 
+        private void cb_close_on_closing_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+
+            Settings.Instance.IsCloseOnOBSClosing = true;
+            Settings.Instance.Save();
+        }
+
+        private void cb_close_on_closing_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+
+            Settings.Instance.IsCloseOnOBSClosing = false;
+            Settings.Instance.Save();
+        }
+
         private void cb_use_safe_area_Unchecked(object sender, RoutedEventArgs e)
         {
+            if (IsChangedByCode) return;
+
             Settings.Instance.UseSafeDisplayArea = false;
             Settings.Instance.Save();
 
@@ -235,6 +278,8 @@ namespace OBSNotifier
 
         private void cb_use_safe_area_Checked(object sender, RoutedEventArgs e)
         {
+            if (IsChangedByCode) return;
+
             Settings.Instance.UseSafeDisplayArea = true;
             Settings.Instance.Save();
 
@@ -243,11 +288,14 @@ namespace OBSNotifier
 
         private void cb_notification_styles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (IsChangedByCode) return;
+
             var name = (string)cb_notification_styles.SelectedItem;
             if (App.plugins.SelectCurrent(name))
             {
                 Settings.Instance.NotificationStyle = name;
                 Settings.Instance.Save();
+                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
 
                 OnPluginChanged();
                 UpdateNotification();
@@ -256,7 +304,8 @@ namespace OBSNotifier
 
         private void cb_notification_options_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // TODO check for programmatically changed values
+            if (IsChangedByCode) return;
+
             Settings.Instance.CurrentPluginSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
@@ -265,6 +314,8 @@ namespace OBSNotifier
 
         private void sldr_position_offset_x_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (IsChangedByCode) return;
+
             Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF((float)e.NewValue, Settings.Instance.CurrentPluginSettings.Offset.Y);
             Settings.Instance.Save();
 
@@ -273,6 +324,8 @@ namespace OBSNotifier
 
         private void sldr_position_offset_y_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            if (IsChangedByCode) return;
+
             Settings.Instance.CurrentPluginSettings.Offset = new System.Drawing.PointF(Settings.Instance.CurrentPluginSettings.Offset.X, (float)e.NewValue);
             Settings.Instance.Save();
 
@@ -281,8 +334,11 @@ namespace OBSNotifier
 
         private void sldr_fade_delay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Settings.Instance.CurrentPluginSettings.OnScreenTime = (int)Math.Round(e.NewValue / 100) * 100;
             l_delay_sec.Text = (e.NewValue / 1000.0).ToString("F1", CultureInfo.InvariantCulture);
+
+            if (IsChangedByCode) return;
+
+            Settings.Instance.CurrentPluginSettings.OnScreenTime = (int)Math.Round(e.NewValue / 100) * 100;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -290,6 +346,8 @@ namespace OBSNotifier
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IsChangedByCode) return;
+
             Settings.Instance.CurrentPluginSettings.AdditionalData = tb_additional_data.Text;
             Settings.Instance.Save();
 

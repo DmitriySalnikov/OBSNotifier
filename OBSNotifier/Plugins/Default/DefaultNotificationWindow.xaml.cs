@@ -13,7 +13,7 @@ namespace OBSNotifier.Plugins.Default
             public Color Background;
             public Color TextColor;
             public Color Outline;
-            public double Duration;
+            public uint Duration;
             public double Radius;
             public double Width;
             public double Height;
@@ -207,7 +207,7 @@ namespace OBSNotifier.Plugins.Default
             if (sp_main_panel.Children.Count < VerticalBlocksCount)
             {
                 var nnb = new DefaultNotificationBlock();
-                nnb.Finished += Nb_Finished;
+                nnb.Finished += NotificationBlock_Animation_Finished;
 
                 if (IsPositionedOnTop)
                     sp_main_panel.Children.Add(nnb);
@@ -232,58 +232,6 @@ namespace OBSNotifier.Plugins.Default
             ShowWithLocationFix();
         }
 
-        void RemoveUnusedBlocks()
-        {
-            while (sp_main_panel.Children.Count > VerticalBlocksCount)
-            {
-                DefaultNotificationBlock nb;
-                if (IsPositionedOnTop)
-                    nb = sp_main_panel.Children[sp_main_panel.Children.Count - 1] as DefaultNotificationBlock;
-                else
-                    nb = sp_main_panel.Children[0] as DefaultNotificationBlock;
-
-                sp_main_panel.Children.Remove(nb);
-                nb.Finished -= Nb_Finished;
-                nb.Dispose();
-            }
-        }
-
-        void CreateMissingBlocks()
-        {
-            while (sp_main_panel.Children.Count < VerticalBlocksCount)
-            {
-                var nnb = new DefaultNotificationBlock();
-                nnb.Finished += Nb_Finished;
-                sp_main_panel.Children.Add(nnb);
-            }
-        }
-
-        private void Nb_Finished(object sender, EventArgs e)
-        {
-            var nb = sender as DefaultNotificationBlock;
-            nb.HideNotif();
-
-            // hide window if no visible blocks
-            foreach (DefaultNotificationBlock c in sp_main_panel.Children)
-            {
-                if (c.Visibility == Visibility.Visible)
-                    return;
-            }
-            Hide();
-        }
-
-        void ShowWithLocationFix()
-        {
-            hide_delay.Cancel();
-            Show();
-            if (!IsPositionedOnTop)
-            {
-                var delta = Height - ActualHeight;
-                if (delta > 0)
-                    Top += delta;
-            }
-        }
-
         public void ShowPreview()
         {
             IsPreviewNotif = true;
@@ -306,6 +254,55 @@ namespace OBSNotifier.Plugins.Default
 
             foreach (DefaultNotificationBlock c in sp_main_panel.Children)
                 c.HidePreview();
+            hide_delay.CallDeferred();
+        }
+
+        void ShowWithLocationFix()
+        {
+            hide_delay.Cancel();
+            Show();
+            if (!IsPositionedOnTop)
+            {
+                var delta = Height - ActualHeight;
+                if (delta > 0)
+                    Top += delta;
+            }
+        }
+
+        void RemoveUnusedBlocks()
+        {
+            while (sp_main_panel.Children.Count > VerticalBlocksCount)
+            {
+                DefaultNotificationBlock nb;
+                if (IsPositionedOnTop)
+                    nb = sp_main_panel.Children[sp_main_panel.Children.Count - 1] as DefaultNotificationBlock;
+                else
+                    nb = sp_main_panel.Children[0] as DefaultNotificationBlock;
+
+                sp_main_panel.Children.Remove(nb);
+                nb.Finished -= NotificationBlock_Animation_Finished;
+                nb.Dispose();
+            }
+        }
+
+        void CreateMissingBlocks()
+        {
+            while (sp_main_panel.Children.Count < VerticalBlocksCount)
+            {
+                var nnb = new DefaultNotificationBlock();
+                nnb.Finished += NotificationBlock_Animation_Finished;
+                sp_main_panel.Children.Add(nnb);
+            }
+        }
+
+        private void NotificationBlock_Animation_Finished(object sender, EventArgs e)
+        {
+            // hide window if no visible blocks
+            foreach (DefaultNotificationBlock c in sp_main_panel.Children)
+            {
+                if (c.Visibility == Visibility.Visible)
+                    return;
+            }
             hide_delay.CallDeferred();
         }
     }

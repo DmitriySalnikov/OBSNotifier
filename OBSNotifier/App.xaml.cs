@@ -1,9 +1,11 @@
 ﻿using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace OBSNotifier
 {
@@ -12,6 +14,9 @@ namespace OBSNotifier
     /// </summary>
     internal partial class App : Application
     {
+        private const string appGUID = "EAC71402-ACC2-40F1-A75A-4060C19E1F9F";
+        Mutex mutex = new Mutex(false, "Global\\" + appGUID);
+
         public enum ConnectionState
         {
             Connected,
@@ -29,7 +34,7 @@ namespace OBSNotifier
         static System.Windows.Forms.NotifyIcon trayIcon;
         SettingsWindow settingsWindow;
         public DeferredAction gc_collect = new DeferredAction(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
-        static DeferredAction close_reconnect = new DeferredAction(() => StopReconnection(), 500);
+        static DispatcherOperation close_reconnect;
         static Task reconnectThread;
         static CancellationTokenSource reconnectCancellationToken;
         AboutBox1 aboutBox;
@@ -39,11 +44,24 @@ namespace OBSNotifier
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
+            if (!mutex.WaitOne(0, false))
+            {
+                mutex.Dispose();
+                mutex = null;
+
+                Environment.ExitCode = -1;
+                MessageBox.Show("An instance of this application is already running. The application will be closed.", "Instance already running");
+                Shutdown();
+                return;
+            }
+
             CurrentConnectionState = ConnectionState.Disconnected;
 
             obs = new OBSWebsocket();
+            obs.WSTimeout = TimeSpan.FromMilliseconds(1000);
             obs.Connected += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
+            obs.OBSExit += Obs_OBSExit;
 
             Settings.Load();
             plugins = new PluginManager();
@@ -78,6 +96,41 @@ namespace OBSNotifier
             UpdateTrayStatus();
         }
 
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            StopReconnection();
+
+            if (obs != null)
+            {
+                obs.Connected -= Obs_Connected;
+                obs.Disconnected -= Obs_Disconnected;
+                obs.Disconnect();
+                obs = null;
+            }
+
+            settingsWindow?.Close();
+            settingsWindow = null;
+
+            aboutBox?.Close();
+            aboutBox?.Dispose();
+            aboutBox = null;
+
+            plugins?.Dispose();
+            plugins = null;
+
+            trayIcon?.Dispose();
+            trayIcon = null;
+
+            gc_collect.Dispose();
+            gc_collect = null;
+
+            close_reconnect?.Abort();
+            close_reconnect = null;
+
+            Settings.Instance?.Save(true);
+            mutex?.Dispose();
+        }
+
         void ShowAboutWindow(object sender, EventArgs e)
         {
             if (aboutBox != null)
@@ -102,47 +155,21 @@ namespace OBSNotifier
             }
         }
 
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            StopReconnection();
-
-            settingsWindow?.Close();
-            settingsWindow = null;
-
-            aboutBox?.Close();
-            aboutBox?.Dispose();
-            aboutBox = null;
-
-            obs.Disconnect();
-            Settings.Instance.Save(true);
-
-            plugins?.Dispose();
-            plugins = null;
-
-            trayIcon?.Dispose();
-            trayIcon = null;
-
-            gc_collect.Dispose();
-            gc_collect = null;
-
-            close_reconnect.Dispose();
-            close_reconnect = null;
-        }
-
         static void ChangeConnectionState(ConnectionState newState)
         {
             if (CurrentConnectionState != newState)
             {
                 if (newState == ConnectionState.TryingToReconnect)
                 {
-                    close_reconnect.Cancel();
+                    close_reconnect?.Abort();
                     StopReconnection();
+
                     reconnectCancellationToken = new CancellationTokenSource();
                     reconnectThread = Task.Run(ReconnectionThread, reconnectCancellationToken.Token);
                 }
                 else
                 {
-                    close_reconnect.CallDeferred();
+                    close_reconnect = Current.InvokeAction(() => StopReconnection());
                 }
 
                 CurrentConnectionState = newState;
@@ -179,9 +206,13 @@ namespace OBSNotifier
                     return;
                 if (ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password)))
                     return;
+
                 if (reconnectCancellationToken.IsCancellationRequested) return;
-                Thread.Sleep(6000);
-                if (reconnectCancellationToken.IsCancellationRequested) return;
+                for (int i = 0; i < 10; i++)
+                {
+                    Thread.Sleep(500);
+                    if (reconnectCancellationToken.IsCancellationRequested) return;
+                }
             }
         }
 
@@ -258,6 +289,15 @@ namespace OBSNotifier
                 ChangeConnectionState(ConnectionState.TryingToReconnect);
             else
                 ChangeConnectionState(ConnectionState.Disconnected);
+        }
+
+        private void Obs_OBSExit(object sender, EventArgs e)
+        {
+            if (Settings.Instance.IsCloseOnOBSClosing && settingsWindow == null)
+            {
+                StopReconnection();
+                this.InvokeAction(() => Shutdown());
+            }
         }
     }
 }

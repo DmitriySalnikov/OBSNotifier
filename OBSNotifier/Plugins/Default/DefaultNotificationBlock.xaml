@@ -10,13 +10,13 @@
     <Grid x:Name="g_notif" SnapsToDevicePixels="True">
         <Grid.Resources>
             <BeginStoryboard x:Key="FadeAnimBoard" HandoffBehavior="SnapshotAndReplace">
-                <Storyboard Completed="DoubleAnimation_Completed_out">
+                <Storyboard Completed="Animation_Completed">
                     <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:3">
                         <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
                         <!-- Next key is init delay -->
                         <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.05"/>
-                        <!-- Next key is Fade length -->
-                        <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.2"/>
+                        <!-- Next key is Fade length with init delay (next key - init delay = fade time) -->
+                        <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.25"/>
                         <LinearDoubleKeyFrame Value="1" KeyTime="0:0:0"/>
                         <LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
                     </DoubleAnimationUsingKeyFrames>

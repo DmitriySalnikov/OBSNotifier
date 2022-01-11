@@ -13,6 +13,9 @@ namespace OBSNotifier
 
         public DeferredAction(Action action, int delay = 1000, DispatcherObject dispatcherToInvokeOnIt = null)
         {
+            if (action == null)
+                throw new ArgumentNullException("action");
+
             this.action = action;
             this.delay = delay;
             dsp_object = dispatcherToInvokeOnIt;
@@ -32,10 +35,13 @@ namespace OBSNotifier
 
         void CallAction(object obj)
         {
-            if (dsp_object != null)
-                dsp_object.Dispatcher.Invoke(action);
-            else
-                action();
+            if (action != null)
+            {
+                if (dsp_object != null)
+                    dsp_object.Dispatcher.Invoke(action);
+                else
+                    action();
+            }
         }
 
         ~DeferredAction()

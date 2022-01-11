@@ -1,9 +1,6 @@
 ﻿using NvidiaLikeNotification.Properties;
 using OBSNotifier;
 using System;
-using System.Linq;
-using System.Runtime;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -16,13 +13,29 @@ namespace NvidiaLikeNotification
         public NvidiaNotification owner = null;
         int addDataHash = -1;
 
-        public bool IsPreviewNotif = false;
         int MaxPathChars = 32;
-        uint Duration = 2500;
-        uint SlideDuration = 450;
-        uint SlideOffset = 200;
-        double LineWidth = 6;
-        bool IsOnRightSide = false;
+
+        struct AnimationParams
+        {
+            public bool IsPreviewNotif;
+            public uint Duration;
+            public uint SlideDuration;
+            public uint SlideOffset;
+            public double LineWidth;
+            public bool IsOnRightSide;
+        }
+
+        AnimationParams CurrentParams;
+        AnimationParams PreviousParams;
+        AnimationParams DefaultParams = new AnimationParams()
+        {
+            IsPreviewNotif = false,
+            Duration = 2500,
+            SlideDuration = 450,
+            SlideOffset = 200,
+            LineWidth = 6,
+            IsOnRightSide = false,
+        };
 
         bool IsPositionedOnTop { get => (NvidiaNotification.Positions)owner.PluginSettings.Option == NvidiaNotification.Positions.TopRight; }
         DeferredAction hide_delay;
@@ -33,9 +46,11 @@ namespace NvidiaLikeNotification
             InitializeComponent();
 
             anim = (Resources["nvidia_anim"] as BeginStoryboard);
+            CurrentParams = DefaultParams;
 
             hide_delay = new DeferredAction(() => Hide(), 200, this);
             owner = plugin;
+            i_icon.SizeChanged += I_icon_SizeChanged;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -69,7 +84,7 @@ namespace NvidiaLikeNotification
                                     }
                                     catch
                                     {
-                                        g_back.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#76b900"));
+                                        g_back.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E48BD"));
                                     }
                                     break;
                                 }
@@ -95,50 +110,40 @@ namespace NvidiaLikeNotification
                                     }
                                     catch
                                     {
-                                        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e4e4e4"));
+                                        var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E4E4E4"));
                                         l_title.Foreground = b;
                                         l_desc.Foreground = b;
                                     }
                                     break;
                                 }
-                            case "Width":
+                            case "Scale":
                                 {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        Width = val;
+                                    if (double.TryParse(args[1].Trim(), out double val))
+                                    {
+                                        Width = 300 * val;
+                                        Height = 90 * val;
+                                    }
                                     else
+                                    {
                                         Width = 300;
-                                    break;
-                                }
-                            case "Height":
-                                {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        Height = val;
-                                    else
                                         Height = 90;
+                                    }
                                     break;
                                 }
                             case "SlideDuration":
                                 {
                                     if (uint.TryParse(args[1].Trim(), out uint val))
-                                        SlideDuration = val;
+                                        CurrentParams.SlideDuration = val;
                                     else
-                                        SlideDuration = 450;
+                                        CurrentParams.SlideDuration = 400;
                                     break;
                                 }
                             case "SlideOffset":
                                 {
                                     if (uint.TryParse(args[1].Trim(), out uint val))
-                                        SlideOffset = val;
+                                        CurrentParams.SlideOffset = val;
                                     else
-                                        SlideOffset= 450;
-                                    break;
-                                }
-                            case "ColoredLineWidth":
-                                {
-                                    if (double.TryParse(args[1].Trim(), out double val))
-                                        LineWidth = val;
-                                    else
-                                        LineWidth = 6;
+                                        CurrentParams.SlideOffset= 180;
                                     break;
                                 }
                             case "MaxPathChars":
@@ -149,14 +154,32 @@ namespace NvidiaLikeNotification
                                         MaxPathChars = 32;
                                     break;
                                 }
+                            case "IconHeight":
+                                {
+                                    if (double.TryParse(args[1].Trim(), out double val))
+                                        i_icon.Height = val;
+                                    else
+                                        i_icon.Height = 64;
+                                    break;
+                                }
                             case "IconPath":
                                 {
                                     BitmapImage logo = new BitmapImage();
                                     try
                                     {
-                                        logo.BeginInit();
-                                        logo.UriSource = new Uri(System.IO.Path.GetFullPath(args[1].Trim()));
-                                        logo.EndInit();
+                                        try
+                                        {
+                                            logo.BeginInit();
+                                            logo.UriSource = new Uri(args[1].Trim());
+                                            logo.EndInit();
+                                        }
+                                        catch
+                                        {
+                                            logo = new BitmapImage();
+                                            logo.BeginInit();
+                                            logo.UriSource = new Uri(System.IO.Path.GetFullPath(args[1].Trim()));
+                                            logo.EndInit();
+                                        }
                                     }
                                     catch
                                     {
@@ -173,17 +196,12 @@ namespace NvidiaLikeNotification
                 }
             }
 
-            Duration = owner.PluginSettings.OnScreenTime;
-            IsOnRightSide = (NvidiaNotification.Positions)owner.PluginSettings.Option == NvidiaNotification.Positions.TopRight;
+            CurrentParams.Duration = owner.PluginSettings.OnScreenTime;
+            CurrentParams.IsOnRightSide = (NvidiaNotification.Positions)owner.PluginSettings.Option == NvidiaNotification.Positions.TopRight;
 
-            g_back.Width = Width;
-            g_back.Height = Height;
-            g_front.Width = Width - LineWidth;
-            g_front.Height = Height;
-
-            i_icon.HorizontalAlignment = IsOnRightSide ? HorizontalAlignment.Left : HorizontalAlignment.Right;
-            i_icon.Margin = new Thickness(IsOnRightSide ? 8 : 0, 0, IsOnRightSide ? 0 : 8, 0);
-            sp_text.Margin = new Thickness(IsOnRightSide ? i_icon.Height + 14 : 6, 0, IsOnRightSide ? 6 : i_icon.Height + 14, 0);
+            i_icon.HorizontalAlignment = CurrentParams.IsOnRightSide ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+            i_icon.Margin = new Thickness(CurrentParams.IsOnRightSide ? 8 : 0, 0, CurrentParams.IsOnRightSide ? 0 : 8, 0);
+            I_icon_SizeChanged(null, null);
 
             // Position
             var pe = (NvidiaNotification.Positions)owner.PluginSettings.Option;
@@ -194,27 +212,36 @@ namespace NvidiaLikeNotification
             Top = pos.Y;
         }
 
+        private void I_icon_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            sp_text.Margin = new Thickness(CurrentParams.IsOnRightSide ? i_icon.ActualWidth + 14 : 6, 0, CurrentParams.IsOnRightSide ? 6 : i_icon.ActualWidth + 14, 0);
+        }
+
         void UpdateAnimationParameters()
         {
+            if (CurrentParams.Equals(PreviousParams))
+                return;
+            PreviousParams = CurrentParams;
+
             var timeline = (anim.Storyboard.Children[0] as ParallelTimeline);
             var anim_front = (timeline.Children[0] as ThicknessAnimationUsingKeyFrames);
             var anim_back = (timeline.Children[1]as ThicknessAnimationUsingKeyFrames);
             var keys_front = anim_front.KeyFrames;
             var keys_back = anim_back.KeyFrames;
 
-            var dur = TimeSpan.FromMilliseconds(Duration);
+            var dur = TimeSpan.FromMilliseconds(CurrentParams.Duration);
             var end_time = TimeSpan.FromMilliseconds(100);
-            var slide = TimeSpan.FromMilliseconds(SlideDuration);
-            var offset = TimeSpan.FromMilliseconds(SlideOffset);
+            var slide = TimeSpan.FromMilliseconds(CurrentParams.SlideDuration);
+            var offset = TimeSpan.FromMilliseconds(CurrentParams.SlideOffset);
 
             var visible = new Thickness(0, 0, 0, 0);
-            var visible_front = new Thickness(IsOnRightSide ? LineWidth : 0, 0, IsOnRightSide ? 0 : LineWidth, 0);
-            var hidden = new Thickness(IsOnRightSide ? Width : -Width, 0, IsOnRightSide ? -Width : Width, 0);
+            var visible_front = new Thickness(CurrentParams.IsOnRightSide ? CurrentParams.LineWidth : 0, 0, CurrentParams.IsOnRightSide ? 0 : CurrentParams.LineWidth, 0);
+            var hidden = new Thickness(CurrentParams.IsOnRightSide ? g_back.Width : -g_back.Width, 0, CurrentParams.IsOnRightSide ? -g_back.Width : g_back.Width, 0);
 
             anim_back.Duration = slide + dur + offset + slide + offset + end_time;
-            timeline.Duration = IsPreviewNotif ? TimeSpan.Zero : anim_back.Duration;
+            timeline.Duration = CurrentParams.IsPreviewNotif ? TimeSpan.Zero : anim_back.Duration;
 
-            if (IsPreviewNotif)
+            if (CurrentParams.IsPreviewNotif)
             {
                 keys_back[0].Value = visible;
                 keys_front[0].Value = visible_front;
@@ -256,14 +283,13 @@ namespace NvidiaLikeNotification
 
         public void ShowNotif(NotificationType type, string title, string desc)
         {
-            if (IsPreviewNotif)
+            if (CurrentParams.IsPreviewNotif)
                 return;
             UpdateParameters();
 
             l_title.Text = title;
 
-            if ((NotificationType.RecordingStarted | NotificationType.RecordingStopped | NotificationType.ReplaySaved)
-                .HasFlag(type))
+            if (NotificationType.WithFilePaths.HasFlag(type))
                 l_desc.Text = Utils.GetShortPath(desc, (uint)MaxPathChars);
             else
                 l_desc.Text = desc;
@@ -278,7 +304,7 @@ namespace NvidiaLikeNotification
 
         public void ShowPreview()
         {
-            IsPreviewNotif = true;
+            CurrentParams.IsPreviewNotif = true;
             UpdateParameters();
 
             l_title.Text = "Preview Notification";
@@ -295,26 +321,26 @@ namespace NvidiaLikeNotification
 
         public void HidePreview()
         {
-            IsPreviewNotif = false;
+            CurrentParams.IsPreviewNotif = false;
 
             // update animation and force it to change values
             anim.Storyboard.Stop(this);
-            var d = Duration;
-            Duration = 0;
+            var d = CurrentParams.Duration;
+            CurrentParams.Duration = 0;
             UpdateAnimationParameters();
-            Duration = d;
+            CurrentParams.Duration = d;
             anim.Storyboard.Begin(this, true);
         }
 
         private void Animation_Finished(object sender, EventArgs e)
         {
-            if (!IsPreviewNotif)
+            if (!CurrentParams.IsPreviewNotif)
                 hide_delay.CallDeferred();
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (!IsPreviewNotif)
+            if (!CurrentParams.IsPreviewNotif)
                 hide_delay.CallDeferred();
             else
                 HidePreview();

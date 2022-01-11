@@ -19,9 +19,9 @@ namespace OBSNotifier
         /// </summary>
         /// <param name="disp"></param>
         /// <param name="act"></param>
-        public static void InvokeAction(this DispatcherObject disp, Action act)
+        public static DispatcherOperation InvokeAction(this DispatcherObject disp, Action act)
         {
-            disp.Dispatcher.BeginInvoke(act);
+            return disp.Dispatcher.BeginInvoke(act);
         }
 
         public static string EncryptString(string plainText)

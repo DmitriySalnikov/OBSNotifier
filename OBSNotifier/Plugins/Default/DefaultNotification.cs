@@ -29,8 +29,8 @@ namespace OBSNotifier.Plugins.Default
         {
             AdditionalData = "Blocks = 3\nBackgroundColor = #4C4C4C\nTextColor = #D8D8D8\nOutlineColor = #59000000\nRadius = 4.0\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4\nMaxPathChars = 32",
             Option = Positions.BottomRight,
-            Offset = new Point(0, 0.1),
-            OnScreenTime = 2000,
+            Offset = new Point(0, 0),
+            OnScreenTime = 2700,
         };
 
         public OBSNotifierPluginSettings PluginSettings
@@ -74,14 +74,6 @@ namespace OBSNotifier.Plugins.Default
             window.ShowPreview();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            (sender as DefaultNotificationWindow).Closing -= Window_Closing;
-
-            if (window == sender)
-                window = null;
-        }
-
         public void HidePreview()
         {
             window?.HidePreview();
@@ -100,6 +92,14 @@ namespace OBSNotifier.Plugins.Default
         public void OpenCustomSettings() { }
 
         public string GetCustomSettingsDataToSave() => null;
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            (sender as DefaultNotificationWindow).Closing -= Window_Closing;
+
+            if (window == sender)
+                window = null;
+        }
     }
 }
 

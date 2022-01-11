@@ -75,6 +75,9 @@ namespace OBSNotifier
             SceneSwitched |
             AudioSourceMuted | AudioSourceUnmuted,
 
+        WithFilePaths = RecordingStarted | RecordingStopped |
+            ReplaySaved,
+
         All = Connected | Disconnected | LostConnection |
             ReplayStarted | ReplayStopped | ReplaySaved |
             RecordingPaused | RecordingResumed | RecordingStarted | RecordingStopped |
@@ -115,7 +118,8 @@ namespace OBSNotifier
         static List<NotificationType> SkipNotifTypes = new List<NotificationType> {
             NotificationType.None,
             NotificationType.Minimal,
-            NotificationType.All
+            NotificationType.WithFilePaths,
+            NotificationType.All,
         };
 
         static Dictionary<NotificationType, NotificationDescriptionAttribute> notificationsData;

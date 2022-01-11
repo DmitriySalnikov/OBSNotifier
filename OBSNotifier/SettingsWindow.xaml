@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:OBSNotifier"
         mc:Ignorable="d"
         Title="OBS Notifier"
-        Height="651" Width="319"
+        Height="692" Width="319"
         MinHeight="264" MinWidth="357"
         IsVisibleChanged="Window_IsVisibleChanged"
         StateChanged="Window_StateChanged"
@@ -25,21 +25,23 @@
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
             <Label Content="The password will be saved in a local file" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
             <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
-
-            <Separator Height="25"/>
+            
+            <Separator Height="10" Background="{x:Null}"/>
+            <CheckBox x:Name="cb_close_on_closing" Content="Close program on OBS closing&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center"/>
+            <Separator Height="16"/>
 
             <Label Content="Notification settigns" HorizontalAlignment="Center" FontWeight="Bold"/>
 
-            <CheckBox x:Name="cb_preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked"  Content="Preview" HorizontalAlignment="Right"/>
+            <CheckBox x:Name="cb_preview" Content="Preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
 
             <Label Content="Screen on which to display:"/>
             <ComboBox x:Name="cb_display_to_show" SelectionChanged="cb_display_to_show_SelectionChanged"/>
-            <CheckBox x:Name="cb_use_safe_area" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" VerticalContentAlignment="Center"/>
+            <CheckBox x:Name="cb_use_safe_area" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" VerticalContentAlignment="Center"/>
 
             <Label Content="Style:"/>
             <ComboBox x:Name="cb_notification_styles" Grid.ColumnSpan="1" SelectionChanged="cb_notification_styles_SelectionChanged" />
 
-            <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
+            <Separator Height="16" Background="{x:Null}" Foreground="{x:Null}"/>
             <Button Content="Select Active Notifications" Click="btn_select_active_notifications_Click"/>
 
             <StackPanel x:Name="group_options">
