@@ -317,7 +317,7 @@ namespace OBSNotifier.Plugins
                 AdditionalData = pluginSetting.AdditionalData,
                 CustomSettings = pluginSetting.CustomSettings,
                 Offset = new Point(pluginSetting.Offset.X, pluginSetting.Offset.Y),
-                OnScreenTime = Math.Min((uint)pluginSetting.OnScreenTime, 30000),
+                OnScreenTime = Math.Min(pluginSetting.OnScreenTime, 30000),
                 Option = plugin_option,
             };
         }

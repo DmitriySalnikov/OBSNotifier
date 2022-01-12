@@ -36,9 +36,7 @@ namespace OBSNotifier
                     Settings.Instance.Save();
 
                     cb_notification_styles.SelectedItem = "Default";
-
-                    if (App.plugins.SelectCurrent((string)cb_notification_styles.SelectedItem))
-                        cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
+                    App.plugins.SelectCurrent((string)cb_notification_styles.SelectedItem);
                 }
 
                 cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;

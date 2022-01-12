@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 
@@ -123,7 +124,7 @@ namespace OBSNotifier.Plugins.Default
                                 }
                             case "Radius":
                                 {
-                                    if (double.TryParse(args[1].Trim(), out double val))
+                                    if (double.TryParse(args[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                                         CurrentNotifBlockSettings.Radius = val;
                                     else
                                         CurrentNotifBlockSettings.Radius = DefaultNotifBlockSettings.Radius;
@@ -158,15 +159,15 @@ namespace OBSNotifier.Plugins.Default
                                     var split = args[1].Trim().Split(',');
                                     if (split.Length == 1)
                                     {
-                                        if (double.TryParse(split[0], out double val))
+                                        if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                                             CurrentNotifBlockSettings.Margin = new Thickness(val);
                                     }
                                     else if (split.Length == 4)
                                     {
-                                        if (double.TryParse(split[0], out double val1) &&
-                                            double.TryParse(split[1], out double val2) &&
-                                            double.TryParse(split[2], out double val3) &&
-                                            double.TryParse(split[3], out double val4))
+                                        if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
+                                            double.TryParse(split[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2) &&
+                                            double.TryParse(split[2], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val3) &&
+                                            double.TryParse(split[3], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val4))
                                         {
                                             CurrentNotifBlockSettings.Margin = new Thickness(val1, val2, val3, val4);
                                         }

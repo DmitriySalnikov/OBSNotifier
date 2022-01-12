@@ -1,5 +1,6 @@
 ﻿using OBSNotifier;
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -30,8 +31,8 @@ namespace NvidiaLikeNotification
         {
             IsPreviewNotif = false,
             Duration = 2500,
-            SlideDuration = 450,
-            SlideOffset = 200,
+            SlideDuration = 400,
+            SlideOffset = 180,
             LineWidth = 6,
             IsOnRightSide = false,
         };
@@ -119,7 +120,7 @@ namespace NvidiaLikeNotification
                                 }
                             case "Scale":
                                 {
-                                    if (double.TryParse(args[1].Trim(), out double val))
+                                    if (double.TryParse(args[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                                     {
                                         Width = 300 * val;
                                         Height = 90 * val;
@@ -157,9 +158,9 @@ namespace NvidiaLikeNotification
                                 }
                             case "IconHeight":
                                 {
-                                    if (double.TryParse(args[1].Trim(), out double val))
+                                    if (double.TryParse(args[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                                         i_icon.Height = val;
-                                    else
+                                        else
                                         i_icon.Height = 64;
                                     break;
                                 }
