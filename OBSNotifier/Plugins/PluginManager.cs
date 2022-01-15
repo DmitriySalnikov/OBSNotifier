@@ -23,7 +23,7 @@ namespace OBSNotifier.Plugins
             public Type pluginClass;
         }
 
-        public static string PluginsDir { get; } = Path.Combine(Directory.GetCurrentDirectory(), "Plugins");
+        public static string PluginsDir { get; } = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Plugins");
         public static string PluginsExt { get; } = "*.dll";
         public static string TempDir { get; } = Path.Combine(Environment.GetEnvironmentVariable("Temp"), "OBSNotifier");
 
@@ -54,27 +54,30 @@ namespace OBSNotifier.Plugins
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            // Create plugins directory if it does not exists
+            // Try to create a directory or try to load at least one default plugin
             try
             {
-                // Try to create directory or throw exception and stop loading plugins
                 Directory.CreateDirectory(PluginsDir);
+            }
+            catch { }
 
-                AggregateCatalog agc = new AggregateCatalog();
+            AggregateCatalog agc = new AggregateCatalog();
 
-                // Load default plugins
-                {
-                    var ac = new AssemblyCatalog(Assembly.GetAssembly(typeof(PluginManager)));
+            // Load default plugins
+            {
+                var ac = new AssemblyCatalog(Assembly.GetAssembly(typeof(PluginManager)));
 #pragma warning disable S1481 // "Assembly.Load" should be used
-                    // may throws ReflectionTypeLoadException
-                    // but only when developing default plugins.
-                    // Probably this cant happen.
-                    var parts = ac.Parts.ToArray();
+                // may throws ReflectionTypeLoadException
+                // but only when developing default plugins.
+                // Probably this cant happen.
+                var parts = ac.Parts.ToArray();
 #pragma warning restore S1481 // Assembly.Load, not comment, unused variable
 
-                    agc.Catalogs.Add(ac);
-                }
+                agc.Catalogs.Add(ac);
+            }
 
+            try
+            {
                 // List of all dlls in all sub folders and root plugins directory
                 List<string> allFiles = new List<string>();
                 allFiles.AddRange(Directory.GetFiles(PluginsDir, PluginsExt));
@@ -102,19 +105,26 @@ namespace OBSNotifier.Plugins
                         WriteLog(ex.Message);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex.Message);
+            }
 
-                // End of loading
-                CompositionContainer cc = new CompositionContainer(agc);
+            // End of loading
+            CompositionContainer cc = new CompositionContainer(agc);
 
+            try
+            {
                 // Processing loaded plugins
-                foreach (Lazy<IOBSNotifierPlugin> plugins in cc.GetExports<IOBSNotifierPlugin>())
+                foreach (Lazy<IOBSNotifierPlugin> plugin in cc.GetExports<IOBSNotifierPlugin>())
                 {
                     // Plugins list marked as Lazy so we need to wait
                     // when plugin was fully loaded
                     int elapsedtime = 0;
                     bool timeout = false;
                     const int pauseTime = 5;
-                    while (plugins.Value == null)
+                    while (plugin.Value == null)
                     {
                         Thread.Sleep(pauseTime);
                         elapsedtime += pauseTime;
@@ -132,7 +142,7 @@ namespace OBSNotifier.Plugins
                     {
                         try
                         {
-                            IOBSNotifierPlugin pp = plugins.Value;
+                            IOBSNotifierPlugin pp = plugin.Value;
 
                             if (string.IsNullOrWhiteSpace(pp.PluginName))
                             {
@@ -158,14 +168,14 @@ namespace OBSNotifier.Plugins
                             {
                                 plugin = pp,
                                 defaultSettings = pp.PluginSettings,
-                                pluginClass = plugins.Value.GetType()
+                                pluginClass = plugin.Value.GetType()
                             });
                         }
                         catch (Exception ex)
                         {
                             try
                             {
-                                WriteLog($"{plugins.Value?.PluginName}. Plugin can't be initialized. {ex.Message}\n{ex.StackTrace}");
+                                WriteLog($"{plugin.Value?.PluginName}. Plugin can't be initialized. {ex.Message}\n{ex.StackTrace}");
                             }
                             catch
                             {

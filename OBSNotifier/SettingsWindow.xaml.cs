@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace OBSNotifier
     public partial class SettingsWindow : Window
     {
         bool IsChangedByCode = false;
+        const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
         public SettingsWindow()
         {
@@ -70,6 +72,34 @@ namespace OBSNotifier
             {
                 App.plugins.CurrentPlugin.plugin.ShowPreview();
                 Settings.Instance.IsPreviewShowing = true;
+            }
+        }
+
+        void UpdateAutostartCheckbox(bool isError = false)
+        {
+            var def_text = "Run at Windows startup";
+            var not_available_text = "Run at Windows startup\n(unavailable due to an error.\nTry to run as administrator)";
+            var dif_path_text = "Run at Windows startup\n(a different path is used now)";
+
+            if (isError)
+            {
+                cb_autostart.Content = not_available_text;
+            }
+            else
+            {
+                cb_autostart.Content = def_text;
+                if (cb_autostart.IsChecked.HasValue && cb_autostart.IsChecked.Value)
+                {
+                    try
+                    {
+                        using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                            cb_autostart.Content = (string)rkApp.GetValue(App.AppName) == System.Windows.Forms.Application.ExecutablePath ? def_text : dif_path_text;
+                    }
+                    catch
+                    {
+                        cb_autostart.Content = not_available_text;
+                    }
+                }
             }
         }
 
@@ -191,8 +221,20 @@ namespace OBSNotifier
                 }
 
                 // checkboxes
-                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
                 cb_close_on_closing.IsChecked = Settings.Instance.IsCloseOnOBSClosing;
+                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
+
+                // autostart
+                try
+                {
+                    using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                        cb_autostart.IsChecked = rkApp.GetValue(App.AppName) != null;
+                    UpdateAutostartCheckbox();
+                }
+                catch
+                {
+                    UpdateAutostartCheckbox(true);
+                }
             }
             else
             {
@@ -260,6 +302,46 @@ namespace OBSNotifier
 
             Settings.Instance.Save();
             UpdateNotification();
+        }
+
+        private void cb_autostart_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+
+            try
+            {
+                using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                    rkApp.SetValue(App.AppName, System.Windows.Forms.Application.ExecutablePath);
+                UpdateAutostartCheckbox();
+            }
+            catch
+            {
+                e.Handled = true;
+                IsChangedByCode = true;
+                cb_autostart.IsChecked = false;
+                IsChangedByCode = false;
+                UpdateAutostartCheckbox(true);
+            }
+        }
+
+        private void cb_autostart_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+
+            try
+            {
+                using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                    rkApp.DeleteValue(App.AppName, false);
+                UpdateAutostartCheckbox();
+            }
+            catch
+            {
+                e.Handled = true;
+                IsChangedByCode = true;
+                cb_autostart.IsChecked = true;
+                IsChangedByCode = false;
+                UpdateAutostartCheckbox(true);
+            }
         }
 
         private void cb_close_on_closing_Checked(object sender, RoutedEventArgs e)

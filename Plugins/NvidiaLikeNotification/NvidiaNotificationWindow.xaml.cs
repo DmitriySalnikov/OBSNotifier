@@ -160,26 +160,30 @@ namespace NvidiaLikeNotification
                                 {
                                     if (double.TryParse(args[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                                         i_icon.Height = val;
-                                        else
+                                    else
                                         i_icon.Height = 64;
                                     break;
                                 }
                             case "IconPath":
                                 {
                                     BitmapImage logo = new BitmapImage();
+                                    var path = args[1].Trim();
                                     try
                                     {
                                         try
                                         {
                                             logo.BeginInit();
-                                            logo.UriSource = new Uri(args[1].Trim());
+                                            logo.UriSource = new Uri(path);
                                             logo.EndInit();
                                         }
                                         catch
                                         {
                                             logo = new BitmapImage();
                                             logo.BeginInit();
-                                            logo.UriSource = new Uri(System.IO.Path.GetFullPath(args[1].Trim()));
+                                            if (System.IO.Path.IsPathRooted(path))
+                                                logo.UriSource = new Uri(path);
+                                            else
+                                                logo.UriSource = new Uri(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(GetType().Assembly.Location), path));
                                             logo.EndInit();
                                         }
                                     }

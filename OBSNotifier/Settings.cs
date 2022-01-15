@@ -30,7 +30,9 @@ namespace OBSNotifier
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
-        public bool FirstRun = true;
+        public bool FirstRun { get; set; } = true;
+        public string SkipVersion { get; set; } = "";
+
         public Rectangle SettingsWindowRect { get; set; } = new Rectangle(-1, -1, 0, 0);
         public string ServerAddress { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

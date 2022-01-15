@@ -76,7 +76,7 @@ To position the notification window, you can use the `OBSNotifier.Utils.GetWindo
 
 Also, for more information, you can view the code of the default plugin or `Nvidia-like` plugin in the `Plugins/NvidiaLikeNotification/` folder
 
-To test the plugin, place your dll in the `OBSNotifier/Plugins` folder with installed program.
+To test the plugin, place your dll in the `OBSNotifier/Plugins` folder with installed program, or to a subdirectory, for example `OBSNotifier/Plugins/MyAwesomePlugin/Plugin.dll`.
 
 **Tip:** For ease of development, you can add the command `copy /Y "[your dll]" "[target path]"` in post-build actions ([example](https://github.com/DmitriySalnikov/OBSNotifier/blob/463fcb63f6b07c6a80df4b9cc70f41ccd6f405c8/Plugins/NvidiaLikeNotification/NvidiaLikeNotification.csproj#L106)).
 

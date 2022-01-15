@@ -27,7 +27,9 @@
             <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
             
             <Separator Height="10" Background="{x:Null}"/>
-            <CheckBox x:Name="cb_close_on_closing" Content="Close program on OBS closing&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center"/>
+            <CheckBox x:Name="cb_autostart" Content="Run at Windows startup" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center"/>
+            <Separator Height="2" Background="{x:Null}"/>
+            <CheckBox x:Name="cb_close_on_closing" Content="Close this program when exiting OBS&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center"/>
             <Separator Height="16"/>
 
             <Label Content="Notification settigns" HorizontalAlignment="Center" FontWeight="Bold"/>
