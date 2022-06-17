@@ -10,7 +10,8 @@
         Opacity="1.0" SnapsToDevicePixels="True"
         Width="300" Height="90"
         Background="{x:Null}"
-        MouseDown="Window_MouseDown">
+        MouseDown="Window_MouseDown"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <BeginStoryboard x:Key="nvidia_anim">

@@ -53,6 +53,11 @@ namespace OBSNotifier.Plugins.Default
             owner = plugin;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Utils.RemoveWindowFromAltTab(this);
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             VerticalBlocksCount = 0;

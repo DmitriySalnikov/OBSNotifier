@@ -23,7 +23,11 @@ namespace OBSNotifier
         static public Settings Instance { get; private set; } = null;
 
         [JsonIgnore]
-        static string SaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.json");
+        const string SAVE_FILE_NAME = "settings.json";
+        [JsonIgnore]
+        static string SaveFile = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), App.AppName), SAVE_FILE_NAME);
+        [JsonIgnore]
+        static string OldSaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), SAVE_FILE_NAME);
 
         [JsonIgnore]
         DeferredAction saveSettings = new DeferredAction(() => Instance.SaveInternal(), 1000);
@@ -101,6 +105,7 @@ namespace OBSNotifier
         {
             try
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(SaveFile));
                 File.WriteAllText(SaveFile, JsonConvert.SerializeObject(this, Formatting.Indented));
             }
             catch (Exception ex)
@@ -115,6 +120,21 @@ namespace OBSNotifier
             {
                 if (File.Exists(SaveFile))
                     Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
+
+                // The logic of updating from locally saved settings in the application folder to AppData
+                if (File.Exists(OldSaveFile))
+                {
+                    // Load old settings
+                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(OldSaveFile));
+
+                    if (Instance !=null)
+                    {
+                        // Save to old file with new comments
+                        File.WriteAllText(OldSaveFile, "// This file will no longer be used to store settings.\n// The current settings file is located in %Appdata%/OBSNotifier/\n\n" + JsonConvert.SerializeObject(Instance, Formatting.Indented));
+                        // Create new file in appdata
+                        Instance.SaveInternal();
+                    }
+                }
 
                 if (Instance == null)
                     Instance = new Settings();

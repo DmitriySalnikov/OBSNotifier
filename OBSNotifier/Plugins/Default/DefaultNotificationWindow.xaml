@@ -9,7 +9,8 @@
         WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
         Opacity="1.0"
         Width="180" Height="104"
-        Background="{x:Null}">
+        Background="{x:Null}"
+        Loaded="Window_Loaded">
 
     <StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">
         <local:DefaultNotificationBlock/>

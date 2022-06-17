@@ -53,6 +53,11 @@ namespace NvidiaLikeNotification
             i_icon.SizeChanged += I_icon_SizeChanged;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Utils.RemoveWindowFromAltTab(this);
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             owner = null;
