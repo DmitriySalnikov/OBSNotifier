@@ -119,30 +119,36 @@ namespace OBSNotifier
             try
             {
                 if (File.Exists(SaveFile))
-                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
-
-                // The logic of updating from locally saved settings in the application folder to AppData
-                if (File.Exists(OldSaveFile))
                 {
-                    // Load old settings
-                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(OldSaveFile));
-
-                    if (Instance !=null)
-                    {
-                        // Save to old file with new comments
-                        File.WriteAllText(OldSaveFile, "// This file will no longer be used to store settings.\n// The current settings file is located in %Appdata%/OBSNotifier/\n\n" + JsonConvert.SerializeObject(Instance, Formatting.Indented));
-                        // Create new file in appdata
-                        Instance.SaveInternal();
-                    }
+                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
+                    return;
                 }
-
-                if (Instance == null)
-                    Instance = new Settings();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+
+            // The logic of updating from locally saved settings in the application folder to AppData
+            try
+            {
+                if (File.Exists(OldSaveFile))
+                {
+                    // Load old settings
+                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(OldSaveFile));
+                    // Save to old file with new comments
+                    File.WriteAllText(OldSaveFile, "// This file will no longer be used to store settings.\n// The current settings file is located in %Appdata%/OBSNotifier/\n\n" + JsonConvert.SerializeObject(Instance, Formatting.Indented));
+                    // Create new file in appdata
+                    Instance.SaveInternal();
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            Instance = new Settings();
         }
 
         #endregion
