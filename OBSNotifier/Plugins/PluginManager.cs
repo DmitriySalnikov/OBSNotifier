@@ -27,8 +27,7 @@ namespace OBSNotifier.Plugins
         public static string PluginsExt { get; } = "*.dll";
         public static string TempDir { get; } = Path.Combine(Environment.GetEnvironmentVariable("Temp"), "OBSNotifier");
 
-        static string LogFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "plugin_manager_log.txt");
-        static TextWriter LogWriter = null;
+        Logger logger = new Logger("plugin_manager_log.txt");
 
         public List<PluginData> LoadedPlugins { get; } = new List<PluginData>();
         public PluginData CurrentPlugin { get; private set; }
@@ -37,17 +36,6 @@ namespace OBSNotifier.Plugins
 
         public PluginManager()
         {
-            try
-            {
-                if (File.Exists(LogFile))
-                    File.Delete(LogFile);
-                LogWriter  = new StreamWriter(File.OpenWrite(LogFile));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"The log file cannot be opened for writing. {ex.Message}");
-            }
-
             CreateTempDirectory();
 
             WriteLog(":Plugin Manager Loading Begin");
@@ -227,7 +215,7 @@ namespace OBSNotifier.Plugins
             return Assembly.LoadFile(file);
         }
 
-        public static bool IsTempDirectoryExists()
+        public bool IsTempDirectoryExists()
         {
             if (Directory.Exists(TempDir))
             {
@@ -243,7 +231,7 @@ namespace OBSNotifier.Plugins
             return false;
         }
 
-        public static bool CreateTempDirectory()
+        public bool CreateTempDirectory()
         {
             try
             {
@@ -255,13 +243,6 @@ namespace OBSNotifier.Plugins
                 WriteLog("Cant create temp directory: " + TempDir);
                 return false;
             }
-        }
-
-        public static void WriteLog(string txt)
-        {
-            Console.WriteLine(txt);
-            LogWriter?.WriteLine(txt);
-            //LogWriter?.Flush();
         }
 
         public bool SelectCurrent(string name)
@@ -332,6 +313,16 @@ namespace OBSNotifier.Plugins
             };
         }
 
+        void WriteLog(string txt)
+        {
+            logger?.Write(txt);
+        }
+        
+        void WriteLog(Exception ex)
+        {
+            logger?.Write(ex);
+        }
+
         public void Dispose()
         {
             foreach (var pp in LoadedPlugins)
@@ -347,8 +338,8 @@ namespace OBSNotifier.Plugins
             }
 
             LoadedPlugins.Clear();
-            LogWriter?.Close();
-            LogWriter = null;
+            logger?.Dispose();
+            logger = null;
 
             try
             {

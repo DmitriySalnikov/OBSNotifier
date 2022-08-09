@@ -3,6 +3,7 @@ using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace OBSNotifier
             TryingToReconnect,
         }
 
+        static Logger logger;
         public static event EventHandler<ConnectionState> ConnectionStateChanged;
         public static OBSWebsocket obs;
         public static PluginManager plugins;
@@ -60,10 +62,15 @@ namespace OBSNotifier
                 mutex = null;
 
                 Environment.ExitCode = -1;
-                MessageBox.Show("An instance of this application is already running. The application will be closed.", "Instance already running");
+                ShowMessageBox("An instance of this application is already running. The application will be closed.", "Instance already running");
                 Shutdown();
                 return;
             }
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+            logger = new Logger("log.txt");
 
             // Fix the current directory if app starts using autorun (in System32...)
             if (Environment.CurrentDirectory.ToLower() == Environment.GetFolderPath(Environment.SpecialFolder.System).ToLower())
@@ -142,6 +149,9 @@ namespace OBSNotifier
                 obs = null;
             }
 
+            gc_collect.Dispose();
+            gc_collect = null;
+
             settingsWindow?.Close();
             settingsWindow = null;
 
@@ -155,14 +165,14 @@ namespace OBSNotifier
             trayIcon?.Dispose();
             trayIcon = null;
 
-            gc_collect.Dispose();
-            gc_collect = null;
-
             close_reconnect?.Abort();
             close_reconnect = null;
 
             updateClient?.Dispose();
             updateClient = null;
+
+            logger?.Dispose();
+            logger = null;
 
             Settings.Instance?.Save(true);
             mutex?.Dispose();
@@ -195,6 +205,22 @@ namespace OBSNotifier
         void Menu_CheckForUpdates(object sender, EventArgs e)
         {
             CheckForUpdates();
+        }
+
+        public static void Log(string txt)
+        {
+            logger?.Write(txt);
+        }
+
+        public static void Log(Exception ex)
+        {
+            logger.Write(ex);
+        }
+
+        public static MessageBoxResult ShowMessageBox(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
+        {
+            logger?.Write($"MessageBox shown. Text: '{messageBoxText}', Caption: '{caption}', Button: '{button}', Icon: '{icon}', DefaultResult: '{defaultResult}', Options: '{options}'");
+            return MessageBox.Show(messageBoxText, caption, button, icon, defaultResult, options);
         }
 
         static void ChangeConnectionState(ConnectionState newState)
@@ -294,15 +320,15 @@ namespace OBSNotifier
             }
             catch (AuthFailureException)
             {
-                MessageBox.Show("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             catch (ErrorResponseException ex)
             {
-                MessageBox.Show("Connect failed : " + ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox("Connect failed : " + ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox(ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
             return false;
@@ -362,7 +388,7 @@ namespace OBSNotifier
             catch (Exception ex)
             {
                 if (!startupUpdateCheck)
-                    MessageBox.Show($"Failed to request info about the new version.\n{ex.Message}");
+                    ShowMessageBox($"Failed to request info about the new version.\n{ex.Message}");
                 this.InvokeAction(() => ClearUpdateData());
             }
         }
@@ -372,7 +398,7 @@ namespace OBSNotifier
             if (e.Error is WebException webExp)
             {
                 if (!startupUpdateCheck)
-                    MessageBox.Show($"Failed to get info about the new version.\n{webExp.Message}");
+                    ShowMessageBox($"Failed to get info about the new version.\n{webExp.Message}");
 
                 // I think it's better to do this not at the time of calling the event
                 this.InvokeAction(() => ClearUpdateData());
@@ -400,7 +426,7 @@ namespace OBSNotifier
                     // New release
                     if (newVersion > currentVersion)
                     {
-                        var updateDialog = MessageBox.Show($"Current version: {System.Windows.Forms.Application.ProductVersion}\nNew version: {newVersion}\nWould you like to go to the download page?\n\nSelect \"No\" to skip this version.", "A new version of OBS Notifier is available", MessageBoxButton.YesNoCancel);
+                        var updateDialog = ShowMessageBox($"Current version: {System.Windows.Forms.Application.ProductVersion}\nNew version: {newVersion}\nWould you like to go to the download page?\n\nSelect \"No\" to skip this version.", "A new version of OBS Notifier is available", MessageBoxButton.YesNoCancel);
                         if (updateDialog == MessageBoxResult.Yes)
                         {
                             // Open the download page
@@ -418,7 +444,7 @@ namespace OBSNotifier
                         // Don't show this on startup
                         if (!startupUpdateCheck)
                         {
-                            MessageBox.Show($"You are using the latest version: {System.Windows.Forms.Application.ProductVersion}");
+                            ShowMessageBox($"You are using the latest version: {System.Windows.Forms.Application.ProductVersion}");
                         }
                     }
                 }
@@ -428,7 +454,7 @@ namespace OBSNotifier
                 // Don't show this on startup
                 if (!startupUpdateCheck)
                 {
-                    MessageBox.Show($"Failed to check for update.\n{ex.Message}");
+                    ShowMessageBox($"Failed to check for update.\n{ex.Message}");
                 }
             }
 

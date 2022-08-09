@@ -110,7 +110,7 @@ namespace OBSNotifier
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                App.Log(ex);
             }
         }
 
@@ -126,7 +126,7 @@ namespace OBSNotifier
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                App.Log(ex);
             }
 
             // The logic of updating from locally saved settings in the application folder to AppData
@@ -145,7 +145,7 @@ namespace OBSNotifier
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                App.Log(ex);
             }
 
             Instance = new Settings();
