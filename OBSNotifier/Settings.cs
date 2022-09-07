@@ -70,6 +70,9 @@ namespace OBSNotifier
 
         ~Settings()
         {
+            if (saveSettings.IsTimerActive())
+                SaveInternal();
+
             saveSettings.Dispose();
             saveSettings = null;
         }

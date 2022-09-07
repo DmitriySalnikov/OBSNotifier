@@ -20,7 +20,7 @@ namespace OBSNotifier
             {
                 if (File.Exists(this.saveFile))
                     File.Delete(this.saveFile);
-                logWriter  = new StreamWriter(File.OpenWrite(this.saveFile));
+                logWriter = new StreamWriter(File.OpenWrite(this.saveFile));
                 flushFileAction = new DeferredAction(() => logWriter.Flush(), 500);
             }
             catch (Exception ex)
@@ -36,9 +36,17 @@ namespace OBSNotifier
             flushFileAction?.Dispose();
             flushFileAction = null;
 
-            if (logWriter!= null)
+            if (logWriter != null)
             {
-                logWriter.Flush();
+                try
+                {
+                    logWriter.Flush();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
                 logWriter.Close();
                 logWriter.Dispose();
             }

@@ -161,7 +161,10 @@ namespace OBSNotifier
         /// <returns></returns>
         public static string GetShortPath(string path, uint chars)
         {
-            var short_name = "";
+            if (string.IsNullOrEmpty(path))
+                return "";
+
+            string short_name;
             if (path.Length > chars)
             {
                 short_name = path.Substring(path.Length - (int)chars);

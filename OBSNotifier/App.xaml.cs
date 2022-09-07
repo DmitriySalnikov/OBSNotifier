@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Communication;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -44,12 +45,6 @@ namespace OBSNotifier
         static CancellationTokenSource reconnectCancellationToken;
         AboutBox1 aboutBox;
 
-        #region Version Checking
-
-        private WebClient updateClient = null;
-        private bool startupUpdateCheck = true;
-
-        #endregion
 
         private void Application_Startup(object sender, StartupEventArgs ee)
         {
@@ -82,7 +77,7 @@ namespace OBSNotifier
             obs.WSTimeout = TimeSpan.FromMilliseconds(1000);
             obs.Connected += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
-            obs.OBSExit += Obs_OBSExit;
+            obs.ExitStarted += Obs_ExitStarted;
 
             Settings.Load();
             plugins = new PluginManager();
@@ -168,8 +163,7 @@ namespace OBSNotifier
             close_reconnect?.Abort();
             close_reconnect = null;
 
-            updateClient?.Dispose();
-            updateClient = null;
+            ClearUpdateData();
 
             logger?.Dispose();
             logger = null;
@@ -268,6 +262,7 @@ namespace OBSNotifier
 
         static void ReconnectionThread()
         {
+            Thread.Sleep(500); // HACK need to rely on some events
             while (true)
             {
                 if (obs.IsConnected)
@@ -295,6 +290,7 @@ namespace OBSNotifier
                 reconnectThread.Dispose();
                 reconnectThread = null;
                 reconnectCancellationToken = null;
+                Settings.Instance.IsConnected = false; // TODO test
             }
         }
 
@@ -304,7 +300,7 @@ namespace OBSNotifier
             try
             {
                 if (string.IsNullOrWhiteSpace(adrs))
-                    adrs = "ws://localhost:4444";
+                    adrs = "ws://localhost:4455";
                 if (!adrs.StartsWith("ws://"))
                     adrs = "ws://" + adrs;
                 var pass = pas;
@@ -317,14 +313,6 @@ namespace OBSNotifier
                     Settings.Instance.Save();
                     return true;
                 }
-            }
-            catch (AuthFailureException)
-            {
-                ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-            catch (ErrorResponseException ex)
-            {
-                ShowMessageBox("Connect failed : " + ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             catch (Exception ex)
             {
@@ -348,19 +336,65 @@ namespace OBSNotifier
 
         private void Obs_Connected(object sender, EventArgs e)
         {
+            Log($"Connected to OBS");
             ChangeConnectionState(ConnectionState.Connected);
         }
 
-        private void Obs_Disconnected(object sender, EventArgs e)
+        private void Obs_Disconnected(object sender, ObsDisconnectionInfo e)
         {
+            Log($"Disconnected from OBS: {e.ObsCloseCode}");
+
+            if ((int)e.ObsCloseCode < 4000)
+            {
+                var ee = (System.Net.WebSockets.WebSocketCloseStatus)e.ObsCloseCode;
+                switch (ee)
+                {
+                    case System.Net.WebSockets.WebSocketCloseStatus.NormalClosure:
+                    case System.Net.WebSockets.WebSocketCloseStatus.EndpointUnavailable:
+                    case System.Net.WebSockets.WebSocketCloseStatus.ProtocolError:
+                    case System.Net.WebSockets.WebSocketCloseStatus.InvalidMessageType:
+                    case System.Net.WebSockets.WebSocketCloseStatus.Empty:
+                    case System.Net.WebSockets.WebSocketCloseStatus.InvalidPayloadData:
+                    case System.Net.WebSockets.WebSocketCloseStatus.PolicyViolation:
+                    case System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig:
+                    case System.Net.WebSockets.WebSocketCloseStatus.MandatoryExtension:
+                    case System.Net.WebSockets.WebSocketCloseStatus.InternalServerError:
+                        break;
+                }
+            }
+            else
+            {
+                switch (e.ObsCloseCode)
+                {
+                    case ObsCloseCodes.UnknownReason:
+                    case ObsCloseCodes.MessageDecodeError:
+                    case ObsCloseCodes.MissingDataField:
+                    case ObsCloseCodes.InvalidDataFieldType:
+                    case ObsCloseCodes.InvalidDataFieldValue:
+                    case ObsCloseCodes.UnknownOpCode:
+                    case ObsCloseCodes.NotIdentified:
+                    case ObsCloseCodes.AlreadyIdentified:
+                    case ObsCloseCodes.UnsupportedRpcVersion:
+                    case ObsCloseCodes.SessionInvalidated:
+                    case ObsCloseCodes.UnsupportedFeature:
+                        break;
+                    case ObsCloseCodes.AuthenticationFailed:
+                        ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        break;
+                }
+            }
+
+
             if (Settings.Instance.IsConnected)
                 ChangeConnectionState(ConnectionState.TryingToReconnect);
             else
                 ChangeConnectionState(ConnectionState.Disconnected);
         }
 
-        private void Obs_OBSExit(object sender, EventArgs e)
+        private void Obs_ExitStarted(object sender, EventArgs e)
         {
+            Log("OBS is about to close");
+
             if (Settings.Instance.IsCloseOnOBSClosing && settingsWindow == null)
             {
                 StopReconnection();
@@ -369,6 +403,9 @@ namespace OBSNotifier
         }
 
         #region Version Checking
+
+        private WebClient updateClient = null;
+        private bool startupUpdateCheck = true;
 
         void CheckForUpdates()
         {
