@@ -304,7 +304,7 @@ namespace OBSNotifier
             try
             {
                 if (string.IsNullOrWhiteSpace(adrs))
-                    adrs = "ws://localhost:4444";
+                    adrs = "ws://localhost:4445";
                 if (!adrs.StartsWith("ws://"))
                     adrs = "ws://" + adrs;
                 var pass = pas;

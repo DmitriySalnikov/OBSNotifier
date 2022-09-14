@@ -6,6 +6,6 @@ Their main difference from the original versions 4.9.1 is that they added suppor
 
 `obs-websocket-dotnet.dll` is used by the OBS Notifier application itself.
 
-`obs-websocket.dll` is optional. But if you want to see notifications about the successful saving of replays, I recommend replacing the original plugin file with a modified one.
+`obs-websocket.dll` or `obs-websocket-compat.dll` is optional. But if you want to see notifications about the successful saving of replays, I recommend replacing the original plugin file with a modified one.
 
-* Just copy the file `obs-websocket.dll` to the folder `.../obs-studio/obs-plugins/64bit/` where you have already installed the `obs-websocket` plugin.
+* Copy the file `obs-websocket.dll` (for OBS 27) or `obs-websocket-compat.dll` (for OBS 28+) to the folder `.../obs-studio/obs-plugins/64bit/` where you have already installed the `obs-websocket` plugin or its `compat` version.
