@@ -3,11 +3,11 @@
 <img src="Images/obs_notifier.png"/>
 
 This is a program for displaying notifications from OBS.
-In order for the program to work, you need to install the [obs-websocket](https://github.com/obsproject/obs-websocket/releases/tag/4.9.1) plugin in your OBS.
+In order for the program to work, you need to install the [obs-websocket](https://github.com/obsproject/obs-websocket/releases/tag/4.9.1) or [obs-websocket-compat (for OBS 28)](https://github.com/obsproject/obs-websocket/releases/tag/4.9.1-compat) plugin in your OBS.
 
 ## Important
 
-**The "Replay Saved" notification does not work without using the modified version of obs-websocket 4.9.1 plugin.** Because in obs-websocket 4.9.1 there is no support for the "ReplaySaved" event, and 4.9.1 is used because it is the latest stable version. After the release of version 5.0, this will no longer be a problem.
+**The "Replay Saved" notification does not work without using the modified version of obs-websocket 4.9.1 plugin.** Because in obs-websocket 4.9.1 there is no support for the "ReplaySaved" event, and 4.9.1 is used because upgrading to version 5 is still in progress.
 
 For more information on how to install this program and get working notifications about saving replays, [read this article](https://dmitriysalnikov.itch.io/obs-notifier/devlog/335353/how-to-install-obs-notifier).
 
@@ -15,7 +15,7 @@ For more information on how to install this program and get working notification
 
 ## Features
 
-* Supports `obs-websocket` 4.9.1
+* Supports `obs-websocket` 4.9.1 or 4.9.1-compat
 * Plugin system
 * Separate settings for each plugin
 * Adjusting the position and offsets of notifications
