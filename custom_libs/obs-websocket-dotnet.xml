@@ -1009,9 +1009,9 @@
             </summary>
             <param name="hotkeyName">Unique name of the hotkey, as defined when registering the hotkey (e.g. "ReplayBuffer.Save")</param>
         </member>
-        <member name="M:OBSWebsocketDotNet.OBSWebsocket.TriggerHotkeyBySequence(OBSWebsocketDotNet.Types.OBSHotkey,OBSWebsocketDotNet.Types.KeyModifier)">
+        <member name="M:OBSWebsocketDotNet.OBSWebsocket.TriggerHotkeyByKeySequence(OBSWebsocketDotNet.Types.OBSHotkey,OBSWebsocketDotNet.Types.KeyModifier)">
             <summary>
-            EExecutes hotkey routine, identified by bound combination of keys. A single key combination might trigger multiple hotkey routines depending on user settings
+            Triggers a hotkey using a sequence of keys.
             </summary>
             <param name="keyId">Main key identifier (e.g. OBS_KEY_A for key "A"). Available identifiers are here: https://github.com/obsproject/obs-studio/blob/master/libobs/obs-hotkeys.h</param>
             <param name="keyModifier">Optional key modifiers object. You can combine multiple key operators. e.g. KeyModifier.Shift | KeyModifier.Control</param>
@@ -2127,6 +2127,11 @@
             Default Constructor
             </summary>
         </member>
+        <member name="T:OBSWebsocketDotNet.Types.InputBasicInfo">
+            <summary>
+            Input class which also shows the Unversioned Input Kind
+            </summary>
+        </member>
         <member name="P:OBSWebsocketDotNet.Types.InputBasicInfo.UnversionedKind">
             <summary>
             Unversioned Kind of the Input
@@ -2141,6 +2146,86 @@
         <member name="M:OBSWebsocketDotNet.Types.InputBasicInfo.#ctor">
             <summary>
             Default Constructor
+            </summary>
+        </member>
+        <member name="T:OBSWebsocketDotNet.Types.InputBrowserSourceSettings">
+            <summary>
+            Input class dedicated for the ffmpeg_source input kind.
+            Usage: InputBrowserSourceSettings.FromInputSettings(InputSettings)
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.CustomFPS">
+            <summary>
+            Set a custom FPS (using the FPS property)
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.FPS">
+            <summary>
+            Frames Per Second
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.RerouteAudio">
+            <summary>
+            Control audio via OBS
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.Height">
+            <summary>
+            Height
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.Width">
+            <summary>
+            Width
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.CSS">
+            <summary>
+            Custom CSS
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.IsLocalFile">
+            <summary>
+            Is Local file
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.LocalFile">
+            <summary>
+            Local filename (when IsLocalFile is true)
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.URL">
+            <summary>
+            URL (when IsLocalFile is false)
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.RestartWhenActive">
+            <summary>
+            Refresh browser when scene becomes active
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.ShutdownWhenNotVisible">
+            <summary>
+            Shutdown source when not visible
+            </summary>
+        </member>
+        <member name="P:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.ControlLevel">
+            <summary>
+            Page Permissions
+            </summary>
+        </member>
+        <member name="M:OBSWebsocketDotNet.Types.InputBrowserSourceSettings.FromInputSettings(OBSWebsocketDotNet.Types.InputSettings)">
+            <summary>
+            Static constructor to instanciate a InputBrowserSourceSettings object
+            Requires an InputSettings class with InputKind of browser_source to create
+            </summary>
+            <param name="settings">Settings object</param>
+            <returns></returns>
+        </member>
+        <member name="T:OBSWebsocketDotNet.Types.InputFFMpegSettings">
+            <summary>
+            Input class dedicated for the ffmpeg_source input kind.
+            Usage: InputFFMpegSettings.FromInputSettings(InputSettings)
             </summary>
         </member>
         <member name="P:OBSWebsocketDotNet.Types.InputFFMpegSettings.BufferingMB">
@@ -2202,6 +2287,14 @@
             <summary>
             Speed percentage
             </summary>
+        </member>
+        <member name="M:OBSWebsocketDotNet.Types.InputFFMpegSettings.FromInputSettings(OBSWebsocketDotNet.Types.InputSettings)">
+            <summary>
+            Static constructor to instanciate a InputFFMpegSettings object
+            Requires an InputSettings class with InputKind of ffmpeg_source to create
+            </summary>
+            <param name="settings">Setings object</param>
+            <returns></returns>
         </member>
         <member name="T:OBSWebsocketDotNet.Types.InputSettings">
             <summary>

@@ -93,8 +93,6 @@ namespace OBSNotifier
         readonly OBSWebsocket obs;
         readonly App app;
 
-        string prev_record_name;
-
         // https://github.com/obsproject/obs-studio/blob/fab293a6862dbe6aca9eb1bde0b00fad2d2cd785/UI/window-basic-main.cpp#L3098
         readonly List<string> obs_audio_types = new List<string>
         {
@@ -173,7 +171,7 @@ namespace OBSNotifier
         #region Utils
         void ResetVals()
         {
-            prev_record_name = "";
+            // Nothing to reset in this version
         }
 
         void InvokeNotif(Action act)
@@ -397,7 +395,7 @@ namespace OBSNotifier
             try
             {
                 var src = obs.GetInputList().Find((s) => s.InputName == inputName);
-                if (src == null || !obs_audio_types.Contains(src.InputName)) // TODO need testing
+                if (src == null || !obs_audio_types.Contains(src.InputKind))
                     return;
             }
             catch (Exception ex)

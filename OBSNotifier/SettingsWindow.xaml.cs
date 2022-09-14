@@ -12,6 +12,7 @@ namespace OBSNotifier
     {
         bool IsChangedByCode = false;
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        bool IsConnecting = false;
 
         public SettingsWindow()
         {
@@ -50,6 +51,8 @@ namespace OBSNotifier
 
         void UpdateConnectButton()
         {
+            btn_connect.IsEnabled = !IsConnecting;
+
             if (App.obs.IsConnected)
                 btn_connect.Content = "Disconnect";
             else
@@ -252,6 +255,7 @@ namespace OBSNotifier
 
         private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
         {
+            IsConnecting = false;
             UpdateConnectButton();
         }
 
@@ -265,16 +269,12 @@ namespace OBSNotifier
                 }
                 else
                 {
-                    if (App.ConnectToOBS(tb_address.Text, tb_password.Password))
-                    {
-                        Settings.Instance.ServerAddress = tb_address.Text;
-                        Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
-                        Settings.Instance.Save();
-                    }
-                    else
-                    {
-                        Settings.Instance.IsConnected = false;
-                    }
+                    App.ConnectToOBS(tb_address.Text, tb_password.Password);
+                    IsConnecting = true;
+
+                    Settings.Instance.ServerAddress = tb_address.Text;
+                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
+                    Settings.Instance.Save();
                 }
             }
             else
@@ -450,7 +450,7 @@ namespace OBSNotifier
 
         private void btn_select_active_notifications_Click(object sender, RoutedEventArgs e)
         {
-            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes??App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
+            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes ?? App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
 
             var an = new ActiveNotifications(notifs);
             an.Left = Left + Width / 2 - an.Width / 2;
@@ -510,7 +510,7 @@ namespace OBSNotifier
 
         private void btn_open_plugin_settings_Click(object sender, RoutedEventArgs e)
         {
-            if (App.plugins.CurrentPlugin.plugin!=null)
+            if (App.plugins.CurrentPlugin.plugin != null)
             {
                 App.plugins.CurrentPlugin.plugin?.OpenCustomSettings();
                 Settings.Instance.CurrentPluginSettings.CustomSettings = App.plugins.CurrentPlugin.plugin.GetCustomSettingsDataToSave();

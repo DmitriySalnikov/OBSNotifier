@@ -247,7 +247,7 @@ namespace OBSNotifier.Plugins.Default
                     (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, (sp_main_panel.Children.Count - (double)i) / sp_main_panel.Children.Count);
             else
                 for (int i = sp_main_panel.Children.Count - 1; i >= 0; i--)
-                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, ((double)i+1) / sp_main_panel.Children.Count);
+                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(CurrentNotifBlockSettings, ((double)i + 1) / sp_main_panel.Children.Count);
 
             ShowWithLocationFix();
         }

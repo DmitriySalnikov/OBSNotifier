@@ -66,7 +66,7 @@ namespace OBSNotifier
         {
             var pixelWidthFactor = SystemParameters.WorkArea.Width / screen.WorkingArea.Width;
             var pixelHeightFactor = SystemParameters.WorkArea.Height / screen.WorkingArea.Height;
-            
+
             return new Rect
             {
                 X = value.X * pixelWidthFactor,

@@ -221,6 +221,8 @@ namespace OBSNotifier
         {
             if (CurrentConnectionState != newState)
             {
+                CurrentConnectionState = newState;
+
                 if (newState == ConnectionState.TryingToReconnect)
                 {
                     close_reconnect?.Abort();
@@ -231,12 +233,11 @@ namespace OBSNotifier
                 }
                 else
                 {
+                    close_reconnect?.Abort();
                     close_reconnect = Current.InvokeAction(() => StopReconnection());
                 }
 
-                CurrentConnectionState = newState;
-                Current.InvokeAction(() => ConnectionStateChanged?.Invoke(Current, CurrentConnectionState));
-
+                Current.InvokeAction(() => ConnectionStateChanged?.Invoke(Current, newState));
                 UpdateTrayStatus();
             }
         }
@@ -262,18 +263,16 @@ namespace OBSNotifier
 
         static void ReconnectionThread()
         {
-            Thread.Sleep(500); // HACK need to rely on some events
+            //Thread.Sleep(500); // HACK need to rely on some events
             while (true)
             {
-                if (obs.IsConnected)
-                    return;
-                if (ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password)))
-                    return;
+                ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
 
                 if (reconnectCancellationToken.IsCancellationRequested) return;
                 for (int i = 0; i < 10; i++)
                 {
                     Thread.Sleep(500);
+                    if (obs.IsConnected) return;
                     if (reconnectCancellationToken.IsCancellationRequested) return;
                 }
             }
@@ -281,6 +280,8 @@ namespace OBSNotifier
 
         static void StopReconnection()
         {
+            Settings.Instance.IsConnected = false; // TODO test
+
             if (reconnectCancellationToken != null)
             {
                 reconnectCancellationToken.Cancel();
@@ -290,11 +291,13 @@ namespace OBSNotifier
                 reconnectThread.Dispose();
                 reconnectThread = null;
                 reconnectCancellationToken = null;
-                Settings.Instance.IsConnected = false; // TODO test
+
+                if (obs.IsConnected)
+                    obs.Disconnect();
             }
         }
 
-        internal static bool ConnectToOBS(string adr, string pas)
+        internal static void ConnectToOBS(string adr, string pas)
         {
             var adrs = adr;
             try
@@ -306,26 +309,18 @@ namespace OBSNotifier
                 var pass = pas;
 
                 obs.Connect(adrs, pass);
-
-                if (obs.IsConnected)
-                {
-                    Settings.Instance.IsConnected = true;
-                    Settings.Instance.Save();
-                    return true;
-                }
+                Settings.Instance.Save();
             }
             catch (Exception ex)
             {
                 ShowMessageBox(ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-
-            return false;
         }
 
         internal static void DisconnectFromOBS()
         {
             Settings.Instance.IsConnected = false;
-            obs.Disconnect();
+            obs.wsConnection?.Stop(0, "");
 
             if (CurrentConnectionState == ConnectionState.TryingToReconnect)
                 IsNeedToSkipNextConnectionNotifications = true;
@@ -338,15 +333,16 @@ namespace OBSNotifier
         {
             Log($"Connected to OBS");
             ChangeConnectionState(ConnectionState.Connected);
+            Settings.Instance.IsConnected = true;
         }
 
         private void Obs_Disconnected(object sender, ObsDisconnectionInfo e)
         {
-            Log($"Disconnected from OBS: {e.ObsCloseCode}");
-
             if ((int)e.ObsCloseCode < 4000)
             {
                 var ee = (System.Net.WebSockets.WebSocketCloseStatus)e.ObsCloseCode;
+                Log($"Disconnected from OBS: {ee}");
+
                 switch (ee)
                 {
                     case System.Net.WebSockets.WebSocketCloseStatus.NormalClosure:
@@ -359,11 +355,14 @@ namespace OBSNotifier
                     case System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig:
                     case System.Net.WebSockets.WebSocketCloseStatus.MandatoryExtension:
                     case System.Net.WebSockets.WebSocketCloseStatus.InternalServerError:
+                        Settings.Instance.IsConnected = false;
                         break;
                 }
             }
             else
             {
+                Log($"Disconnected from OBS: {e.ObsCloseCode}");
+
                 switch (e.ObsCloseCode)
                 {
                     case ObsCloseCodes.UnknownReason:
@@ -379,14 +378,18 @@ namespace OBSNotifier
                     case ObsCloseCodes.UnsupportedFeature:
                         break;
                     case ObsCloseCodes.AuthenticationFailed:
-                        ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        // TODO ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        StopReconnection();
+                        DisconnectFromOBS();
                         break;
                 }
             }
 
-
+            Log(Settings.Instance.IsConnected.ToString());
             if (Settings.Instance.IsConnected)
+            {
                 ChangeConnectionState(ConnectionState.TryingToReconnect);
+            }
             else
                 ChangeConnectionState(ConnectionState.Disconnected);
         }

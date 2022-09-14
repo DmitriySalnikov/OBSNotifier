@@ -150,7 +150,7 @@ namespace NvidiaLikeNotification
                                     if (uint.TryParse(args[1].Trim(), out uint val))
                                         CurrentParams.SlideOffset = val;
                                     else
-                                        CurrentParams.SlideOffset= 180;
+                                        CurrentParams.SlideOffset = 180;
                                     break;
                                 }
                             case "MaxPathChars":
@@ -236,7 +236,7 @@ namespace NvidiaLikeNotification
 
             var timeline = (anim.Storyboard.Children[0] as ParallelTimeline);
             var anim_front = (timeline.Children[0] as ThicknessAnimationUsingKeyFrames);
-            var anim_back = (timeline.Children[1]as ThicknessAnimationUsingKeyFrames);
+            var anim_back = (timeline.Children[1] as ThicknessAnimationUsingKeyFrames);
             var keys_front = anim_front.KeyFrames;
             var keys_back = anim_back.KeyFrames;
 

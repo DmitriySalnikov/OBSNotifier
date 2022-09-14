@@ -37,7 +37,7 @@ namespace OBSNotifier
         public static string DecryptString(string encrypted)
         {
             if (encrypted == null) throw new ArgumentNullException("encrypted");
-            if (encrypted  == string.Empty) return "";
+            if (encrypted == string.Empty) return "";
             byte[] data = Convert.FromBase64String(encrypted);
             return Encoding.Unicode.GetString(data);
         }
