@@ -37,7 +37,7 @@ namespace OBSNotifier
         public static string DecryptString(string encrypted)
         {
             if (encrypted == null) throw new ArgumentNullException("encrypted");
-            if (encrypted  == string.Empty) return "";
+            if (encrypted == string.Empty) return "";
             byte[] data = Convert.FromBase64String(encrypted);
             return Encoding.Unicode.GetString(data);
         }
@@ -161,7 +161,10 @@ namespace OBSNotifier
         /// <returns></returns>
         public static string GetShortPath(string path, uint chars)
         {
-            var short_name = "";
+            if (string.IsNullOrEmpty(path))
+                return "";
+
+            string short_name;
             if (path.Length > chars)
             {
                 short_name = path.Substring(path.Length - (int)chars);

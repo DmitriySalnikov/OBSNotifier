@@ -198,7 +198,7 @@ namespace OBSNotifier.Plugins
 
                 string[] fields = args.Name.Split(',');
                 string name = fields[0];
-                string culture = fields[2];
+                string culture = fields.Length > 1 ? fields[2] : "";
                 // failing to ignore queries for satellite resource assemblies or using [assembly: NeutralResourcesLanguage("en-US", UltimateResourceFallbackLocation.MainAssembly)] 
                 // in AssemblyInfo.cs will crash the program on non en-US based system cultures.
                 if (name.EndsWith(".resources") && !culture.EndsWith("neutral")) return null;
@@ -317,7 +317,7 @@ namespace OBSNotifier.Plugins
         {
             logger?.Write(txt);
         }
-        
+
         void WriteLog(Exception ex)
         {
             logger?.Write(ex);

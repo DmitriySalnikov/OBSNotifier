@@ -12,6 +12,8 @@ namespace OBSNotifier
     {
         bool IsChangedByCode = false;
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+        bool IsConnecting = false;
+        readonly DeferredAction reactivateConnectButtonAndDisconnect;
 
         public SettingsWindow()
         {
@@ -20,6 +22,14 @@ namespace OBSNotifier
             UpdateConnectButton();
 
             App.ConnectionStateChanged += App_ConnectionStateChanged;
+            App.obs.Connected += Obs_Connected;
+            App.obs.Disconnected += Obs_Disconnected;
+            reactivateConnectButtonAndDisconnect = new DeferredAction(() =>
+            {
+                IsConnecting = false;
+                App.obs.Disconnect();
+                UpdateConnectButton();
+            }, 1000, this);
 
             IsChangedByCode = true;
 
@@ -48,10 +58,40 @@ namespace OBSNotifier
             IsChangedByCode = false;
         }
 
+        private void Obs_Disconnected(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
+        {
+            reactivateConnectButtonAndDisconnect.Cancel();
+            this.InvokeAction(() =>
+            {
+                if (IsConnecting)
+                {
+                    IsConnecting = false;
+                }
+                UpdateConnectButton();
+            });
+        }
+
+        private void Obs_Connected(object sender, EventArgs e)
+        {
+            reactivateConnectButtonAndDisconnect.Cancel();
+            this.InvokeAction(() =>
+            {
+                if (IsConnecting)
+                {
+                    IsConnecting = false;
+                }
+                UpdateConnectButton();
+            });
+        }
+
         void UpdateConnectButton()
         {
+            btn_connect.IsEnabled = !IsConnecting;
+
             if (App.obs.IsConnected)
+            {
                 btn_connect.Content = "Disconnect";
+            }
             else
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
@@ -252,6 +292,7 @@ namespace OBSNotifier
 
         private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
         {
+            IsConnecting = false;
             UpdateConnectButton();
         }
 
@@ -261,28 +302,27 @@ namespace OBSNotifier
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
                 {
+                    Settings.Instance.IsManuallyConnected = false;
                     App.DisconnectFromOBS();
                 }
                 else
                 {
-                    if (App.ConnectToOBS(tb_address.Text, tb_password.Password))
-                    {
-                        Settings.Instance.ServerAddress = tb_address.Text;
-                        Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
-                        Settings.Instance.Save();
-                    }
-                    else
-                    {
-                        Settings.Instance.IsConnected = false;
-                    }
+                    App.ConnectToOBS(tb_address.Text, tb_password.Password);
+                    IsConnecting = true;
+
+                    Settings.Instance.ServerAddress = tb_address.Text;
+                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
+                    Settings.Instance.Save();
                 }
             }
             else
             {
+                Settings.Instance.IsManuallyConnected = false;
                 App.DisconnectFromOBS();
             }
 
             UpdateConnectButton();
+            reactivateConnectButtonAndDisconnect.CallDeferred();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -450,7 +490,7 @@ namespace OBSNotifier
 
         private void btn_select_active_notifications_Click(object sender, RoutedEventArgs e)
         {
-            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes??App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
+            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes ?? App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
 
             var an = new ActiveNotifications(notifs);
             an.Left = Left + Width / 2 - an.Width / 2;
@@ -510,7 +550,7 @@ namespace OBSNotifier
 
         private void btn_open_plugin_settings_Click(object sender, RoutedEventArgs e)
         {
-            if (App.plugins.CurrentPlugin.plugin!=null)
+            if (App.plugins.CurrentPlugin.plugin != null)
             {
                 App.plugins.CurrentPlugin.plugin?.OpenCustomSettings();
                 Settings.Instance.CurrentPluginSettings.CustomSettings = App.plugins.CurrentPlugin.plugin.GetCustomSettingsDataToSave();

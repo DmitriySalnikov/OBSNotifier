@@ -20,7 +20,7 @@
 
             <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="In order for this application to work you need to connect to the obs-websocket plugin." VerticalAlignment="Top" FontWeight="Bold"/>
             <Label Content="Server address:" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
-            <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4445" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
+            <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
             <Label Content="Password:" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
             <Label Content="The password will be saved in a local file" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>

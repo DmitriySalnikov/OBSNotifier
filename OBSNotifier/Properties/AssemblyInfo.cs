@@ -6,7 +6,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("OBS Notifier")]
-[assembly: AssemblyDescription("This is a program for displaying notifications from OBS.\nIn order for the program to work, you need to install the `obs-websocket` 4.9.1 or 4.9.1-compat plugin in your OBS.")]
+[assembly: AssemblyDescription("This is a program for displaying notifications from OBS.\nIn order for this program to work, you need to install OBS version 28+ with the built-in 'obs-websocket' version 5+.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dmitriy Salnikov")]
 [assembly: AssemblyProduct("OBS Notifier")]
@@ -34,5 +34,5 @@ using System.Windows;
                                               // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: AssemblyVersion("1.0.5")]
-[assembly: AssemblyFileVersion("1.0.5")]
+[assembly: AssemblyVersion("1.1.0")]
+[assembly: AssemblyFileVersion("1.1.0")]

@@ -21,6 +21,11 @@ namespace OBSNotifier
             dsp_object = dispatcherToInvokeOnIt;
         }
 
+        public bool IsTimerActive()
+        {
+            return close_timer != null;
+        }
+
         public void Cancel()
         {
             close_timer?.Dispose();
@@ -35,6 +40,9 @@ namespace OBSNotifier
 
         void CallAction(object obj)
         {
+            close_timer?.Dispose();
+            close_timer = null;
+
             if (action != null)
             {
                 if (dsp_object != null)

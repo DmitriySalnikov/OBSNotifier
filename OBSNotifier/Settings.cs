@@ -42,7 +42,7 @@ namespace OBSNotifier
         public string Password { get; set; } = string.Empty;
         public string DisplayID { get; set; } = string.Empty;
         public bool IsCloseOnOBSClosing { get; set; } = false;
-        public bool IsConnected { get; set; } = false;
+        public bool IsManuallyConnected { get; set; } = false;
         public bool UseSafeDisplayArea { get; set; } = true;
         public string NotificationStyle { get; set; } = string.Empty;
 
@@ -70,6 +70,9 @@ namespace OBSNotifier
 
         ~Settings()
         {
+            if (saveSettings.IsTimerActive())
+                SaveInternal();
+
             saveSettings.Dispose();
             saveSettings = null;
         }
