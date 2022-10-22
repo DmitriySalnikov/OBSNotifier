@@ -41,9 +41,8 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="obs-websocket-dotnet, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\custom_libs\obs-websocket-dotnet.dll</HintPath>
+    <Reference Include="obs-websocket-dotnet, Version=5.0.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\obs-websocket-dotnet.5.0.0.2\lib\netstandard2.0\obs-websocket-dotnet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -105,6 +104,7 @@
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="VersionCheckGitHub.cs" />
     <Compile Include="WPFScreens.cs" />
     <Page Include="ActiveNotifications.xaml">
       <SubType>Designer</SubType>

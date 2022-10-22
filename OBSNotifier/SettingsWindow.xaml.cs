@@ -13,6 +13,7 @@ namespace OBSNotifier
         bool IsChangedByCode = false;
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         bool IsConnecting = false;
+        readonly DeferredAction reactivateConnectButtonAndDisconnect;
 
         public SettingsWindow()
         {
@@ -21,6 +22,14 @@ namespace OBSNotifier
             UpdateConnectButton();
 
             App.ConnectionStateChanged += App_ConnectionStateChanged;
+            App.obs.Connected += Obs_Connected;
+            App.obs.Disconnected += Obs_Disconnected;
+            reactivateConnectButtonAndDisconnect = new DeferredAction(() =>
+            {
+                IsConnecting = false;
+                App.obs.Disconnect();
+                UpdateConnectButton();
+            }, 1000, this);
 
             IsChangedByCode = true;
 
@@ -49,12 +58,40 @@ namespace OBSNotifier
             IsChangedByCode = false;
         }
 
+        private void Obs_Disconnected(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
+        {
+            reactivateConnectButtonAndDisconnect.Cancel();
+            this.InvokeAction(() =>
+            {
+                if (IsConnecting)
+                {
+                    IsConnecting = false;
+                }
+                UpdateConnectButton();
+            });
+        }
+
+        private void Obs_Connected(object sender, EventArgs e)
+        {
+            reactivateConnectButtonAndDisconnect.Cancel();
+            this.InvokeAction(() =>
+            {
+                if (IsConnecting)
+                {
+                    IsConnecting = false;
+                }
+                UpdateConnectButton();
+            });
+        }
+
         void UpdateConnectButton()
         {
             btn_connect.IsEnabled = !IsConnecting;
 
             if (App.obs.IsConnected)
+            {
                 btn_connect.Content = "Disconnect";
+            }
             else
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
@@ -265,6 +302,7 @@ namespace OBSNotifier
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
                 {
+                    Settings.Instance.IsManuallyConnected = false;
                     App.DisconnectFromOBS();
                 }
                 else
@@ -279,10 +317,12 @@ namespace OBSNotifier
             }
             else
             {
+                Settings.Instance.IsManuallyConnected = false;
                 App.DisconnectFromOBS();
             }
 
             UpdateConnectButton();
+            reactivateConnectButtonAndDisconnect.CallDeferred();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)

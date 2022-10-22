@@ -3,6 +3,7 @@ using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using System;
 using System.Collections.Generic;
+using OBSWebsocketDotNet.Types.Events;
 
 namespace OBSNotifier
 {
@@ -151,21 +152,19 @@ namespace OBSNotifier
 
             App.ConnectionStateChanged += App_ConnectionStateChanged;
 
-            obs.RecordStateChanged += Obs_RecordingStateChanged;
-
-            obs.StreamStateChanged += Obs_StreamingStateChanged;
-
+            obs.RecordStateChanged += Obs_RecordStateChanged;
+            obs.StreamStateChanged += Obs_StreamStateChanged;
+            obs.VirtualcamStateChanged += Obs_VirtualcamStateChanged;
             obs.ReplayBufferStateChanged += Obs_ReplayBufferStateChanged;
+
             obs.ReplayBufferSaved += Obs_ReplayBufferSaved;
 
-            obs.VirtualcamStateChanged += Obs_VirtualcamStateChanged; ;
+            obs.CurrentProgramSceneChanged += Obs_CurrentProgramSceneChanged;
+            obs.CurrentSceneCollectionChanged += Obs_CurrentSceneCollectionChanged;
 
-            obs.CurrentProgramSceneChanged += Obs_SceneChanged;
-            obs.CurrentSceneCollectionChanged += Obs_SceneCollectionChanged;
+            obs.CurrentProfileChanged += Obs_CurrentProfileChanged;
 
-            obs.CurrentProfileChanged += Obs_ProfileChanged;
-
-            obs.InputMuteStateChanged += Obs_SourceMuteStateChanged;
+            obs.InputMuteStateChanged += Obs_InputMuteStateChanged;
         }
 
         #region Utils
@@ -259,17 +258,17 @@ namespace OBSNotifier
         #endregion
 
         #region Recording
-        private void Obs_RecordingStateChanged(OBSWebsocket sender, RecordStateChanged outputState)
+        private void Obs_RecordStateChanged(object sender, RecordStateChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
-                switch (outputState.State)
+                switch (e.OutputState.State)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.RecordingStarted);
                         break;
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPED:
-                        ShowNotif(NotificationType.RecordingStopped, FormatterOneArg, outputState.OutputPath);
+                        ShowNotif(NotificationType.RecordingStopped, FormatterOneArg, e.OutputState.OutputPath);
                         break;
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTING:
                         // Nothing to do
@@ -289,11 +288,11 @@ namespace OBSNotifier
         #endregion
 
         #region Streaming
-        private void Obs_StreamingStateChanged(OBSWebsocket sender, OutputStateChanged outputState)
+        private void Obs_StreamStateChanged(object sender, StreamStateChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
-                switch (outputState.State)
+                switch (e.OutputState.State)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.StreamingStarted);
@@ -307,11 +306,11 @@ namespace OBSNotifier
         #endregion
 
         #region Replays
-        private void Obs_ReplayBufferStateChanged(OBSWebsocket sender, OutputStateChanged outputState)
+        private void Obs_ReplayBufferStateChanged(object sender, ReplayBufferStateChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
-                switch (outputState.State)
+                switch (e.OutputState.State)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.ReplayStarted);
@@ -323,18 +322,18 @@ namespace OBSNotifier
             });
         }
 
-        private void Obs_ReplayBufferSaved(OBSWebsocket sender, string replayFilename)
+        private void Obs_ReplayBufferSaved(object sender, ReplayBufferSavedEventArgs e)
         {
-            InvokeNotif(() => ShowNotif(NotificationType.ReplaySaved, FormatterOneArg, replayFilename));
+            InvokeNotif(() => ShowNotif(NotificationType.ReplaySaved, FormatterOneArg, e.SavedReplayPath));
         }
         #endregion
 
         #region Virtual Camera
-        private void Obs_VirtualcamStateChanged(OBSWebsocket sender, OutputStateChanged outputState)
+        private void Obs_VirtualcamStateChanged(object sender, VirtualcamStateChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
-                switch (outputState.State)
+                switch (e.OutputState.State)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.VirtualCameraStarted);
@@ -348,18 +347,18 @@ namespace OBSNotifier
         #endregion
 
         #region Scenes
-        private void Obs_SceneChanged(OBSWebsocket sender, string newSceneName)
+        private void Obs_CurrentProgramSceneChanged(object sender, ProgramSceneChangedEventArgs e)
         {
-            InvokeNotif(() => ShowNotif(NotificationType.SceneSwitched, FormatterOneArg, newSceneName));
+            InvokeNotif(() => ShowNotif(NotificationType.SceneSwitched, FormatterOneArg, e.SceneName));
         }
 
-        private void Obs_SceneCollectionChanged(OBSWebsocket sender, string sceneCollectionName)
+        private void Obs_CurrentSceneCollectionChanged(object sender, CurrentSceneCollectionChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
                 try
                 {
-                    ShowNotif(NotificationType.SceneCollectionSwitched, FormatterOneArg, sceneCollectionName);
+                    ShowNotif(NotificationType.SceneCollectionSwitched, FormatterOneArg, e.SceneCollectionName);
                 }
                 catch (Exception ex)
                 {
@@ -371,13 +370,13 @@ namespace OBSNotifier
         #endregion
 
         #region Profiles
-        private void Obs_ProfileChanged(OBSWebsocket sender, string profileName)
+        private void Obs_CurrentProfileChanged(object sender, CurrentProfileChangedEventArgs e)
         {
             InvokeNotif(() =>
             {
                 try
                 {
-                    ShowNotif(NotificationType.ProfileSwitched, FormatterOneArg, profileName);
+                    ShowNotif(NotificationType.ProfileSwitched, FormatterOneArg, e.ProfileName);
                 }
                 catch (Exception ex)
                 {
@@ -390,11 +389,11 @@ namespace OBSNotifier
         #endregion
 
         #region Audio
-        private void Obs_SourceMuteStateChanged(OBSWebsocket sender, string inputName, bool inputMuted)
+        private void Obs_InputMuteStateChanged(object sender, InputMuteStateChangedEventArgs e)
         {
             try
             {
-                var src = obs.GetInputList().Find((s) => s.InputName == inputName);
+                var src = obs.GetInputList().Find((s) => s.InputName == e.InputName);
                 if (src == null || !obs_audio_types.Contains(src.InputKind))
                     return;
             }
@@ -404,10 +403,10 @@ namespace OBSNotifier
                 return;
             }
 
-            if (inputMuted)
-                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceMuted, FormatterOneArg, inputName));
+            if (e.InputMuted)
+                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceMuted, FormatterOneArg, e.InputName));
             else
-                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceUnmuted, FormatterOneArg, inputName));
+                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceUnmuted, FormatterOneArg, e.InputName));
         }
         #endregion
     }

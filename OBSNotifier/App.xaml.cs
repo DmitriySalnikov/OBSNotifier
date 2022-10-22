@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-using OBSNotifier.Plugins;
+﻿using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,15 +34,30 @@ namespace OBSNotifier
         public static NotificationManager notifications;
         public static ConnectionState CurrentConnectionState { get; private set; }
         public static bool IsNeedToSkipNextConnectionNotifications = false;
+        public DeferredAction gc_collect = new DeferredAction(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
 
         static System.Windows.Forms.NotifyIcon trayIcon;
-        SettingsWindow settingsWindow;
-        public DeferredAction gc_collect = new DeferredAction(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
         static DispatcherOperation close_reconnect;
         static Task reconnectThread;
         static CancellationTokenSource reconnectCancellationToken;
+
+        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier");
+        SettingsWindow settingsWindow;
         AboutBox1 aboutBox;
 
+        // TODO mb can be fixed by updating obs-websocket-dotnet, but currently 1 click on "Connect" can spawn 3 Auth Failed boxes
+        Dictionary<int, FrequentMsgPair> frequentMessageBoxBlocker = new Dictionary<int, FrequentMsgPair>();
+        class FrequentMsgPair
+        {
+            public bool IsNotFrequent;
+            public DeferredAction ResetAction;
+
+            public FrequentMsgPair()
+            {
+                IsNotFrequent = true;
+                ResetAction = new DeferredAction(() => IsNotFrequent = true, 1250);
+            }
+        }
 
         private void Application_Startup(object sender, StartupEventArgs ee)
         {
@@ -74,11 +87,12 @@ namespace OBSNotifier
             CurrentConnectionState = ConnectionState.Disconnected;
 
             obs = new OBSWebsocket();
-            obs.WSTimeout = TimeSpan.FromMilliseconds(1000);
+            obs.WSTimeout = TimeSpan.FromMilliseconds(500);
             obs.Connected += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
             obs.ExitStarted += Obs_ExitStarted;
 
+            // Initialize Settings
             Settings.Load();
             plugins = new PluginManager();
             notifications = new NotificationManager(this, obs);
@@ -120,7 +134,7 @@ namespace OBSNotifier
             else
             {
                 // Connect to obs if previously connected
-                if (Settings.Instance.IsConnected && !obs.IsConnected)
+                if (Settings.Instance.IsManuallyConnected && !obs.IsConnected)
                 {
                     IsNeedToSkipNextConnectionNotifications = true;
                     ChangeConnectionState(ConnectionState.TryingToReconnect);
@@ -129,7 +143,14 @@ namespace OBSNotifier
 
             UpdateTrayStatus();
 
-            CheckForUpdates();
+            versionCheckerGitHub.MessageBoxShown += VersionCheckerGitHub_MessageBoxShown;
+            versionCheckerGitHub.VersionSkippedByUser += VersionCheckerGitHub_VersionSkippedByUser;
+
+            // Get SkipVersion for updater
+            try { versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion); }
+            catch (Exception ex) { logger.Write("The SkipVersion string for the updater could not be parsed."); logger.Write(ex); }
+
+            versionCheckerGitHub.CheckForUpdates(true);
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
@@ -163,7 +184,8 @@ namespace OBSNotifier
             close_reconnect?.Abort();
             close_reconnect = null;
 
-            ClearUpdateData();
+            versionCheckerGitHub.Dispose();
+            versionCheckerGitHub = null;
 
             logger?.Dispose();
             logger = null;
@@ -198,7 +220,7 @@ namespace OBSNotifier
 
         void Menu_CheckForUpdates(object sender, EventArgs e)
         {
-            CheckForUpdates();
+            versionCheckerGitHub.CheckForUpdates();
         }
 
         public static void Log(string txt)
@@ -214,7 +236,10 @@ namespace OBSNotifier
         public static MessageBoxResult ShowMessageBox(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
         {
             logger?.Write($"MessageBox shown. Text: '{messageBoxText}', Caption: '{caption}', Button: '{button}', Icon: '{icon}', DefaultResult: '{defaultResult}', Options: '{options}'");
-            return MessageBox.Show(messageBoxText, caption, button, icon, defaultResult, options);
+            MessageBoxResult res = MessageBox.Show(messageBoxText, caption, button, icon, defaultResult, options);
+            logger?.Write($"MessageBox result for box with Text: '{messageBoxText}' and Caption: '{caption}' is: '{res}'");
+
+            return res;
         }
 
         static void ChangeConnectionState(ConnectionState newState)
@@ -263,7 +288,6 @@ namespace OBSNotifier
 
         static void ReconnectionThread()
         {
-            //Thread.Sleep(500); // HACK need to rely on some events
             while (true)
             {
                 ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
@@ -280,8 +304,6 @@ namespace OBSNotifier
 
         static void StopReconnection()
         {
-            Settings.Instance.IsConnected = false; // TODO test
-
             if (reconnectCancellationToken != null)
             {
                 reconnectCancellationToken.Cancel();
@@ -291,9 +313,6 @@ namespace OBSNotifier
                 reconnectThread.Dispose();
                 reconnectThread = null;
                 reconnectCancellationToken = null;
-
-                if (obs.IsConnected)
-                    obs.Disconnect();
             }
         }
 
@@ -308,7 +327,7 @@ namespace OBSNotifier
                     adrs = "ws://" + adrs;
                 var pass = pas;
 
-                obs.Connect(adrs, pass);
+                obs.ConnectAsync(adrs, pass);
                 Settings.Instance.Save();
             }
             catch (Exception ex)
@@ -319,8 +338,14 @@ namespace OBSNotifier
 
         internal static void DisconnectFromOBS()
         {
-            Settings.Instance.IsConnected = false;
-            obs.wsConnection?.Stop(0, "");
+            try
+            {
+                obs.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+            }
 
             if (CurrentConnectionState == ConnectionState.TryingToReconnect)
                 IsNeedToSkipNextConnectionNotifications = true;
@@ -333,7 +358,7 @@ namespace OBSNotifier
         {
             Log($"Connected to OBS");
             ChangeConnectionState(ConnectionState.Connected);
-            Settings.Instance.IsConnected = true;
+            Settings.Instance.IsManuallyConnected = true;
         }
 
         private void Obs_Disconnected(object sender, ObsDisconnectionInfo e)
@@ -355,7 +380,8 @@ namespace OBSNotifier
                     case System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig:
                     case System.Net.WebSockets.WebSocketCloseStatus.MandatoryExtension:
                     case System.Net.WebSockets.WebSocketCloseStatus.InternalServerError:
-                        Settings.Instance.IsConnected = false;
+                        // no need to mark connection as manually disconnected and prevent reconnect
+                        // Settings.Instance.IsConnected = false;
                         break;
                 }
             }
@@ -378,20 +404,40 @@ namespace OBSNotifier
                     case ObsCloseCodes.UnsupportedFeature:
                         break;
                     case ObsCloseCodes.AuthenticationFailed:
-                        // TODO ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        if (IsNotTooFrequentMessage((int)e.ObsCloseCode))
+                            ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         StopReconnection();
+
+                        Settings.Instance.IsManuallyConnected = false;
                         DisconnectFromOBS();
                         break;
                 }
             }
 
-            Log(Settings.Instance.IsConnected.ToString());
-            if (Settings.Instance.IsConnected)
-            {
+            if (Settings.Instance.IsManuallyConnected)
                 ChangeConnectionState(ConnectionState.TryingToReconnect);
-            }
             else
                 ChangeConnectionState(ConnectionState.Disconnected);
+        }
+
+        // TODO it can be deleted if the "authorization error" error does not appear many times when the connection button is pressed once
+        bool IsNotTooFrequentMessage(int messageId)
+        {
+            if (!frequentMessageBoxBlocker.ContainsKey(messageId))
+            {
+                frequentMessageBoxBlocker.Add(messageId, new FrequentMsgPair());
+            }
+
+            if (frequentMessageBoxBlocker[messageId].IsNotFrequent)
+            {
+                frequentMessageBoxBlocker[messageId].IsNotFrequent = false;
+                frequentMessageBoxBlocker[messageId].ResetAction.CallDeferred();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void Obs_ExitStarted(object sender, EventArgs e)
@@ -405,109 +451,15 @@ namespace OBSNotifier
             }
         }
 
-        #region Version Checking
-
-        private WebClient updateClient = null;
-        private bool startupUpdateCheck = true;
-
-        void CheckForUpdates()
+        private void VersionCheckerGitHub_VersionSkippedByUser(object sender, VersionCheckerGitHub.VersionSkipByUserData e)
         {
-            // Skip if currently checking
-            if (updateClient != null)
-                return;
-
-            updateClient = new WebClient();
-            updateClient.DownloadStringCompleted += UpdateClient_DownloadStringCompleted;
-            updateClient.Headers.Add("Content-Type", "application/json");
-            updateClient.Headers.Add("User-Agent", "OBS Notifier");
-
-            try
-            {
-                updateClient.DownloadStringAsync(new Uri("https://api.github.com/repos/DmitriySalnikov/OBSNotifier/releases/latest"));
-            }
-            catch (Exception ex)
-            {
-                if (!startupUpdateCheck)
-                    ShowMessageBox($"Failed to request info about the new version.\n{ex.Message}");
-                this.InvokeAction(() => ClearUpdateData());
-            }
+            Settings.Instance.SkipVersion = e.SkippedVersion.ToString();
+            Settings.Instance.Save();
         }
 
-        private void UpdateClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+        private void VersionCheckerGitHub_MessageBoxShown(object sender, VersionCheckerGitHub.ShowMessageBoxEventData e)
         {
-            if (e.Error is WebException webExp)
-            {
-                if (!startupUpdateCheck)
-                    ShowMessageBox($"Failed to get info about the new version.\n{webExp.Message}");
-
-                // I think it's better to do this not at the time of calling the event
-                this.InvokeAction(() => ClearUpdateData());
-                return;
-            }
-
-            try
-            {
-                dynamic resultObject = JsonConvert.DeserializeObject(e.Result);
-                Version newVersion = new Version(resultObject.tag_name.Value);
-                Version currentVersion = new Version(System.Windows.Forms.Application.ProductVersion);
-                string updateUrl = resultObject.html_url.Value;
-
-                // Load a previously skipped version
-                Version skipVersion = null;
-                try
-                {
-                    skipVersion = new Version(Settings.Instance.SkipVersion);
-                }
-                catch { }
-
-                // Skip if the new version matches the skip version, or don't skip if checking manually
-                if (newVersion != skipVersion || !startupUpdateCheck)
-                {
-                    // New release
-                    if (newVersion > currentVersion)
-                    {
-                        var updateDialog = ShowMessageBox($"Current version: {System.Windows.Forms.Application.ProductVersion}\nNew version: {newVersion}\nWould you like to go to the download page?\n\nSelect \"No\" to skip this version.", "A new version of OBS Notifier is available", MessageBoxButton.YesNoCancel);
-                        if (updateDialog == MessageBoxResult.Yes)
-                        {
-                            // Open the download page
-                            Process.Start(updateUrl);
-                        }
-                        else if (updateDialog == MessageBoxResult.No)
-                        {
-                            // Set the new version to skip
-                            Settings.Instance.SkipVersion = newVersion.ToString();
-                            Settings.Instance.Save();
-                        }
-                    }
-                    else
-                    {
-                        // Don't show this on startup
-                        if (!startupUpdateCheck)
-                        {
-                            ShowMessageBox($"You are using the latest version: {System.Windows.Forms.Application.ProductVersion}");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Don't show this on startup
-                if (!startupUpdateCheck)
-                {
-                    ShowMessageBox($"Failed to check for update.\n{ex.Message}");
-                }
-            }
-
-            this.InvokeAction(() => ClearUpdateData());
+            logger?.Write($"MessageBox shown. Text: '{e.Message}', Caption: '{e.Caption}', Button: '{e.Button}', Icon: '{e.Icon}', DefaultResult: '{e.DefaultResult}', Options: '{e.Options}', Result: '{e.Result}'");
         }
-
-        void ClearUpdateData()
-        {
-            updateClient?.Dispose();
-            updateClient = null;
-            startupUpdateCheck = false;
-        }
-
-        #endregion
     }
 }
