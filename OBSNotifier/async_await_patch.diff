@@ -1,0 +1,103 @@
+From a63bcc5aac8b2f93df45688fb6c28fa3b3adb66c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=D0=94=D0=BC=D0=B8=D1=82=D1=80=D0=B8=D0=B9=20=D0=A1=D0=B0?=
+ =?UTF-8?q?=D0=BB=D1=8C=D0=BD=D0=B8=D0=BA=D0=BE=D0=B2?=
+ <salnikov.mine@yandex.ru>
+Date: Mon, 24 Oct 2022 21:40:33 +0300
+Subject: [PATCH] Added returns tag with clarifications
+
+---
+ obs-websocket-dotnet/OBSWebsocket.cs | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/obs-websocket-dotnet/OBSWebsocket.cs b/obs-websocket-dotnet/OBSWebsocket.cs
+index 4c123fa..c4b4987 100644
+--- a/obs-websocket-dotnet/OBSWebsocket.cs
++++ b/obs-websocket-dotnet/OBSWebsocket.cs
+@@ -85,6 +85,8 @@ namespace OBSWebsocketDotNet
+         /// </summary>
+         /// <param name="url">Server URL in standard URL format.</param>
+         /// <param name="password">Server password</param>
++        /// <returns>Returns the awaitable Task from <see cref="WebsocketClient.StartOrFail"/>.
++        /// NOTE: After awaiting, the client is still not ready to work. Please subscribe to the Connected event to determine when the connection is actually fully established</returns>
+         public Task ConnectAsync(string url, string password)
+         {
+             if (!url.ToLower().StartsWith(WEBSOCKET_URL_PREFIX))
+-- 
+2.33.0.windows.2
+
+From 2eaab0f4a258aafa4f1412dbcb474fef97bf8db8 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=D0=94=D0=BC=D0=B8=D1=82=D1=80=D0=B8=D0=B9=20=D0=A1=D0=B0?=
+ =?UTF-8?q?=D0=BB=D1=8C=D0=BD=D0=B8=D0=BA=D0=BE=D0=B2?=
+ <salnikov.mine@yandex.ru>
+Date: Mon, 24 Oct 2022 17:40:10 +0300
+Subject: [PATCH] Allow to await ConnectAsync
+
+---
+ TestClient/MainWindow.cs              | 4 ++--
+ obs-websocket-dotnet/IOBSWebsocket.cs | 3 ++-
+ obs-websocket-dotnet/OBSWebsocket.cs  | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/TestClient/MainWindow.cs b/TestClient/MainWindow.cs
+index 2e82b54..e846a6d 100644
+--- a/TestClient/MainWindow.cs
++++ b/TestClient/MainWindow.cs
+@@ -305,11 +305,11 @@ namespace TestClient
+         {
+             if (!obs.IsConnected)
+             {
+-                System.Threading.Tasks.Task.Run(() =>
++                System.Threading.Tasks.Task.Run(async () =>
+                 {
+                     try
+                     {
+-                        obs.ConnectAsync(txtServerIP.Text, txtServerPassword.Text);
++                        await obs.ConnectAsync(txtServerIP.Text, txtServerPassword.Text);
+                     }
+                     catch (Exception ex)
+                     {
+diff --git a/obs-websocket-dotnet/IOBSWebsocket.cs b/obs-websocket-dotnet/IOBSWebsocket.cs
+index 7913cbb..769da78 100644
+--- a/obs-websocket-dotnet/IOBSWebsocket.cs
++++ b/obs-websocket-dotnet/IOBSWebsocket.cs
+@@ -1,5 +1,6 @@
+ ﻿using System;
+ using System.Collections.Generic;
++using System.Threading.Tasks;
+ using Newtonsoft.Json.Linq;
+ using OBSWebsocketDotNet.Communication;
+ using OBSWebsocketDotNet.Types;
+@@ -1050,7 +1051,7 @@ namespace OBSWebsocketDotNet
+         /// </summary>
+         /// <param name="url">Server URL in standard URL format.</param>
+         /// <param name="password">Server password</param>
+-        void ConnectAsync(string url, string password);
++        Task ConnectAsync(string url, string password);
+ 
+         /// <summary>
+         /// Disconnect this instance from the server
+diff --git a/obs-websocket-dotnet/OBSWebsocket.cs b/obs-websocket-dotnet/OBSWebsocket.cs
+index b3c3770..4c123fa 100644
+--- a/obs-websocket-dotnet/OBSWebsocket.cs
++++ b/obs-websocket-dotnet/OBSWebsocket.cs
+@@ -85,7 +85,7 @@ namespace OBSWebsocketDotNet
+         /// </summary>
+         /// <param name="url">Server URL in standard URL format.</param>
+         /// <param name="password">Server password</param>
+-        public void ConnectAsync(string url, string password)
++        public Task ConnectAsync(string url, string password)
+         {
+             if (!url.ToLower().StartsWith(WEBSOCKET_URL_PREFIX))
+             {
+@@ -105,7 +105,7 @@ namespace OBSWebsocketDotNet
+             wsConnection.DisconnectionHappened.Subscribe(d => Task.Run(() => OnWebsocketDisconnect(this, d)));
+ 
+             connectionPassword = password;
+-            wsConnection.StartOrFail();
++            return wsConnection.StartOrFail();
+         }
+ 
+         /// <summary>
+-- 
+2.33.0.windows.2
+

@@ -149,7 +149,7 @@ namespace OBSNotifier
 
             // Get SkipVersion for updater
             try { versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion); }
-            catch (Exception ex) { logger.Write("The SkipVersion string for the updater could not be parsed."); logger.Write(ex); }
+            catch (Exception ex) { logger.Write("The SkipVersion string for the updater could not be parsed."); logger.Write(ex.Message); }
 
             versionCheckerGitHub.CheckForUpdates(true);
         }
@@ -292,6 +292,7 @@ namespace OBSNotifier
         {
             var attempts = 0;
             isNeedToSkipDisconnectErrorPrinting = false;
+            Log("Reconnection Thread started.");
 
             while (true)
             {
