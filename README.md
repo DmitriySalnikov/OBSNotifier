@@ -11,7 +11,7 @@ This is a program for displaying notifications from OBS.
 
 To install OBS Notifier for OBS 27.x and get working notifications about saving replays, [read this article](https://dmitriysalnikov.itch.io/obs-notifier/devlog/335353/how-to-install-obs-notifier).
 
-<h2><a href="#Support">Download</a></h2>
+<h3><a href="#Support">Download</a></h3>
 
 ## Features
 
