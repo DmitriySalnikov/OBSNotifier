@@ -56,7 +56,7 @@ namespace OBSNotifier
             public FrequentMsgPair()
             {
                 IsNotFrequent = true;
-                ResetAction = new DeferredAction(() => IsNotFrequent = true, 1250);
+                ResetAction = new DeferredAction(() => IsNotFrequent = true, 2500);
             }
         }
 

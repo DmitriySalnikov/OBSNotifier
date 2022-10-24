@@ -20,6 +20,7 @@ namespace OBSNotifier
 
             UpdateConnectButton();
             IsChangedByCode = true;
+            App.ConnectionStateChanged += App_ConnectionStateChanged;
 
             // Plugins list
             {
@@ -50,20 +51,17 @@ namespace OBSNotifier
         {
             btn_connect.IsEnabled = !IsConnecting;
 
-            if (App.obs.IsConnected)
+            switch (App.CurrentConnectionState)
             {
-                btn_connect.Content = "Disconnect";
-            }
-            else
-            {
-                if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
-                {
-                    btn_connect.Content = "Trying to reconnect... Cancel?";
-                }
-                else
-                {
+                case App.ConnectionState.Connected:
+                    btn_connect.Content = "Disconnect";
+                    break;
+                case App.ConnectionState.Disconnected:
                     btn_connect.Content = "Connect";
-                }
+                    break;
+                case App.ConnectionState.TryingToReconnect:
+                    btn_connect.Content = "Trying to reconnect... Cancel?";
+                    break;
             }
         }
 
