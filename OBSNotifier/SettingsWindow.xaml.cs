@@ -13,24 +13,12 @@ namespace OBSNotifier
         bool IsChangedByCode = false;
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         bool IsConnecting = false;
-        readonly DeferredAction reactivateConnectButtonAndDisconnect;
 
         public SettingsWindow()
         {
             InitializeComponent();
 
             UpdateConnectButton();
-
-            App.ConnectionStateChanged += App_ConnectionStateChanged;
-            App.obs.Connected += Obs_Connected;
-            App.obs.Disconnected += Obs_Disconnected;
-            reactivateConnectButtonAndDisconnect = new DeferredAction(() =>
-            {
-                IsConnecting = false;
-                App.obs.Disconnect();
-                UpdateConnectButton();
-            }, 1000, this);
-
             IsChangedByCode = true;
 
             // Plugins list
@@ -56,32 +44,6 @@ namespace OBSNotifier
             OnPluginChanged();
 
             IsChangedByCode = false;
-        }
-
-        private void Obs_Disconnected(object sender, OBSWebsocketDotNet.Communication.ObsDisconnectionInfo e)
-        {
-            reactivateConnectButtonAndDisconnect.Cancel();
-            this.InvokeAction(() =>
-            {
-                if (IsConnecting)
-                {
-                    IsConnecting = false;
-                }
-                UpdateConnectButton();
-            });
-        }
-
-        private void Obs_Connected(object sender, EventArgs e)
-        {
-            reactivateConnectButtonAndDisconnect.Cancel();
-            this.InvokeAction(() =>
-            {
-                if (IsConnecting)
-                {
-                    IsConnecting = false;
-                }
-                UpdateConnectButton();
-            });
         }
 
         void UpdateConnectButton()
@@ -296,7 +258,7 @@ namespace OBSNotifier
             UpdateConnectButton();
         }
 
-        private void btn_connect_Click(object sender, RoutedEventArgs e)
+        private async void btn_connect_Click(object sender, RoutedEventArgs e)
         {
             if (!App.obs.IsConnected)
             {
@@ -307,8 +269,17 @@ namespace OBSNotifier
                 }
                 else
                 {
-                    App.ConnectToOBS(tb_address.Text, tb_password.Password);
                     IsConnecting = true;
+                    UpdateConnectButton();
+
+                    try
+                    {
+                        await App.ConnectToOBS(tb_address.Text, tb_password.Password);
+                    }
+                    catch (Exception ex) { App.Log(ex); }
+
+                    IsConnecting = false;
+                    UpdateConnectButton();
 
                     Settings.Instance.ServerAddress = tb_address.Text;
                     Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
@@ -322,7 +293,6 @@ namespace OBSNotifier
             }
 
             UpdateConnectButton();
-            reactivateConnectButtonAndDisconnect.CallDeferred();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)

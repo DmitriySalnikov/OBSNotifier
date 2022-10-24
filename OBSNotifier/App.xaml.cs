@@ -40,6 +40,7 @@ namespace OBSNotifier
         static DispatcherOperation close_reconnect;
         static Task reconnectThread;
         static CancellationTokenSource reconnectCancellationToken;
+        static bool isNeedToSkipDisconnectErrorPrinting = false;
 
         VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier");
         SettingsWindow settingsWindow;
@@ -155,6 +156,7 @@ namespace OBSNotifier
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            Log("App exit");
             StopReconnection();
 
             if (obs != null)
@@ -286,19 +288,46 @@ namespace OBSNotifier
             }
         }
 
-        static void ReconnectionThread()
+        static async void ReconnectionThread()
         {
+            var attempts = 0;
+            isNeedToSkipDisconnectErrorPrinting = false;
+
             while (true)
             {
-                ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
-
-                if (reconnectCancellationToken.IsCancellationRequested) return;
-                for (int i = 0; i < 10; i++)
+                attempts++;
+                if (reconnectCancellationToken.IsCancellationRequested)
                 {
-                    Thread.Sleep(500);
-                    if (obs.IsConnected) return;
-                    if (reconnectCancellationToken.IsCancellationRequested) return;
+                    isNeedToSkipDisconnectErrorPrinting = false;
+                    return;
                 }
+
+                try
+                {
+                    await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
+                }
+                catch (Exception ex)
+                {
+                    if (attempts < 5)
+                    {
+                        Log(ex.Message);
+                    }
+                    else if (attempts == 5)
+                    {
+                        Log(ex.Message);
+                        Log("5 Connection errors are printed. The next errors will not be displayed.");
+                        isNeedToSkipDisconnectErrorPrinting = true;
+                    }
+
+                }
+
+                if (obs.IsConnected || reconnectCancellationToken.IsCancellationRequested)
+                {
+                    isNeedToSkipDisconnectErrorPrinting = false;
+                    return;
+                }
+
+                Thread.Sleep(4000);
             }
         }
 
@@ -316,7 +345,7 @@ namespace OBSNotifier
             }
         }
 
-        internal static void ConnectToOBS(string adr, string pas)
+        internal static Task ConnectToOBS(string adr, string pas)
         {
             var adrs = adr;
             try
@@ -327,13 +356,15 @@ namespace OBSNotifier
                     adrs = "ws://" + adrs;
                 var pass = pas;
 
-                obs.ConnectAsync(adrs, pass);
                 Settings.Instance.Save();
+                return obs.ConnectAsync(adrs, pass);
             }
             catch (Exception ex)
             {
                 ShowMessageBox(ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
+
+            return Task.CompletedTask;
         }
 
         internal static void DisconnectFromOBS()
@@ -363,6 +394,9 @@ namespace OBSNotifier
 
         private void Obs_Disconnected(object sender, ObsDisconnectionInfo e)
         {
+            if (isNeedToSkipDisconnectErrorPrinting)
+                return;
+
             if ((int)e.ObsCloseCode < 4000)
             {
                 var ee = (System.Net.WebSockets.WebSocketCloseStatus)e.ObsCloseCode;
