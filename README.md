@@ -2,16 +2,11 @@
 
 <img src="Images/obs_notifier.png"/>
 
-This is a program for displaying notifications from OBS.
+This is a simple program for displaying notifications from OBS on your desktop.
 
-* This program does not display alerts in the form of overlays (such applications are usually banned in game anti-cheats).
+* Currently only Windows is supported
+* Does not display notifications in the form of overlays (such applications are usually banned in game anti-cheats).
 * This program will be useful if you have multiple monitors, or if your game/application is not running in full-screen mode. (You can also create a plugin with sound alerts.)
-
-## Important
-
-To install OBS Notifier for OBS 27.x and get working notifications about saving replays, [read this article](https://dmitriysalnikov.itch.io/obs-notifier/devlog/335353/how-to-install-obs-notifier).
-
-<h3><a href="#Support">Download</a></h3>
 
 ## Features
 
@@ -24,6 +19,12 @@ To install OBS Notifier for OBS 27.x and get working notifications about saving 
 * Ability to set custom settings
 * Highly customizable default plugin
 * Nvidia-like plugin out of the box
+
+## [Download](https://github.com/DmitriySalnikov/OBSNotifier/releases/latest)
+
+## Important
+
+To install OBS Notifier for OBS 27.x and get working notifications about saving replays, [read this article](https://dmitriysalnikov.itch.io/obs-notifier/devlog/335353/how-to-install-obs-notifier).
 
 ## Screenshots
 
@@ -44,10 +45,6 @@ To install OBS Notifier for OBS 27.x and get working notifications about saving 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/dmitriysalnikov)
 
 [<img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QIWI_logo.svg" alt="qiwi" width=90px/>](https://qiwi.com/n/DMITRIYSALNIKOV)
-
-## Download
-
-The binaries of the latest version are available on [**itch.io**](https://dmitriysalnikov.itch.io/obs-notifier) or on the [**Github Releases page**](https://github.com/DmitriySalnikov/OBSNotifier/releases/latest).
 
 ## Plugin Development
 
