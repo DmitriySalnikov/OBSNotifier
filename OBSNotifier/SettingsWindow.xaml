@@ -36,7 +36,7 @@
 
             <CheckBox x:Name="cb_preview" Content="Preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
 
-            <Label Content="Screen on which to display:"/>
+            <Label Content="Screen:"/>
             <ComboBox x:Name="cb_display_to_show" SelectionChanged="cb_display_to_show_SelectionChanged"/>
             <CheckBox x:Name="cb_use_safe_area" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" VerticalContentAlignment="Center"/>
 

@@ -61,18 +61,14 @@ namespace OBSNotifier
             get { return GetRect(screen.WorkingArea); }
         }
 
-        // https://stackoverflow.com/questions/1927540/how-to-get-the-size-of-the-current-screen-in-wpf#comment64493527_2118993
         private Rect GetRect(System.Drawing.Rectangle value)
         {
-            var pixelWidthFactor = SystemParameters.WorkArea.Width / screen.WorkingArea.Width;
-            var pixelHeightFactor = SystemParameters.WorkArea.Height / screen.WorkingArea.Height;
-
             return new Rect
             {
-                X = value.X * pixelWidthFactor,
-                Y = value.Y * pixelHeightFactor,
-                Width = value.Width * pixelWidthFactor,
-                Height = value.Height * pixelHeightFactor
+                X = value.X,
+                Y = value.Y,
+                Width = value.Width,
+                Height = value.Height
             };
         }
 
