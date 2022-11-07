@@ -81,6 +81,10 @@ namespace OBSNotifier
 
             logger = new Logger("log.txt");
 
+            // Global exception handlers
+            // https://stackoverflow.com/a/10203030/8980874
+            AppDomain.CurrentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
+
             // Fix the current directory if app starts using autorun (in System32...)
             if (Environment.CurrentDirectory.ToLower() == Environment.GetFolderPath(Environment.SpecialFolder.System).ToLower())
                 Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(GetType().Assembly.Location);
@@ -233,6 +237,12 @@ namespace OBSNotifier
         public static void Log(Exception ex)
         {
             logger.Write(ex);
+        }
+
+        void GlobalUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log("--- The program crashed due to an exception ---");
+            Log((Exception)e.ExceptionObject);
         }
 
         public static MessageBoxResult ShowMessageBox(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
