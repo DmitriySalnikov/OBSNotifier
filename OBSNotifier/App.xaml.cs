@@ -67,11 +67,13 @@ namespace OBSNotifier
 
             if (!mutex.WaitOne(0, false))
             {
+                if (!Environment.CommandLine.Contains("--force_close"))
+                    ShowMessageBox("An instance of this application is already running. The application will be closed.", "Instance already running");
+
                 mutex.Dispose();
                 mutex = null;
 
                 Environment.ExitCode = -1;
-                ShowMessageBox("An instance of this application is already running. The application will be closed.", "Instance already running");
                 Shutdown();
                 return;
             }
