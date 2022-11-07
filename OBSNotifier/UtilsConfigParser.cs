@@ -181,15 +181,32 @@ namespace OBSNotifier
                 var split = data.Split(',');
                 if (split.Length == 1)
                 {
-                    if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
+                    if (double.TryParse(split[0].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
                         return new Thickness(val);
+                }
+                else if (split.Length == 2)
+                {
+                    if (double.TryParse(split[0].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
+                        double.TryParse(split[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2))
+                    {
+                        return new Thickness(val1, val2, val1, val2);
+                    }
+                }
+                else if (split.Length == 3)
+                {
+                    if (double.TryParse(split[0].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
+                        double.TryParse(split[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2) &&
+                        double.TryParse(split[2].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val3))
+                    {
+                        return new Thickness(val1, val2, val3, val2);
+                    }
                 }
                 else if (split.Length == 4)
                 {
-                    if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
-                        double.TryParse(split[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2) &&
-                        double.TryParse(split[2], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val3) &&
-                        double.TryParse(split[3], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val4))
+                    if (double.TryParse(split[0].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
+                        double.TryParse(split[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2) &&
+                        double.TryParse(split[2].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val3) &&
+                        double.TryParse(split[3].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val4))
                     {
                         return new Thickness(val1, val2, val3, val4);
                     }
@@ -316,18 +333,17 @@ namespace OBSNotifier
             }
             else if (type == typeof(double))
             {
-                return ((double)value).ToString("F1", CultureInfo.InvariantCulture);
+                return ((double)value).ToString("0.0###", CultureInfo.InvariantCulture);
             }
             else if (type == typeof(float))
             {
-                return ((float)value).ToString("F1", CultureInfo.InvariantCulture);
+                return ((float)value).ToString("0.0##", CultureInfo.InvariantCulture);
             }
-            // Without extra dots and zeros, the string looks better..
-            // else if (type == typeof(Thickness))
-            // {
-            //     var t = (Thickness)value;
-            //     return FormattableString.Invariant($"{t.Left:F1},{t.Top:F1},{t.Right:F1},{t.Bottom:F1}");
-            // }
+            else if (type == typeof(Thickness))
+            {
+                var t = (Thickness)value;
+                return FormattableString.Invariant($"{t.Left:0.####}, {t.Top:0.####}, {t.Right:0.####}, {t.Bottom:0.####}");
+            }
 
             return Convert.ToString(value, CultureInfo.InvariantCulture);
         }
