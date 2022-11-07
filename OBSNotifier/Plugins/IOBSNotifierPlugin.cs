@@ -75,5 +75,10 @@ namespace OBSNotifier.Plugins
         /// </summary>
         /// <returns>Any string with your settings or null</returns>
         string GetCustomSettingsDataToSave();
+        /// <summary>
+        /// This method is needed to format or correct user's errors in <see cref="OBSNotifierPluginSettings.AdditionalData"/>
+        /// </summary>
+        /// <returns>Any string with fixed settings or null</returns>
+        string GetFixedAdditionalData();
     }
 }

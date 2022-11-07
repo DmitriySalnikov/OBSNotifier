@@ -27,7 +27,7 @@ namespace OBSNotifier.Plugins.Default
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "Blocks = 3\nBackgroundColor = #4C4C4C\nTextColor = #D8D8D8\nOutlineColor = #59000000\nRadius = 4.0\nWidth = 180\nHeight = 52\nMargin = 4,4,4,4\nMaxPathChars = 32",
+            AdditionalData = "BackgroundColor = #FF4C4C4C\nOutlineColor = #59000000\nTextColor = #FFD8D8D8\nBlocks = 3\nRadius = 4.0\nWidth = 180.0\nHeight = 52.0\nMargin = 4,4,4,4\nMaxPathChars = 32",
             Option = Positions.BottomRight,
             Offset = new Point(0, 0),
             OnScreenTime = 2700,
@@ -97,12 +97,27 @@ namespace OBSNotifier.Plugins.Default
 
         public string GetCustomSettingsDataToSave() => null;
 
+        public string GetFixedAdditionalData()
+        {
+            return Utils.ConfigFixString<DefaultCustomNotifBlockSettings>(_pluginSettings.AdditionalData);
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             (sender as DefaultNotificationWindow).Closing -= Window_Closing;
 
             if (window == sender)
                 window = null;
+        }
+
+        public void Log(string txt)
+        {
+            logWriter.Invoke(txt);
+        }
+
+        public void Log(Exception ex)
+        {
+            Log($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
         }
     }
 }

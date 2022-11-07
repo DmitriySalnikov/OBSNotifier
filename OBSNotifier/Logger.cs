@@ -55,9 +55,15 @@ namespace OBSNotifier
 
         public void Write(string txt)
         {
+            var isFirst = true;
             txt = string.Join("\n",
                 txt.Split('\n').
-                Select((t) => $"[{DateTime.Now.ToString(CultureInfo.InvariantCulture)}] {t}"));
+                Select((t) =>
+                {
+                    var res = $"[{DateTime.Now.ToString(CultureInfo.InvariantCulture)}]{(isFirst ? "\t" : "-\t")}{t}";
+                    isFirst = false;
+                    return res;
+                }));
 
             lock (dataLock)
             {

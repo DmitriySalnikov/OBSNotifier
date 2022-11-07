@@ -4,11 +4,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace OBSNotifier
 {
-    public static class Utils
+    public static partial class Utils
     {
         public enum AnchorPoint
         {
@@ -161,7 +162,7 @@ namespace OBSNotifier
         /// <returns></returns>
         public static string GetShortPath(string path, uint chars)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path) || chars <= 0)
                 return "";
 
             string short_name;
@@ -182,6 +183,27 @@ namespace OBSNotifier
                 short_name = path;
             }
             return short_name;
+        }
+
+        /// <summary>
+        /// Load WPF Image from resources or file path
+        /// </summary>
+        /// <param name="path">Image path</param>
+        /// <param name="assembly">Assembly to perform search in relative path</param>
+        /// <returns>Loaded image</returns>
+        public static BitmapImage GetBitmapImage(string path, System.Reflection.Assembly assembly = null)
+        {
+            BitmapImage img = new BitmapImage();
+            img.BeginInit();
+
+            if (assembly != null)
+                img.UriSource = new Uri(Path.Combine(Path.GetDirectoryName(assembly.Location), path));
+            else
+                img.UriSource = new Uri(path);
+
+            img.EndInit();
+
+            return img;
         }
 
         /// <summary>

@@ -32,6 +32,8 @@
                                 <QuadraticEase EasingMode="EaseInOut"/>
                             </EasingThicknessKeyFrame.EasingFunction>
                         </EasingThicknessKeyFrame>
+                        <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.46"/>
+                        <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.47"/>
                     </ThicknessAnimationUsingKeyFrames>
 
                     <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="g_back" Storyboard.TargetProperty="Margin" Duration="0:0:3">
@@ -47,6 +49,8 @@
                                 <QuadraticEase EasingMode="EaseInOut"/>
                             </EasingThicknessKeyFrame.EasingFunction>
                         </EasingThicknessKeyFrame>
+                        <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.46"/>
+                        <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.47"/>
                     </ThicknessAnimationUsingKeyFrames>
                 </ParallelTimeline>
             </Storyboard>

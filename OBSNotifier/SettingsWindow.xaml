@@ -25,7 +25,7 @@
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
             <Label Content="The password will be saved in a local file" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
             <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
-            
+
             <Separator Height="10" Background="{x:Null}"/>
             <CheckBox x:Name="cb_autostart" Content="Run at Windows startup" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center"/>
             <Separator Height="2" Background="{x:Null}"/>
@@ -99,7 +99,10 @@
                         <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position_offset, Mode=OneWay}"/>
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="tb_additional_data" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="TextBox_TextChanged"/>
-                    <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_additional_data_Click"/>
+                    <StackPanel Grid.Column="2">
+                        <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Click="btn_reset_additional_data_Click"/>
+                        <Button x:Name="btn_fix_additional_data" Content="🧰" ToolTip="Fix config" HorizontalAlignment="Left" Click="btn_fix_additional_data_Click"/>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
 

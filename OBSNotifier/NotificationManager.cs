@@ -1,9 +1,9 @@
 ﻿using OBSNotifier.Plugins;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
+using OBSWebsocketDotNet.Types.Events;
 using System;
 using System.Collections.Generic;
-using OBSWebsocketDotNet.Types.Events;
 
 namespace OBSNotifier
 {
@@ -205,20 +205,34 @@ namespace OBSNotifier
 
         void ShowNotif(NotificationType type, Func<string, object[], string> formatter, params object[] origData)
         {
-            if (IsActive(type))
+            try
             {
-                string fmt = formatter(NotificationsData[type].Description, origData);
-                App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
-                CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
+                if (IsActive(type))
+                {
+                    string fmt = formatter(NotificationsData[type].Description, origData);
+                    App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
+                    CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log(ex);
             }
         }
 
         void ShowNotif(NotificationType type)
         {
-            if (IsActive(type))
+            try
             {
-                App.Log($"New notification: {type}");
-                CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
+                if (IsActive(type))
+                {
+                    App.Log($"New notification: {type}");
+                    CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log(ex);
             }
         }
 

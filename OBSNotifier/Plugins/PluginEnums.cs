@@ -3,31 +3,35 @@
 namespace OBSNotifier.Plugins
 {
     [Flags]
-    public enum DefaultPluginSettings
+    public enum DefaultPluginSettings : long
     {
         None = 0,
         /// <summary>
         /// ComboBox with options
         /// </summary>
-        Options = 0b0000001,
+        Options = 1 << 0,
         /// <summary>
         /// X,Y relative offset Sliders
         /// </summary>
-        Offset = 0b0000010,
+        Offset = 1 << 1,
         /// <summary>
         /// Fade delay Slider
         /// </summary>
-        FadeDelay = 0b0000100,
+        FadeDelay = 1 << 2,
         /// <summary>
         /// Additional data TextBox
         /// </summary>
-        AdditionalData = 0b0001000,
+        AdditionalData = 1 << 3,
         /// <summary>
         /// Custom settings Button
         /// </summary>
-        CustomSettings = 0b0010000,
+        CustomSettings = 1 << 4,
+        /// <summary>
+        /// Button to fix/format an Additional data string
+        /// </summary>
+        AdditionalDataFix = 1 << 5,
 
-        All = 0b0011111,
-        AllNoCustomSettings = 0b0001111,
+        All = Options | Offset | FadeDelay | AdditionalData | CustomSettings | AdditionalDataFix,
+        AllNoCustomSettings = Options | Offset | FadeDelay | AdditionalData | AdditionalDataFix,
     }
 }

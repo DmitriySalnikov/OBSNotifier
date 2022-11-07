@@ -13,6 +13,8 @@ namespace OBSNotifier.Plugins.Default
     {
         BeginStoryboard notifFade;
         bool isPreview = false;
+        int prevMaxPathChars = -1;
+
         public delegate void VoidHandler(object sender, EventArgs e);
         public event VoidHandler Finished;
         uint prevDuration = 0;
@@ -33,13 +35,23 @@ namespace OBSNotifier.Plugins.Default
             Finished = null;
         }
 
-        public void ShowPreview(DefaultNotificationWindow.NotifBlockSettings settings, double opacity)
+        public void ShowPreview(DefaultCustomNotifBlockSettings settings, double opacity)
         {
             isPreview = true;
             notifFade.Storyboard.Stop(g_notif);
             g_notif.Opacity = opacity;
             Visibility = Visibility.Visible;
-            UpdateParams(settings, NotificationType.None, "Preview Notification", "Some description");
+
+            // Preview max path
+            var desc = "Some description";
+            var notif = NotificationType.None;
+            if (isPreview && prevMaxPathChars != -1 && prevMaxPathChars != settings.MaxPathChars)
+            {
+                desc = Utils.GetShortPath(@"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv", settings.MaxPathChars);
+                notif = NotificationType.RecordingStopped;
+            }
+
+            UpdateParams(settings, notif, "Preview Notification", desc);
         }
 
         public void HidePreview()
@@ -55,7 +67,7 @@ namespace OBSNotifier.Plugins.Default
             Visibility = Visibility.Collapsed;
         }
 
-        public void SetupNotif(DefaultNotificationWindow.NotifBlockSettings settings, NotificationType type, string title, string desc)
+        public void SetupNotif(DefaultCustomNotifBlockSettings settings, NotificationType type, string title, string desc)
         {
             UpdateParams(settings, type, title, desc);
 
@@ -79,10 +91,10 @@ namespace OBSNotifier.Plugins.Default
             notifFade.Storyboard.Begin(g_notif, true);
         }
 
-        void UpdateParams(DefaultNotificationWindow.NotifBlockSettings settings, NotificationType type, string title, string desc)
+        void UpdateParams(DefaultCustomNotifBlockSettings settings, NotificationType type, string title, string desc)
         {
-            r_notif.Fill = new SolidColorBrush(settings.Background);
-            r_notif.Stroke = new SolidColorBrush(settings.Outline);
+            r_notif.Fill = new SolidColorBrush(settings.BackgroundColor);
+            r_notif.Stroke = new SolidColorBrush(settings.OutlineColor);
             r_notif.RadiusX = settings.Radius;
             r_notif.RadiusY = settings.Radius;
             l_title.Foreground = new SolidColorBrush(settings.TextColor);
@@ -99,6 +111,8 @@ namespace OBSNotifier.Plugins.Default
                 l_desc.Text = desc;
 
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;
+
+            prevMaxPathChars = (int)settings.MaxPathChars;
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

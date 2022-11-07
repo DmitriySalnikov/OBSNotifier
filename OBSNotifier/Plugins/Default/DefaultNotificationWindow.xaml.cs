@@ -1,47 +1,21 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
-using System.Windows.Media;
 
 namespace OBSNotifier.Plugins.Default
 {
     internal partial class DefaultNotificationWindow : Window
     {
-        public struct NotifBlockSettings
-        {
-            public Color Background;
-            public Color TextColor;
-            public Color Outline;
-            public uint Duration;
-            public double Radius;
-            public double Width;
-            public double Height;
-            public Thickness Margin;
-            public int MaxPathChars;
-        }
-
-        public DefaultNotification owner = null;
+        DefaultNotification owner = null;
         int addDataHash = -1;
+        bool isPreviewNotif = false;
 
-        public bool IsPreviewNotif = false;
-        int VerticalBlocksCount = 1;
+        DeferredAction hide_delay;
+        DefaultCustomNotifBlockSettings currentNotifBlockSettings;
 
         bool IsPositionedOnTop { get => (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopLeft || (DefaultNotification.Positions)owner.PluginSettings.Option == DefaultNotification.Positions.TopRight; }
-        DeferredAction hide_delay;
 
-        NotifBlockSettings CurrentNotifBlockSettings;
-        readonly NotifBlockSettings DefaultNotifBlockSettings = new NotifBlockSettings()
-        {
-            Background = (Color)ColorConverter.ConvertFromString("#4C4C4C"),
-            TextColor = (Color)ColorConverter.ConvertFromString("#D8D8D8"),
-            Outline = (Color)ColorConverter.ConvertFromString("#59000000"),
-            Duration = 2000,
-            Radius = 4,
-            Width = 180,
-            Height = 52,
-            Margin = new Thickness(4),
-            MaxPathChars = 32,
-        };
+        public DefaultCustomNotifBlockSettings CurrentNotifBlockSettings { get => currentNotifBlockSettings; private set => currentNotifBlockSettings = value; }
+        readonly DefaultCustomNotifBlockSettings defaultNotifBlockSettings = new DefaultCustomNotifBlockSettings();
 
         public DefaultNotificationWindow(DefaultNotification plugin)
         {
@@ -49,7 +23,7 @@ namespace OBSNotifier.Plugins.Default
 
             hide_delay = new DeferredAction(() => Hide(), 200, this);
             sp_main_panel.Children.Clear();
-            CurrentNotifBlockSettings = DefaultNotifBlockSettings;
+            CurrentNotifBlockSettings = defaultNotifBlockSettings;
             owner = plugin;
         }
 
@@ -60,7 +34,6 @@ namespace OBSNotifier.Plugins.Default
 
         protected override void OnClosed(EventArgs e)
         {
-            VerticalBlocksCount = 0;
             RemoveUnusedBlocks();
             owner = null;
             hide_delay.Dispose();
@@ -71,125 +44,18 @@ namespace OBSNotifier.Plugins.Default
         void UpdateParameters()
         {
             // Additional Params
-            if (owner.PluginSettings.AdditionalData.GetHashCode() != addDataHash)
+            if (owner.PluginSettings.AdditionalData != null && owner.PluginSettings.AdditionalData.GetHashCode() != addDataHash)
             {
                 addDataHash = owner.PluginSettings.AdditionalData.GetHashCode();
 
-                var lines = owner.PluginSettings.AdditionalData.Replace("\r", "").Split('\n');
-                foreach (var line in lines)
-                {
-                    var args = line.Split('=');
-                    if (args.Length == 2)
-                    {
-                        switch (args[0].Trim())
-                        {
-                            case "Blocks":
-                                {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        VerticalBlocksCount = val;
-                                    else
-                                        VerticalBlocksCount = 1;
-                                    break;
-                                }
-                            case "BackgroundColor":
-                                {
-                                    try
-                                    {
-                                        CurrentNotifBlockSettings.Background = (Color)ColorConverter.ConvertFromString(args[1].Trim());
-                                    }
-                                    catch
-                                    {
-                                        CurrentNotifBlockSettings.Background = DefaultNotifBlockSettings.Background;
-                                    }
-                                    break;
-                                }
-                            case "TextColor":
-                                {
-                                    try
-                                    {
-                                        CurrentNotifBlockSettings.TextColor = (Color)ColorConverter.ConvertFromString(args[1].Trim());
-                                    }
-                                    catch
-                                    {
-                                        CurrentNotifBlockSettings.TextColor = DefaultNotifBlockSettings.TextColor;
-                                    }
-                                    break;
-                                }
-                            case "OutlineColor":
-                                {
-                                    try
-                                    {
-                                        CurrentNotifBlockSettings.Outline = (Color)ColorConverter.ConvertFromString(args[1].Trim());
-                                    }
-                                    catch
-                                    {
-                                        CurrentNotifBlockSettings.Outline = DefaultNotifBlockSettings.Outline;
-                                    }
-                                    break;
-                                }
-                            case "Radius":
-                                {
-                                    if (double.TryParse(args[1].Trim(), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
-                                        CurrentNotifBlockSettings.Radius = val;
-                                    else
-                                        CurrentNotifBlockSettings.Radius = DefaultNotifBlockSettings.Radius;
-                                    break;
-                                }
-                            case "Width":
-                                {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        CurrentNotifBlockSettings.Width = val;
-                                    else
-                                        CurrentNotifBlockSettings.Width = DefaultNotifBlockSettings.Width;
-                                    break;
-                                }
-                            case "Height":
-                                {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        CurrentNotifBlockSettings.Height = val;
-                                    else
-                                        CurrentNotifBlockSettings.Height = DefaultNotifBlockSettings.Height;
-                                    break;
-                                }
-                            case "MaxPathChars":
-                                {
-                                    if (int.TryParse(args[1].Trim(), out int val))
-                                        CurrentNotifBlockSettings.MaxPathChars = val;
-                                    else
-                                        CurrentNotifBlockSettings.MaxPathChars = DefaultNotifBlockSettings.MaxPathChars;
-                                    break;
-                                }
-                            case "Margin":
-                                {
-                                    var split = args[1].Trim().Split(',');
-                                    if (split.Length == 1)
-                                    {
-                                        if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val))
-                                            CurrentNotifBlockSettings.Margin = new Thickness(val);
-                                    }
-                                    else if (split.Length == 4)
-                                    {
-                                        if (double.TryParse(split[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val1) &&
-                                            double.TryParse(split[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val2) &&
-                                            double.TryParse(split[2], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val3) &&
-                                            double.TryParse(split[3], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double val4))
-                                        {
-                                            CurrentNotifBlockSettings.Margin = new Thickness(val1, val2, val3, val4);
-                                        }
-                                    }
-                                    else
-                                        CurrentNotifBlockSettings.Margin = DefaultNotifBlockSettings.Margin;
-                                    break;
-                                }
-                        }
-                    }
-                }
+                CurrentNotifBlockSettings = defaultNotifBlockSettings;
+                Utils.ConfigParseString(owner.PluginSettings.AdditionalData, ref currentNotifBlockSettings);
 
                 RemoveUnusedBlocks();
             }
 
             CurrentNotifBlockSettings.Duration = owner.PluginSettings.OnScreenTime;
-            Height = CurrentNotifBlockSettings.Height * VerticalBlocksCount;
+            Height = CurrentNotifBlockSettings.Height * CurrentNotifBlockSettings.Blocks;
             Width = CurrentNotifBlockSettings.Width;
 
             // Position
@@ -205,10 +71,10 @@ namespace OBSNotifier.Plugins.Default
 
         public void ShowNotif(NotificationType type, string title, string desc)
         {
-            if (IsPreviewNotif)
+            if (isPreviewNotif)
                 return;
 
-            if (sp_main_panel.Children.Count < VerticalBlocksCount)
+            if (sp_main_panel.Children.Count < CurrentNotifBlockSettings.Blocks)
             {
                 var nnb = new DefaultNotificationBlock();
                 nnb.Finished += NotificationBlock_Animation_Finished;
@@ -238,7 +104,7 @@ namespace OBSNotifier.Plugins.Default
 
         public void ShowPreview()
         {
-            IsPreviewNotif = true;
+            isPreviewNotif = true;
             UpdateParameters();
             CreateMissingBlocks();
 
@@ -254,7 +120,7 @@ namespace OBSNotifier.Plugins.Default
 
         public void HidePreview()
         {
-            IsPreviewNotif = false;
+            isPreviewNotif = false;
 
             foreach (DefaultNotificationBlock c in sp_main_panel.Children)
                 c.HidePreview();
@@ -275,7 +141,7 @@ namespace OBSNotifier.Plugins.Default
 
         void RemoveUnusedBlocks()
         {
-            while (sp_main_panel.Children.Count > VerticalBlocksCount)
+            while (sp_main_panel.Children.Count > CurrentNotifBlockSettings.Blocks)
             {
                 DefaultNotificationBlock nb;
                 if (IsPositionedOnTop)
@@ -291,7 +157,7 @@ namespace OBSNotifier.Plugins.Default
 
         void CreateMissingBlocks()
         {
-            while (sp_main_panel.Children.Count < VerticalBlocksCount)
+            while (sp_main_panel.Children.Count < CurrentNotifBlockSettings.Blocks)
             {
                 var nnb = new DefaultNotificationBlock();
                 nnb.Finished += NotificationBlock_Animation_Finished;

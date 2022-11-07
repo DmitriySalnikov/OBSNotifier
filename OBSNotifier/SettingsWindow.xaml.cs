@@ -149,6 +149,7 @@ namespace OBSNotifier
                     {Plugins.DefaultPluginSettings.FadeDelay, group_delay},
                     {Plugins.DefaultPluginSettings.AdditionalData, group_additional_data},
                     {Plugins.DefaultPluginSettings.CustomSettings, group_open_plugin_settings},
+                    {Plugins.DefaultPluginSettings.AdditionalDataFix, btn_fix_additional_data},
                 };
 
                 foreach (var p in groups_map)
@@ -507,6 +508,18 @@ namespace OBSNotifier
             var pluginData = App.plugins.CurrentPlugin;
             if (pluginData.plugin != null)
                 tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+
+            UpdateNotification();
+        }
+
+        private void btn_fix_additional_data_Click(object sender, RoutedEventArgs e)
+        {
+            var pluginData = App.plugins.CurrentPlugin;
+            if (pluginData.plugin != null)
+            {
+                pluginData.defaultSettings.AdditionalData = pluginData.plugin.GetFixedAdditionalData();
+                tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+            }
 
             UpdateNotification();
         }

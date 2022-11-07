@@ -96,6 +96,7 @@
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="NotificationManager.cs" />
+    <Compile Include="Plugins\Default\DefaultCustomNotifBlockSettings.cs" />
     <Compile Include="Plugins\Default\DefaultNotification.cs" />
     <Compile Include="Plugins\Default\DefaultNotificationBlock.xaml.cs">
       <DependentUpon>DefaultNotificationBlock.xaml</DependentUpon>
@@ -104,6 +105,7 @@
     <Compile Include="Plugins\PluginEnums.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="UtilsConfigParser.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VersionCheckGitHub.cs" />
     <Compile Include="WPFScreens.cs" />
