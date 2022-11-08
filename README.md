@@ -26,6 +26,10 @@ This is a simple program for displaying notifications from OBS on your desktop.
 
 To install OBS Notifier for OBS 27.x and get working notifications about saving replays, [read this article](https://dmitriysalnikov.itch.io/obs-notifier/devlog/335353/how-to-install-obs-notifier).
 
+## Troubleshooting
+
+If you have found a bug or want to suggest a new feature, then please create a new Issue. If necessary, attach logs, you can find them in `%APPDATA%/OBSNotifier` (`log.txt` and `plugin_manager_log.txt`)
+
 ## Screenshots
 
 ![Nvidia-like notifications](Images/readme/nvidia-like_notif1.png)
