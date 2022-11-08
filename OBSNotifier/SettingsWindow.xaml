@@ -27,7 +27,16 @@
             <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
 
             <Separator Height="10" Background="{x:Null}"/>
-            <CheckBox x:Name="cb_autostart" Content="Run at Windows startup" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_autostart_script_create_update , Mode=OneWay}"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox x:Name="cb_autostart" Content="Run at Windows startup" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                <Button x:Name="btn_autostart_script_create_update" Grid.Column="1" MinWidth="110" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btn_autostart_script_create_update_Click">
+                    <TextBlock x:Name="tb_autostart_button_text" Text="Start with OBS&#xD;&#xA;(update☹️)" TextAlignment="Center" HorizontalAlignment="Center"/>
+                </Button>
+            </Grid>
             <Separator Height="2" Background="{x:Null}"/>
             <CheckBox x:Name="cb_close_on_closing" Content="Close this program when exiting OBS&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center"/>
             <Separator Height="16"/>

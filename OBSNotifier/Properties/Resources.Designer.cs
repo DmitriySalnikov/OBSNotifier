@@ -91,6 +91,33 @@ namespace OBSNotifier.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to obs = obslua
+        ///
+        ///function script_description()
+        ///	return [[Starts OBSNotifier when OBS starts]]
+        ///end
+        ///
+        ///function script_defaults(settings)
+        ///	obs.obs_data_set_default_bool(settings, &quot;lowprio&quot;, true)
+        ///end
+        ///
+        ///function script_properties()
+        ///	local properties = obs.obs_properties_create()
+        ///	obs.obs_properties_add_bool(properties, &quot;lowprio&quot;, &quot;Run with lower priority&quot;)
+        ///	obs.obs_properties_apply_settings(properties, settings)
+        ///	return properties
+        ///end
+        ///
+        ///function script_update(settings)
+        ///	lowprio = obs.obs_data_get_bo [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string obs_notifier_autostart {
+            get {
+                return ResourceManager.GetString("obs_notifier_autostart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon obs_notifier_connected_64px {

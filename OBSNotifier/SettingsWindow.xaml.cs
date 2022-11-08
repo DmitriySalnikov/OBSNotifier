@@ -103,6 +103,21 @@ namespace OBSNotifier
             }
         }
 
+        void UpdateAutostartScriptButton()
+        {
+            var defHint = "Create or update a script to run the program automatically.";
+            if (AutostartScriptManager.IsScriptExists() && AutostartScriptManager.IsFileNeedToUpdate(true))
+            {
+                tb_autostart_button_text.Text = "Start with OBS\n(script is outdated)";
+                tb_autostart_button_text.ToolTip = defHint + "\nThe script does not match the current version,\nor the default path to OBS Notifier does not match the current program path.";
+            }
+            else
+            {
+                tb_autostart_button_text.Text = "Start with OBS";
+                tb_autostart_button_text.ToolTip = defHint;
+            }
+        }
+
         void OnPluginChanged()
         {
             IsChangedByCode = true;
@@ -236,6 +251,8 @@ namespace OBSNotifier
                 {
                     UpdateAutostartCheckbox(true);
                 }
+
+                UpdateAutostartScriptButton();
             }
             else
             {
@@ -350,6 +367,26 @@ namespace OBSNotifier
                 cb_autostart.IsChecked = true;
                 IsChangedByCode = false;
                 UpdateAutostartCheckbox(true);
+            }
+        }
+
+        private void btn_autostart_script_create_update_Click(object sender, RoutedEventArgs e)
+        {
+            var isScriptExists = AutostartScriptManager.IsScriptExists();
+            if (AutostartScriptManager.CreateScript())
+            {
+                Clipboard.SetText(AutostartScriptManager.ScriptPath);
+                App.ShowMessageBox(string.Join("\n",
+                    (isScriptExists ? "The autostart script has been successfully updated!" : "The autostart script was successfully created!"),
+                    "The path to the file has been copied to the clipboard.",
+                    (isScriptExists ? "\nIf you have already added a script to OBS before, you can safely close this message.\nIf not, follow the instructions below." : "\nNow you need to add it to OBS."),
+                    "\nYou need to open OBS and go to the script settings window.",
+                    "Tools -> Scripts.",
+                    "Then click on the + button, paste the path from the clipboard as the File Name and click Open.",
+                    "\nSummary: Tools -> Scripts -> + button -> Paste the path in the File Name field -> click Open.",
+                    "\nAfter that, OBS Notifier will automatically start with OBS."),
+                    "Complete the configuration", MessageBoxButton.OK, MessageBoxImage.Information);
+                UpdateAutostartScriptButton();
             }
         }
 

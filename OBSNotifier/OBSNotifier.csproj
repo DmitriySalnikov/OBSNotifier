@@ -93,6 +93,7 @@
     <Compile Include="ActiveNotifications.xaml.cs">
       <DependentUpon>ActiveNotifications.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AutostartScriptManager.cs" />
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="NotificationManager.cs" />
@@ -161,7 +162,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="obs_notifier_autostart.lua" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

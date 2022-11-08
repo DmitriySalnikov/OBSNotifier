@@ -83,6 +83,10 @@ namespace OBSNotifier
 
             logger = new Logger("log.txt");
 
+            // Just log the message if the autorun script exists
+            if (AutostartScriptManager.IsScriptExists())
+                AutostartScriptManager.IsFileNeedToUpdate();
+
             // Global exception handlers
             // https://stackoverflow.com/a/10203030/8980874
             AppDomain.CurrentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
