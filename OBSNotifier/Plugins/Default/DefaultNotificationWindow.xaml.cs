@@ -120,11 +120,14 @@ namespace OBSNotifier.Plugins.Default
 
         public void HidePreview()
         {
-            isPreviewNotif = false;
+            if (isPreviewNotif)
+            {
+                isPreviewNotif = false;
 
-            foreach (DefaultNotificationBlock c in sp_main_panel.Children)
-                c.HidePreview();
-            hide_delay.CallDeferred();
+                foreach (DefaultNotificationBlock c in sp_main_panel.Children)
+                    c.HidePreview();
+                hide_delay.CallDeferred();
+            }
         }
 
         void ShowWithLocationFix()

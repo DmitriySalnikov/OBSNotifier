@@ -255,12 +255,16 @@ namespace NvidiaLikeNotification
 
         public void HidePreview()
         {
-            currentParams.IsPreviewNotif = false;
+            if (currentParams.IsPreviewNotif)
+            {
+                previousParams = currentParams.Duplicate();
+                currentParams.IsPreviewNotif = false;
 
-            // update animation and force it to change values
-            UpdateAnimationParameters();
-            anim.Storyboard.Begin(this, true);
-            anim.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
+                // update animation and force it to change values
+                UpdateAnimationParameters();
+                anim.Storyboard.Begin(this, true);
+                anim.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
+            }
         }
 
         private void Animation_Finished(object sender, EventArgs e)

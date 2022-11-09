@@ -38,10 +38,10 @@
                 </Button>
             </Grid>
             <Separator Height="2" Background="{x:Null}"/>
-            <CheckBox x:Name="cb_close_on_closing" Content="Close this program when exiting OBS&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center"/>
+            <CheckBox x:Name="cb_close_on_closing" Content="Close this program when exiting OBS&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
             <Separator Height="16"/>
 
-            <Label Content="Notification settigns" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Label Content="Notification Settings" HorizontalAlignment="Center" FontWeight="Bold"/>
 
             <CheckBox x:Name="cb_preview" Content="Preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
 
@@ -101,7 +101,7 @@
             </StackPanel>
 
             <StackPanel x:Name="group_additional_data">
-                <Label Content="Additional data:"/>
+                <Label Content="Additional Data:"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

@@ -27,7 +27,7 @@ end
 
 function start_OBSNotifier(path, lowprio)
 	local priostring = lowprio and "/BELOWNORMAL" or "/NORMAL"
-	local StartCommand = "start /B /MIN " .. priostring .. " \"OBSNotifier\" \"&OBS_NOTIFIER_PATH&\" --force_close"
+	local StartCommand = "start /B " .. priostring .. " \"OBSNotifier\" \"&OBS_NOTIFIER_PATH&\" --force_close"
 	obs.script_log(obs.LOG_INFO, "Executing command: " .. StartCommand)
 	
 	local output = os.execute(StartCommand)
