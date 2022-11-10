@@ -15,10 +15,10 @@ This is a simple program for displaying notifications from OBS on your desktop.
 * Separate settings for each plugin
 * Adjusting the position and offsets of notifications
 * Configurable notification display time
-* Ability to choose which types of notifications to display
-* Ability to set custom settings
 * Highly customizable default plugin
 * Nvidia-like plugin out of the box
+* Ability to choose which types of notifications to display
+* Ability to quickly open saved files
 
 ## [Download](https://github.com/DmitriySalnikov/OBSNotifier/releases/latest)
 
@@ -35,6 +35,8 @@ If you have found a bug or want to suggest a new feature, then please create a n
 ![Nvidia-like notifications](Images/readme/nvidia-like_notif1.png)
 
 ![Nvidia-like notifications](Images/readme/nvidia-like_notif2.gif)
+
+![Nvidia-like qucik actions](Images/readme/quick_actions.gif)
 
 ![Default notifications](Images/readme/default_notif1.gif)
 

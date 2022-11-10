@@ -27,7 +27,7 @@ namespace NvidiaLikeNotification
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nIconHeight = 64.0\nIconPath = INVALID_PATH",
+            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nShowQuickActionsOnFileSave = False\nIconHeight = 64.0\nIconPath = INVALID_PATH",
             Option = Positions.TopRight,
             Offset = new Point(0, 0.1),
             OnScreenTime = 3000,

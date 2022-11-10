@@ -14,6 +14,7 @@ namespace OBSNotifier.Plugins.Default
         BeginStoryboard notifFade;
         bool isPreview = false;
         int prevMaxPathChars = -1;
+        bool? prevShowQuickActions = null;
 
         public delegate void VoidHandler(object sender, EventArgs e);
         public event VoidHandler Finished;
@@ -45,7 +46,10 @@ namespace OBSNotifier.Plugins.Default
             // Preview max path
             var desc = "Some description";
             var notif = NotificationType.None;
-            if (isPreview && prevMaxPathChars != -1 && prevMaxPathChars != settings.MaxPathChars)
+            if (isPreview && (
+                (prevMaxPathChars != -1 && prevMaxPathChars != settings.MaxPathChars) ||
+                (prevShowQuickActions != null && prevShowQuickActions != settings.ShowQuickActionsOnFileSave)
+               ))
             {
                 desc = Utils.GetShortPath(@"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv", settings.MaxPathChars);
                 notif = NotificationType.RecordingStopped;
@@ -99,20 +103,37 @@ namespace OBSNotifier.Plugins.Default
             r_notif.RadiusY = settings.Radius;
             l_title.Foreground = new SolidColorBrush(settings.TextColor);
             l_desc.Foreground = new SolidColorBrush(settings.TextColor);
-            MainViewbox.Margin = settings.Margin;
+            mainBox.Margin = settings.Margin;
             Width = settings.Width;
             Height = settings.Height;
 
             l_title.Text = title;
 
-            if (NotificationType.WithFilePaths.HasFlag(type))
-                l_desc.Text = Utils.GetShortPath(desc, (uint)settings.MaxPathChars);
+            fileOpenOverlay.IsPreview = isPreview;
+            if (type != NotificationType.None && NotificationType.WithFilePaths.HasFlag(type))
+            {
+                if (settings.ShowQuickActionsOnFileSave)
+                {
+                    fileOpenOverlay.FilePath = desc;
+                    fileOpenOverlay.Clip = new RectangleGeometry(new Rect(0, 0, Width, Height), r_notif.RadiusX, r_notif.RadiusY);
+                }
+                else
+                {
+                    fileOpenOverlay.FilePath = null;
+                }
+
+                l_desc.Text = Utils.GetShortPath(desc, settings.MaxPathChars);
+            }
             else
+            {
+                fileOpenOverlay.FilePath = null;
                 l_desc.Text = desc;
+            }
 
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;
 
             prevMaxPathChars = (int)settings.MaxPathChars;
+            prevShowQuickActions = settings.ShowQuickActionsOnFileSave;
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

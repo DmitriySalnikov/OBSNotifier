@@ -30,6 +30,8 @@ namespace NvidiaLikeNotification
         public double Scale { get => scale; set => scale = Math.Max(0.001, value); }
 
         public uint MaxPathChars { get; set; }
+        public bool ShowQuickActionsOnFileSave { get; set; }
+
         public double IconHeight { get => iconHeight; set => iconHeight = Math.Max(0, value); }
         public string IconPath { get; set; }
 
@@ -50,6 +52,8 @@ namespace NvidiaLikeNotification
             Scale = 1.0;
 
             MaxPathChars = 32;
+            ShowQuickActionsOnFileSave = false;
+
             IconHeight = 64;
             IconPath = "INVALID_PATH";
         }
@@ -81,9 +85,13 @@ namespace NvidiaLikeNotification
 
                 SlideDuration = this.SlideDuration,
                 SlideOffset = this.SlideOffset,
+
                 LineWidth = this.LineWidth,
                 Scale = this.Scale,
+
                 MaxPathChars = this.MaxPathChars,
+                ShowQuickActionsOnFileSave = this.ShowQuickActionsOnFileSave,
+
                 IconHeight = this.IconHeight,
                 IconPath = this.IconPath,
             };

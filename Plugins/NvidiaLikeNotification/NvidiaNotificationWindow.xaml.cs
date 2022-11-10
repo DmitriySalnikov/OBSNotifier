@@ -70,14 +70,25 @@ namespace NvidiaLikeNotification
             // General params
             currentParams.Duration = owner.PluginSettings.OnScreenTime;
             currentParams.IsOnRightSide = (NvidiaNotification.Positions)owner.PluginSettings.Option == NvidiaNotification.Positions.TopRight;
+            fileOpenOverlay.IsPreview = currentParams.IsPreviewNotif;
 
             // Preview max path
             if (currentParams.IsPreviewNotif)
             {
-                if (previousParams.MaxPathChars != currentParams.MaxPathChars)
-                    l_desc.Text = Utils.GetShortPath(@"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv", currentParams.MaxPathChars);
+                var path = @"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv";
+                if ((previousParams.MaxPathChars != currentParams.MaxPathChars) ||
+                    (previousParams.ShowQuickActionsOnFileSave != currentParams.ShowQuickActionsOnFileSave)
+                    )
+                {
+                    fileOpenOverlay.FilePath = currentParams.ShowQuickActionsOnFileSave ? path : null;
+                    l_desc.Text = Utils.GetShortPath(path, currentParams.MaxPathChars);
+                }
                 else
+                {
+                    fileOpenOverlay.FilePath = null;
                     l_desc.Text = "Some description";
+                }
+
             }
 
             // Colors
@@ -225,9 +236,15 @@ namespace NvidiaLikeNotification
             l_title.Text = title;
 
             if (NotificationType.WithFilePaths.HasFlag(type))
+            {
+                fileOpenOverlay.FilePath = currentParams.ShowQuickActionsOnFileSave ? desc : null;
                 l_desc.Text = Utils.GetShortPath(desc, currentParams.MaxPathChars);
+            }
             else
+            {
+                fileOpenOverlay.FilePath = null;
                 l_desc.Text = desc;
+            }
             l_desc.Visibility = string.IsNullOrWhiteSpace(desc) ? Visibility.Collapsed : Visibility.Visible;
 
             anim.Storyboard.Stop(this);

@@ -123,8 +123,8 @@ namespace OBSNotifier
             }
             else if (type == typeof(bool))
             {
-                if (bool.TryParse(data, out bool val))
-                    return val;
+                var l = data.ToLower();
+                return l == "yes" || l == "y" || l == "true" || l == "+";
             }
             else if (type == typeof(int))
             {

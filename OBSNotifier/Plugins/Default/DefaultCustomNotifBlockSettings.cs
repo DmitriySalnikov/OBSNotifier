@@ -24,6 +24,7 @@ namespace OBSNotifier.Plugins.Default
         public double Height { get { return height; } set { height = Math.Max(1, value); } }
         public Thickness Margin { get; set; }
         public uint MaxPathChars { get; set; }
+        public bool ShowQuickActionsOnFileSave { get; set; }
 
         public DefaultCustomNotifBlockSettings()
         {
@@ -37,6 +38,7 @@ namespace OBSNotifier.Plugins.Default
             Height = 52;
             Margin = new Thickness(4);
             MaxPathChars = 32;
+            ShowQuickActionsOnFileSave = true;
         }
     }
 }

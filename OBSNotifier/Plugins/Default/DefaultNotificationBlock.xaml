@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OBSNotifier.Plugins.Default"
+             xmlns:uc="clr-namespace:OBSNotifier.Plugins.UserControls"
              mc:Ignorable="d" x:ClassModifier="internal"
              Height="52" Width="180" IsHitTestVisible="True" Background="Transparent" MouseDown="Window_MouseDown">
 
@@ -23,8 +24,10 @@
                 </Storyboard>
             </BeginStoryboard>
         </Grid.Resources>
+
         <Rectangle x:Name="r_notif" Stroke="#59000000" RadiusX="4" RadiusY="4" Fill="White"/>
-        <Viewbox x:Name="MainViewbox" Margin="4,4,4,4">
+
+        <Viewbox x:Name="mainBox" Margin="4,4,4,4">
             <StackPanel x:Name="stackPanel" VerticalAlignment="Center">
                 <Viewbox StretchDirection="DownOnly">
                     <TextBlock x:Name="l_title" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
@@ -34,5 +37,7 @@
                 </Viewbox>
             </StackPanel>
         </Viewbox>
+
+        <uc:OpenFileOverlayActions x:Name="fileOpenOverlay"/>
     </Grid>
 </UserControl>

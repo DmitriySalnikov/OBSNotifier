@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NvidiaLikeNotification"
+        xmlns:uc="clr-namespace:OBSNotifier.Plugins.UserControls;assembly=OBSNotifier"
         mc:Ignorable="d"
         Title="Nvidia Notification"
         WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
@@ -70,6 +71,8 @@
                     </Viewbox>
                 </StackPanel>
             </Grid>
+            
+            <uc:OpenFileOverlayActions x:Name="fileOpenOverlay"/>
         </Grid>
     </Viewbox>
 </Window>

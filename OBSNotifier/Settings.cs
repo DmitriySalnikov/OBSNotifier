@@ -124,6 +124,9 @@ namespace OBSNotifier
                 if (File.Exists(SaveFile))
                 {
                     Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
+                    if(Instance == null)
+                        Instance = new Settings();
+
                     return;
                 }
             }
