@@ -15,6 +15,7 @@ namespace NvidiaLikeNotification
 
         NvidiaNotification owner = null;
         int addDataHash = -1;
+        bool firstUpdate = true;
 
         CustomAnimationConfig currentParams;
         CustomAnimationConfig previousParams;
@@ -76,9 +77,10 @@ namespace NvidiaLikeNotification
             if (currentParams.IsPreviewNotif)
             {
                 var path = @"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv";
-                if ((previousParams.MaxPathChars != currentParams.MaxPathChars) ||
+                if (!firstUpdate && (
+                    (previousParams.MaxPathChars != currentParams.MaxPathChars) ||
                     (previousParams.ShowQuickActionsOnFileSave != currentParams.ShowQuickActionsOnFileSave)
-                    )
+                    ))
                 {
                     fileOpenOverlay.FilePath = currentParams.ShowQuickActionsOnFileSave ? path : null;
                     l_desc.Text = Utils.GetShortPath(path, currentParams.MaxPathChars);
@@ -136,6 +138,8 @@ namespace NvidiaLikeNotification
 
             Left = pos.X;
             Top = pos.Y;
+
+            firstUpdate = false;
         }
 
         private void I_icon_SizeChanged(object sender, SizeChangedEventArgs e)
