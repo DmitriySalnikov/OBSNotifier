@@ -27,7 +27,7 @@ namespace OBSNotifier.Plugins.Default
 
         OBSNotifierPluginSettings _pluginSettings = new OBSNotifierPluginSettings()
         {
-            AdditionalData = "BackgroundColor = #FF4C4C4C\nOutlineColor = #59000000\nTextColor = #FFD8D8D8\nBlocks = 3\nRadius = 4.0\nWidth = 180.0\nHeight = 52.0\nMargin = 4, 4, 4, 4\nMaxPathChars = 32\nShowQuickActionsOnFileSave = True",
+            AdditionalData = new DefaultCustomNotifBlockSettings(),
             Option = Positions.BottomRight,
             Offset = new Point(0, 0),
             OnScreenTime = 3000,
@@ -96,11 +96,6 @@ namespace OBSNotifier.Plugins.Default
         public void OpenCustomSettings() { }
 
         public string GetCustomSettingsDataToSave() => null;
-
-        public string GetFixedAdditionalData()
-        {
-            return Utils.ConfigFixString<DefaultCustomNotifBlockSettings>(_pluginSettings.AdditionalData);
-        }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

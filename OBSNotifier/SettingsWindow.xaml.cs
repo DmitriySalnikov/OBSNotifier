@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using OBSNotifier.ConfigUI;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -143,10 +144,10 @@ namespace OBSNotifier
                 }
 
                 // additional data
-                if (Settings.Instance.CurrentPluginSettings.AdditionalData == null)
-                    tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
-                else
-                    tb_additional_data.Text = pluginData.plugin.PluginSettings.AdditionalData;
+                g_plugin_config.Children.Clear();
+                var grid = ConfigMenuGenerator.GenerateMenu(pluginData.plugin.PluginSettings.AdditionalData);
+                g_plugin_config.Children.Add(grid);
+                grid.ConfigUpdate += (s, e) => App.Log("PISOS");
 
                 // offset
                 sldr_position_offset_x.Value = pluginData.plugin.PluginSettings.Offset.X;
@@ -162,9 +163,7 @@ namespace OBSNotifier
                     {Plugins.DefaultPluginSettings.Options, group_options},
                     {Plugins.DefaultPluginSettings.Offset, group_offset},
                     {Plugins.DefaultPluginSettings.FadeDelay, group_delay},
-                    {Plugins.DefaultPluginSettings.AdditionalData, group_additional_data},
                     {Plugins.DefaultPluginSettings.CustomSettings, group_open_plugin_settings},
-                    {Plugins.DefaultPluginSettings.AdditionalDataFix, btn_fix_additional_data},
                 };
 
                 foreach (var p in groups_map)
@@ -536,27 +535,6 @@ namespace OBSNotifier
         {
             sldr_position_offset_x.Value = 0.5;
             sldr_position_offset_y.Value = 0.5;
-
-            UpdateNotification();
-        }
-
-        private void btn_reset_additional_data_Click(object sender, RoutedEventArgs e)
-        {
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
-                tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
-
-            UpdateNotification();
-        }
-
-        private void btn_fix_additional_data_Click(object sender, RoutedEventArgs e)
-        {
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
-            {
-                pluginData.defaultSettings.AdditionalData = pluginData.plugin.GetFixedAdditionalData();
-                tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
-            }
 
             UpdateNotification();
         }

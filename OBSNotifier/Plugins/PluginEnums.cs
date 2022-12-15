@@ -26,12 +26,8 @@ namespace OBSNotifier.Plugins
         /// Custom settings Button
         /// </summary>
         CustomSettings = 1 << 4,
-        /// <summary>
-        /// Button to fix/format an Additional data string
-        /// </summary>
-        AdditionalDataFix = 1 << 5,
 
-        All = Options | Offset | FadeDelay | AdditionalData | CustomSettings | AdditionalDataFix,
-        AllNoCustomSettings = Options | Offset | FadeDelay | AdditionalData | AdditionalDataFix,
+        All = Options | Offset | FadeDelay | AdditionalData | CustomSettings,
+        AllNoCustomSettings = Options | Offset | FadeDelay | AdditionalData,
     }
 }

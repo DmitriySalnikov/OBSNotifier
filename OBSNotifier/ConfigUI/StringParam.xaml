@@ -1,0 +1,17 @@
+﻿<local:BaseConfigParam x:Class="OBSNotifier.ConfigUI.StringParam"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OBSNotifier.ConfigUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="64" d:DesignWidth="256">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding ElementName=tb_name, Path=ActualHeight, Mode=OneWay}"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="tb_name" Grid.Row="0" VerticalAlignment="Top" Text="Test string text"/>
+        <TextBox x:Name="tb_value" Grid.Row="1" TextChanged="tb_value_TextChanged"/>
+    </Grid>
+</local:BaseConfigParam>

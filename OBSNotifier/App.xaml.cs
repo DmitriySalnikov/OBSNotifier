@@ -237,9 +237,9 @@ namespace OBSNotifier
             versionCheckerGitHub.CheckForUpdates();
         }
 
-        public static void Log(string txt)
+        public static void Log(string txt, Logger.ErrorLevel level = Logger.ErrorLevel.Info)
         {
-            logger?.Write(txt);
+            logger?.Write(txt, level);
         }
 
         public static void Log(Exception ex)

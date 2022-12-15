@@ -7,6 +7,13 @@ namespace OBSNotifier
 {
     internal class Logger : IDisposable
     {
+        public enum ErrorLevel
+        {
+            Info,
+            Warning,
+            Error,
+        }
+
         readonly string saveFile;
         TextWriter logWriter = null;
         DeferredAction flushFileAction = null;
@@ -53,14 +60,28 @@ namespace OBSNotifier
             logWriter = null;
         }
 
-        public void Write(string txt)
+        public void Write(string txt, ErrorLevel level = ErrorLevel.Info)
         {
+            var prefix = "";
+            if (level != ErrorLevel.Info)
+            {
+                switch (level)
+                {
+                    case ErrorLevel.Warning:
+                        prefix = " [Warning]";
+                        break;
+                    case ErrorLevel.Error:
+                        prefix = " [Error]";
+                        break;
+                }
+            }
+
             var isFirst = true;
             txt = string.Join("\n",
                 txt.Split('\n').
                 Select((t) =>
                 {
-                    var res = $"[{DateTime.Now.ToString(CultureInfo.InvariantCulture)}]{(isFirst ? "\t" : "-\t")}{t}";
+                    var res = $"[{DateTime.Now.ToString(CultureInfo.InvariantCulture)}]{prefix}{(isFirst ? "\t" : "-\t")}{t}";
                     isFirst = false;
                     return res;
                 }));
@@ -78,7 +99,7 @@ namespace OBSNotifier
 
         public void Write(Exception ex)
         {
-            Write($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
+            Write($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}", ErrorLevel.Error);
         }
     }
 }

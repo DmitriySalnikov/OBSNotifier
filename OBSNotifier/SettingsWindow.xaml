@@ -109,11 +109,13 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="tb_additional_data" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="TextBox_TextChanged"/>
                     <StackPanel Grid.Column="2">
-                        <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Click="btn_reset_additional_data_Click"/>
-                        <Button x:Name="btn_fix_additional_data" Content="🧰" ToolTip="Fix config" HorizontalAlignment="Left" Click="btn_fix_additional_data_Click"/>
+                        <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" />
+                        <Button x:Name="btn_fix_additional_data" Content="🧰" ToolTip="Fix config" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Grid>
             </StackPanel>
+
+            <Grid x:Name="g_plugin_config"/>
 
             <StackPanel x:Name="group_open_plugin_settings">
                 <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>

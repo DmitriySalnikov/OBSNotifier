@@ -49,7 +49,7 @@ namespace OBSNotifier.Plugins.Default
                 addDataHash = owner.PluginSettings.AdditionalData.GetHashCode();
 
                 CurrentNotifBlockSettings = defaultNotifBlockSettings;
-                Utils.ConfigParseString(owner.PluginSettings.AdditionalData, ref currentNotifBlockSettings);
+                //Utils.ConfigParseString(owner.PluginSettings.AdditionalData, ref currentNotifBlockSettings);
 
                 RemoveUnusedBlocks();
             }

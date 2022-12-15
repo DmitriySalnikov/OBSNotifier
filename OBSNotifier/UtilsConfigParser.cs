@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OBSNotifier.Plugins;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -10,9 +11,6 @@ using System.Windows.Media;
 
 namespace OBSNotifier
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class ConfigIgnoreAttribute : Attribute { }
-
     public static partial class Utils
     {
         /// <summary>
@@ -69,10 +67,10 @@ namespace OBSNotifier
         /// <typeparam name="T">Any class with fields and/or properties</typeparam>
         /// <param name="data">Config string</param>
         /// <param name="configToUpdate">Any object that will be updated during the parsing process</param>
-        public static void ConfigParseString<T>(string data, ref T configToUpdate) where T : class
+        public static void ConfigParseString(string data, ref object configToUpdate)
         {
             const string errorMods = "Invalid modifiers for the {0} \"{1}\". Must be public, non static, and be able to set and get the value.";
-            var dataType = typeof(T);
+            var dataType = configToUpdate.GetType();
             var lines = Regex.Replace(data, @"\r\n|\n\r|\r", "\n").Split('\n');
             foreach (var line in lines)
             {
@@ -85,7 +83,7 @@ namespace OBSNotifier
                     // Properties
                     {
                         var prop = dataType.GetProperty(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty);
-                        if (prop != null && prop.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
+                        if (prop != null && prop.GetCustomAttribute<ParamIgnoreAttribute>() == null)
                         {
                             prop.SetValue(configToUpdate, ParsePluginConfigValue(prop.PropertyType, propVal, prop.GetValue(configToUpdate)));
                             continue;
@@ -100,7 +98,7 @@ namespace OBSNotifier
                     // Fields
                     {
                         var field = dataType.GetField(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.SetField);
-                        if (field != null && field.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
+                        if (field != null && field.GetCustomAttribute<ParamIgnoreAttribute>() == null)
                         {
                             field.SetValue(configToUpdate, ParsePluginConfigValue(field.FieldType, propVal, field.GetValue(configToUpdate)));
                             continue;
@@ -275,10 +273,10 @@ namespace OBSNotifier
         /// <typeparam name="T">Any class with fields and/or properties</typeparam>
         /// <param name="configData">Any object that will be updated during the parsing process</param>
         /// <returns>Config string</returns>
-        public static string ConfigSerializeObject<T>(T configData) where T : class
+        public static string ConfigSerializeObject(object configData)
         {
             var sb = new StringBuilder();
-            var type = typeof(T);
+            var type = configData.GetType();
 
             PropertyInfo[] props;
             FieldInfo[] fields;
@@ -292,9 +290,9 @@ namespace OBSNotifier
             else
             {
                 props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty)
-                    .Where((p) => p.GetCustomAttribute<ConfigIgnoreAttribute>() == null).ToArray();
+                    .Where((p) => p.GetCustomAttribute<ParamIgnoreAttribute>() == null).ToArray();
                 fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.SetField)
-                    .Where((f) => f.GetCustomAttribute<ConfigIgnoreAttribute>() == null).ToArray();
+                    .Where((f) => f.GetCustomAttribute<ParamIgnoreAttribute>() == null).ToArray();
 
                 cachedMembers.Add(type, (props, fields));
             }
@@ -346,20 +344,6 @@ namespace OBSNotifier
             }
 
             return Convert.ToString(value, CultureInfo.InvariantCulture);
-        }
-
-        /// <summary>
-        /// It's just a combination of the <see cref="ConfigParseString{T}(string, ref T)"/> and <see cref="ConfigSerializeObject{T}(T)"/>
-        /// to fix errors and remove/add properties in the configuration string.
-        /// </summary>
-        /// <typeparam name="T">Class of cofig</typeparam>
-        /// <param name="data">Config string</param>
-        /// <returns>New fixed config string</returns>
-        public static string ConfigFixString<T>(string data) where T : class, new()
-        {
-            var c = new T();
-            ConfigParseString(data, ref c);
-            return ConfigSerializeObject(c);
         }
     }
 }

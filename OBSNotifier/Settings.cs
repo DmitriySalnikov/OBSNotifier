@@ -16,7 +16,8 @@ namespace OBSNotifier
             public uint OnScreenTime { get; set; } = 2000;
             public string SelectedOption { get; set; } = string.Empty;
             public System.Windows.Point Offset { get; set; } = new System.Windows.Point(0, 0);
-            public string AdditionalData { get; set; } = string.Empty;
+            [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+            public object AdditionalData { get; set; } = string.Empty;
             public string CustomSettings { get; set; } = string.Empty;
             public NotificationType? ActiveNotificationTypes { get; set; } = null;
         }

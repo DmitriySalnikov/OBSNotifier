@@ -94,9 +94,19 @@
       <DependentUpon>ActiveNotifications.xaml</DependentUpon>
     </Compile>
     <Compile Include="AutostartScriptManager.cs" />
+    <Compile Include="ConfigUI\BaseGrid.cs" />
+    <Compile Include="ConfigUI\StringParam.xaml.cs">
+      <DependentUpon>StringParam.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigUI\ConfigMenuGenerator.cs" />
+    <Compile Include="Plugins\Attributes.cs" />
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="NotificationManager.cs" />
+    <Compile Include="ConfigUI\BoolParam.xaml.cs">
+      <DependentUpon>BoolParam.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigUI\BaseConfigParam.cs" />
     <Compile Include="Plugins\Default\DefaultCustomNotifBlockSettings.cs" />
     <Compile Include="Plugins\Default\DefaultNotification.cs" />
     <Compile Include="Plugins\Default\DefaultNotificationBlock.xaml.cs">
@@ -114,6 +124,14 @@
     <Compile Include="VersionCheckGitHub.cs" />
     <Compile Include="WPFScreens.cs" />
     <Page Include="ActiveNotifications.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConfigUI\StringParam.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ConfigUI\BoolParam.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

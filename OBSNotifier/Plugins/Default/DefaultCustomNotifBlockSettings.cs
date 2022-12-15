@@ -12,7 +12,7 @@ namespace OBSNotifier.Plugins.Default
         double width;
         double height;
 
-        [ConfigIgnore]
+        [ParamIgnore]
         public uint Duration { get { return duration; } set { duration = Math.Max(0, value); } }
 
         public Color BackgroundColor { get; set; }
@@ -24,7 +24,10 @@ namespace OBSNotifier.Plugins.Default
         public double Height { get { return height; } set { height = Math.Max(1, value); } }
         public Thickness Margin { get; set; }
         public uint MaxPathChars { get; set; }
+        [UIParam("Show Quick Actions On File Save")]
         public bool ShowQuickActionsOnFileSave { get; set; }
+        // TODO remove. just for test
+        public string StringTest { get; set; }
 
         public DefaultCustomNotifBlockSettings()
         {
