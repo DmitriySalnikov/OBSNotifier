@@ -67,7 +67,10 @@ namespace OBSNotifier
         [NotificationDescription("Audio is Muted", "Source: {0}")]
         AudioSourceMuted = 1L << 34,
         [NotificationDescription("Audio is Turned On", "Source: {0}")]
-        AudioSourceUnmuted = 1L << 35,
+        AudioSourceUnmuted = 1L << 35,     
+        
+        [NotificationDescription("Screenshot saved", "{0}")]
+        ScreenshotSaved = 1L << 38,
 
         Minimal = Connected | Disconnected | LostConnection |
             ReplaySaved |
@@ -77,7 +80,7 @@ namespace OBSNotifier
             AudioSourceMuted | AudioSourceUnmuted,
 
         // TODO add ability to open folder with saved files
-        WithFilePaths = RecordingStopped | ReplaySaved,
+        WithFilePaths = RecordingStopped | ReplaySaved | ScreenshotSaved,
 
         All = Connected | Disconnected | LostConnection |
             ReplayStarted | ReplayStopped | ReplaySaved |
@@ -86,7 +89,7 @@ namespace OBSNotifier
             VirtualCameraStarted | VirtualCameraStopped |
             SceneSwitched | SceneCollectionSwitched |
             ProfileSwitched |
-            AudioSourceMuted | AudioSourceUnmuted,
+            AudioSourceMuted | AudioSourceUnmuted | ScreenshotSaved,
     }
 
     internal class NotificationManager
@@ -165,6 +168,8 @@ namespace OBSNotifier
             obs.CurrentProfileChanged += Obs_CurrentProfileChanged;
 
             obs.InputMuteStateChanged += Obs_InputMuteStateChanged;
+
+            obs.ScreenshotSaved += Obs_ScreenshotSaved;
         }
 
         #region Utils
@@ -417,10 +422,20 @@ namespace OBSNotifier
                 return;
             }
 
-            if (e.InputMuted)
-                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceMuted, FormatterOneArg, e.InputName));
-            else
-                InvokeNotif(() => ShowNotif(NotificationType.AudioSourceUnmuted, FormatterOneArg, e.InputName));
+            InvokeNotif(() =>
+            {
+                if (e.InputMuted)
+                    ShowNotif(NotificationType.AudioSourceMuted, FormatterOneArg, e.InputName);
+                else
+                    ShowNotif(NotificationType.AudioSourceUnmuted, FormatterOneArg, e.InputName);
+            });
+        }
+        #endregion
+
+        #region Screenshots
+        private void Obs_ScreenshotSaved(object sender, ScreenshotSavedEventArgs e)
+        {
+            InvokeNotif(() => ShowNotif(NotificationType.ScreenshotSaved, FormatterOneArg, e.SavedScreenshotPath));
         }
         #endregion
     }

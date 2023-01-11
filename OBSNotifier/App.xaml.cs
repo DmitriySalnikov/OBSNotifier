@@ -121,6 +121,8 @@ namespace OBSNotifier
                 plugins.SelectCurrent(Settings.Instance.NotificationStyle);
             }
 
+            Settings.Instance.PatchSavedSettings();
+
             // Create tray icon
             trayIcon = new System.Windows.Forms.NotifyIcon();
             trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;

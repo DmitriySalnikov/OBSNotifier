@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using OBSNotifier.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace OBSNotifier
 {
@@ -45,6 +47,10 @@ namespace OBSNotifier
         public bool IsManuallyConnected { get; set; } = false;
         public bool UseSafeDisplayArea { get; set; } = true;
         public string NotificationStyle { get; set; } = string.Empty;
+
+        #region Temp Update Flags
+        public bool IsScreenshotSavedJustAdded { get; set; } = true;
+        #endregion
 
         public Dictionary<string, PluginSettings> PerPluginSettings { get; } = new Dictionary<string, PluginSettings>();
 
@@ -124,7 +130,7 @@ namespace OBSNotifier
                 if (File.Exists(SaveFile))
                 {
                     Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
-                    if(Instance == null)
+                    if (Instance == null)
                         Instance = new Settings();
 
                     return;
@@ -158,5 +164,30 @@ namespace OBSNotifier
         }
 
         #endregion
+
+        /// <summary>
+        /// The simplest mechanism for bringing new flags to default values after an update.
+        /// </summary>
+        public void PatchSavedSettings()
+        {
+            if (IsScreenshotSavedJustAdded)
+            {
+                IsScreenshotSavedJustAdded = false;
+
+                foreach (var pp in PerPluginSettings)
+                {
+                    if (pp.Value.ActiveNotificationTypes != null)
+                    {
+                        if (App.plugins.LoadedPlugins.Any((p) => p.plugin.PluginName == pp.Key))
+                        {
+                            var plugin = App.plugins.LoadedPlugins.First((p) => p.plugin.PluginName == pp.Key);
+                            pp.Value.ActiveNotificationTypes |= plugin.plugin.DefaultActiveNotifications & NotificationType.ScreenshotSaved;
+                        }
+                    }
+                }
+
+                Instance.Save();
+            }
+        }
     }
 }

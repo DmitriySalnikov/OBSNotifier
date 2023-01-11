@@ -43,7 +43,7 @@
     </Reference>
     <Reference Include="obs-websocket-dotnet, Version=5.0.0.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\obs-websocket-dotnet.dll</HintPath>
+      <HintPath>Libs\obs-websocket-dotnet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
