@@ -67,8 +67,8 @@ namespace OBSNotifier
         [NotificationDescription("Audio is Muted", "Source: {0}")]
         AudioSourceMuted = 1L << 34,
         [NotificationDescription("Audio is Turned On", "Source: {0}")]
-        AudioSourceUnmuted = 1L << 35,     
-        
+        AudioSourceUnmuted = 1L << 35,
+
         [NotificationDescription("Screenshot saved", "{0}")]
         ScreenshotSaved = 1L << 38,
 
