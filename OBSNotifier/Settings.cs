@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using OBSNotifier.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -10,9 +10,10 @@ namespace OBSNotifier
 {
     class Settings
     {
-        public class PluginSettings
+        public class ModuleSettings
         {
             public bool FirstLoad = true;
+            public bool UseSafeDisplayArea { get; set; } = true;
             public uint OnScreenTime { get; set; } = 2000;
             public string SelectedOption { get; set; } = string.Empty;
             public System.Windows.Point Offset { get; set; } = new System.Windows.Point(0, 0);
@@ -27,7 +28,7 @@ namespace OBSNotifier
         [JsonIgnore]
         const string SAVE_FILE_NAME = "settings.json";
         [JsonIgnore]
-        static string SaveFile = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), App.AppName), SAVE_FILE_NAME);
+        static string SaveFile = Path.Combine(App.AppDataFolder, SAVE_FILE_NAME);
         [JsonIgnore]
         static string OldSaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), SAVE_FILE_NAME);
 
@@ -36,6 +37,7 @@ namespace OBSNotifier
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
+        public CultureInfo Language { get; set; } = null;
         public bool FirstRun { get; set; } = true;
         public string SkipVersion { get; set; } = "";
 
@@ -45,24 +47,33 @@ namespace OBSNotifier
         public string DisplayID { get; set; } = string.Empty;
         public bool IsCloseOnOBSClosing { get; set; } = false;
         public bool IsManuallyConnected { get; set; } = false;
-        public bool UseSafeDisplayArea { get; set; } = true;
-        public string NotificationStyle { get; set; } = string.Empty;
+        public string NotificationModule { get; set; } = string.Empty;
+
+        [JsonProperty("PerModuleSettings", Order = 100)]
+        private Dictionary<string, ModuleSettings> perModuleSettings = new Dictionary<string, ModuleSettings>();
+        [JsonIgnore]
+        public Dictionary<string, ModuleSettings> PerModuleSettings { get => perModuleSettings; }
 
         #region Temp Update Flags
+
+        [JsonProperty(Order = 128)]
         public bool IsScreenshotSavedJustAdded { get; set; } = true;
+        [JsonProperty(Order = 129)]
+        public string NotificationStyle { get; set; } = null;
+        [JsonProperty(Order = 130)]
+        public Dictionary<string, ModuleSettings> PerPluginSettings { get; set; } = null;
+
         #endregion
 
-        public Dictionary<string, PluginSettings> PerPluginSettings { get; } = new Dictionary<string, PluginSettings>();
-
         [JsonIgnore]
-        public PluginSettings CurrentPluginSettings
+        public ModuleSettings CurrentModuleSettings
         {
             get
             {
-                if (!PerPluginSettings.ContainsKey(App.plugins.CurrentPlugin.plugin.PluginName))
-                    PerPluginSettings[App.plugins.CurrentPlugin.plugin.PluginName] = new PluginSettings();
+                if (!PerModuleSettings.ContainsKey(App.modules.CurrentModule.instance.ModuleID))
+                    PerModuleSettings[App.modules.CurrentModule.instance.ModuleID] = new ModuleSettings();
 
-                return PerPluginSettings[App.plugins.CurrentPlugin.plugin.PluginName];
+                return PerModuleSettings[App.modules.CurrentModule.instance.ModuleID];
             }
         }
 
@@ -83,12 +94,12 @@ namespace OBSNotifier
             saveSettings = null;
         }
 
-        public bool ClearUnusedPluginSettings()
+        public bool ClearUnusedModuleSettings()
         {
             List<string> to_delete = new List<string>();
-            foreach (var p in PerPluginSettings)
+            foreach (var p in PerModuleSettings)
             {
-                if (App.plugins.LoadedPlugins.FindIndex((i) => i.plugin.PluginName == p.Key) == -1)
+                if (App.modules.LoadedModules.FindIndex((i) => i.instance.ModuleID == p.Key) == -1)
                 {
                     to_delete.Add(p.Key);
                 }
@@ -96,7 +107,7 @@ namespace OBSNotifier
 
             foreach (var p in to_delete)
             {
-                PerPluginSettings.Remove(p);
+                PerModuleSettings.Remove(p);
             }
 
             return to_delete.Count > 0;
@@ -174,19 +185,31 @@ namespace OBSNotifier
             {
                 IsScreenshotSavedJustAdded = false;
 
-                foreach (var pp in PerPluginSettings)
+                foreach (var pp in PerModuleSettings)
                 {
                     if (pp.Value.ActiveNotificationTypes != null)
                     {
-                        if (App.plugins.LoadedPlugins.Any((p) => p.plugin.PluginName == pp.Key))
+                        if (App.modules.LoadedModules.Any((p) => p.instance.ModuleID == pp.Key))
                         {
-                            var plugin = App.plugins.LoadedPlugins.First((p) => p.plugin.PluginName == pp.Key);
-                            pp.Value.ActiveNotificationTypes |= plugin.plugin.DefaultActiveNotifications & NotificationType.ScreenshotSaved;
+                            var module = App.modules.LoadedModules.First((p) => p.instance.ModuleID == pp.Key);
+                            pp.Value.ActiveNotificationTypes |= module.instance.DefaultActiveNotifications & NotificationType.ScreenshotSaved;
                         }
                     }
                 }
 
                 Instance.Save();
+            }
+
+            if (!string.IsNullOrEmpty(NotificationStyle))
+            {
+                NotificationModule = NotificationStyle;
+                NotificationStyle = null;
+            }
+
+            if (PerPluginSettings != null)
+            {
+                perModuleSettings = PerPluginSettings;
+                PerPluginSettings = null;
             }
         }
     }

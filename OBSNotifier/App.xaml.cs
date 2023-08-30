@@ -1,9 +1,12 @@
-﻿using OBSNotifier.Plugins;
+﻿using OBSNotifier.Modules;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +20,7 @@ namespace OBSNotifier
     internal partial class App : Application
     {
         public const string AppName = "OBSNotifier";
+        public const string AppNameSpaced = "OBS Notifier";
         private const string appGUID = "EAC71402-ACC2-40F1-A75A-4060C19E1F9F";
         Mutex mutex = new Mutex(false, "Global\\" + appGUID);
 
@@ -28,9 +32,10 @@ namespace OBSNotifier
         }
 
         static Logger logger;
+        public static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
         public static event EventHandler<ConnectionState> ConnectionStateChanged;
         public static OBSWebsocket obs;
-        public static PluginManager plugins;
+        public static ModuleManager modules;
         public static NotificationManager notifications;
         public static ConnectionState CurrentConnectionState { get; private set; }
         public static bool IsNeedToSkipNextConnectionNotifications = false;
@@ -42,7 +47,7 @@ namespace OBSNotifier
         static CancellationTokenSource reconnectCancellationToken;
         static bool isNeedToSkipDisconnectErrorPrinting = false;
 
-        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier");
+        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier", AppName);
         SettingsWindow settingsWindow;
         AboutBox1 aboutBox;
 
@@ -68,7 +73,7 @@ namespace OBSNotifier
             if (!mutex.WaitOne(0, false))
             {
                 if (!Environment.CommandLine.Contains("--force_close"))
-                    ShowMessageBox("An instance of this application is already running. The application will be closed.", "Instance already running");
+                    ShowMessageBox(Utils.Tr("message_box_app_already_running"), Utils.Tr("message_box_app_already_running_title"));
 
                 mutex.Dispose();
                 mutex = null;
@@ -79,9 +84,10 @@ namespace OBSNotifier
             }
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+            var start_ui_lang = Thread.CurrentThread.CurrentUICulture;
+            Thread.CurrentThread.CurrentUICulture = DefaultLanguage;
 
-            logger = new Logger("log.txt");
+            logger = new Logger("logs/log.txt");
 
             // Just log the message if the autorun script exists
             if (AutostartScriptManager.IsScriptExists())
@@ -103,37 +109,37 @@ namespace OBSNotifier
             obs.Disconnected += Obs_Disconnected;
             obs.ExitStarted += Obs_ExitStarted;
 
+            LanguageChanged += App_LanguageChanged;
+
             // Initialize Settings
             Settings.Load();
-            plugins = new PluginManager();
+            modules = new ModuleManager();
             notifications = new NotificationManager(this, obs);
 
             // Clear unused
-            if (Settings.Instance.ClearUnusedPluginSettings())
+            if (Settings.Instance.ClearUnusedModuleSettings())
                 Settings.Instance.Save();
 
-            // Select current plugin
-            if (!plugins.SelectCurrent(Settings.Instance.NotificationStyle))
+            // Select current module
+            if (!modules.SelectCurrent(Settings.Instance.NotificationModule))
             {
-                // Select the default plugin if the previously used plugin is not found
-                Settings.Instance.NotificationStyle = "Default";
+                // Select the default module if the previously used module is not found
+                Settings.Instance.NotificationModule = "Default";
                 Settings.Instance.Save();
-                plugins.SelectCurrent(Settings.Instance.NotificationStyle);
+                modules.SelectCurrent(Settings.Instance.NotificationModule);
             }
 
+            // Update old settings
             Settings.Instance.PatchSavedSettings();
+            SelectLanguageOnStart(start_ui_lang);
 
             // Create tray icon
             trayIcon = new System.Windows.Forms.NotifyIcon();
             trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
             trayIcon.Visible = true;
             trayIcon.DoubleClick += Menu_OpenSettingsWindow;
-            trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu(new System.Windows.Forms.MenuItem[] {
-                new System.Windows.Forms.MenuItem("Open Settings", Menu_OpenSettingsWindow),
-                new System.Windows.Forms.MenuItem("Check for updates", Menu_CheckForUpdates),
-                new System.Windows.Forms.MenuItem("About", Menu_ShowAboutWindow),
-                new System.Windows.Forms.MenuItem("Exit", (s,e) => Shutdown()),
-            });
+
+            ReconstructTrayMenu();
 
             if (Settings.Instance.FirstRun)
             {
@@ -141,7 +147,7 @@ namespace OBSNotifier
                 Settings.Instance.DisplayID = WPFScreens.Primary.DeviceName;
                 Settings.Instance.Save();
 
-                trayIcon.ShowBalloonTip(3000, "OBS Notifier Info", "The OBS notifier will always be in the tray while it's running", System.Windows.Forms.ToolTipIcon.Info);
+                trayIcon.ShowBalloonTip(3000, $"{AppNameSpaced} Info", $"The {AppNameSpaced} will always be in the tray while it's running", System.Windows.Forms.ToolTipIcon.Info);
                 Menu_OpenSettingsWindow(this, null);
             }
             else
@@ -189,8 +195,8 @@ namespace OBSNotifier
             aboutBox?.Dispose();
             aboutBox = null;
 
-            plugins?.Dispose();
-            plugins = null;
+            modules?.Dispose();
+            modules = null;
 
             trayIcon?.Dispose();
             trayIcon = null;
@@ -237,6 +243,11 @@ namespace OBSNotifier
             versionCheckerGitHub.CheckForUpdates();
         }
 
+        void Menu_OpenLogsFolder(object sender, EventArgs e)
+        {
+            Process.Start(Path.Combine(AppDataFolder, "logs"));
+        }
+
         public static void Log(string txt)
         {
             logger?.Write(txt);
@@ -260,6 +271,96 @@ namespace OBSNotifier
             logger?.Write($"MessageBox result for box with Text: '{messageBoxText}' and Caption: '{caption}' is: '{res}'");
 
             return res;
+        }
+
+        void SelectLanguageOnStart(CultureInfo start_ui_info)
+        {
+            // Select saved language, save system language or select available language
+            if (Settings.Instance.Language != null && Languages.Contains(Settings.Instance.Language))
+            {
+                Language = Settings.Instance.Language;
+            }
+            else
+            {
+                // Find the exact language
+                if (Languages.Contains(start_ui_info))
+                {
+                    Language = start_ui_info;
+                    Settings.Instance.Language = Language;
+                    Settings.Instance.Save();
+                }
+                // Find a similar language
+                else
+                {
+                    var similarLang = Languages.Where((lang) => lang.TwoLetterISOLanguageName == start_ui_info.TwoLetterISOLanguageName).First();
+
+                    if (similarLang != null)
+                    {
+                        Language = similarLang;
+                        Settings.Instance.Language = similarLang;
+                        Settings.Instance.Save();
+                    }
+                }
+            }
+        }
+
+        internal void ReconstructTrayMenu()
+        {
+            if (trayIcon != null)
+            {
+                // Create lang menu
+                var lang_menu = new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_languages"));
+
+                // Sort all except default one, so skip(1)
+                var sorted_langs = Languages.Skip(1).ToArray();
+                // Sort by codes
+                Array.Sort(sorted_langs, (CultureInfo x, CultureInfo y) => x.Name.CompareTo(y.Name));
+
+                var lang_hint = lang_menu.MenuItems.Add(Utils.Tr("tray_menu_languages_completion_hint"));
+                lang_hint.Enabled = false;
+
+                // Don't forget to prepend(default)
+                foreach (var l in sorted_langs.Prepend(Languages.First()))
+                {
+                    var progress_tr = "~";
+                    var progress_apr = "~";
+
+                    if (TranslationProgress.ContainsKey(l.Name))
+                    {
+                        var sz = TranslationProgress[l.Name];
+                        progress_tr = sz.Width.ToString();
+                        progress_apr = sz.Height.ToString();
+                    }
+
+                    var lang_item_str = l.Name == DefaultLanguage.Name ? l.NativeName : Utils.TrFormat("tray_menu_languages_completion_template", l.NativeName, progress_tr, progress_apr);
+                    var item = lang_menu.MenuItems.Add(lang_item_str, (s, e) => Language = l);
+
+                    // Highlight the currently selected language
+                    if (Language.Equals(l))
+                    {
+                        item.DefaultItem = true;
+                    }
+                }
+
+                // Link to the translations page
+                lang_menu.MenuItems.Add("Help with translations!", (s, e) => Process.Start("https://crowdin.com/project/obs-notifier"));
+
+
+                trayIcon.ContextMenu?.MenuItems.Clear();
+
+                trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu(new System.Windows.Forms.MenuItem[] {
+                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_open_settings"), Menu_OpenSettingsWindow),
+                    new System.Windows.Forms.MenuItem("-"),
+                    lang_menu,
+                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_check_updates"), Menu_CheckForUpdates),
+                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_open_logs_folder"), Menu_OpenLogsFolder),
+                    new System.Windows.Forms.MenuItem(Utils.TrFormat("tray_menu_about", AppNameSpaced), Menu_ShowAboutWindow),
+                    new System.Windows.Forms.MenuItem("-"),
+                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_exit"), (s,e) => Shutdown()),
+                });
+
+                trayIcon.ContextMenu.MenuItems[0].DefaultItem = true;
+            }
         }
 
         static void ChangeConnectionState(ConnectionState newState)
@@ -293,15 +394,15 @@ namespace OBSNotifier
             {
                 case ConnectionState.Connected:
                     trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_connected_64px;
-                    trayIcon.Text = "OBS Notifier:\nConnected";
+                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_connected")}";
                     break;
                 case ConnectionState.Disconnected:
                     trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
-                    trayIcon.Text = "OBS Notifier:\nNot connected";
+                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_not_connected")}";
                     break;
                 case ConnectionState.TryingToReconnect:
                     trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_reconnect_64px;
-                    trayIcon.Text = "OBS Notifier:\nTrying to reconnect";
+                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_trying_to_reconnect")}";
                     break;
             }
         }
@@ -315,7 +416,7 @@ namespace OBSNotifier
             while (true)
             {
                 attempts++;
-                if (reconnectCancellationToken.IsCancellationRequested)
+                if (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested)
                 {
                     isNeedToSkipDisconnectErrorPrinting = false;
                     return;
@@ -340,7 +441,7 @@ namespace OBSNotifier
 
                 }
 
-                if (obs.IsConnected || reconnectCancellationToken.IsCancellationRequested)
+                if (obs.IsConnected || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
                 {
                     isNeedToSkipDisconnectErrorPrinting = false;
                     return;
@@ -375,12 +476,13 @@ namespace OBSNotifier
                     adrs = "ws://" + adrs;
                 var pass = pas;
 
-                Settings.Instance.Save();
+                if (CurrentConnectionState != ConnectionState.TryingToReconnect)
+                    Settings.Instance.Save();
                 return obs.ConnectAsync(adrs, pass);
             }
             catch (Exception ex)
             {
-                ShowMessageBox(ex.Message, "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox(ex.Message, Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
             return Task.CompletedTask;
@@ -458,7 +560,7 @@ namespace OBSNotifier
                         break;
                     case ObsCloseCodes.AuthenticationFailed:
                         if (IsNotTooFrequentMessage((int)e.ObsCloseCode))
-                            ShowMessageBox("Authentication failed.", "OBS Notifier Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            ShowMessageBox(Utils.Tr("message_box_app_auth_failed"), Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         StopReconnection();
 
                         Settings.Instance.IsManuallyConnected = false;

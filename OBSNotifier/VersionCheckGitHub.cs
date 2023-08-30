@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OBSNotifier;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -20,6 +21,7 @@ internal class VersionCheckerGitHub : IDisposable
     bool _isSilentCheck = true;
 
     readonly Uri githubLink;
+    readonly string appName;
 
     /// <summary>
     /// Init version checker with <paramref name="profile"/> name and <paramref name="repo"/> name.
@@ -27,9 +29,10 @@ internal class VersionCheckerGitHub : IDisposable
     /// </summary>
     /// <param name="profile"></param>
     /// <param name="repo"></param>
-    public VersionCheckerGitHub(string profile, string repo)
+    public VersionCheckerGitHub(string profile, string repo, string appName)
     {
         githubLink = new Uri($"https://api.github.com/repos/{profile}/{repo}/releases/latest");
+        this.appName = appName;
     }
 
     public void CheckForUpdates(bool isSilentCheck = false)
@@ -41,7 +44,7 @@ internal class VersionCheckerGitHub : IDisposable
         updateClient = new WebClient();
         updateClient.DownloadStringCompleted += UpdateClient_DownloadStringCompleted;
         updateClient.Headers.Add("Content-Type", "application/json");
-        updateClient.Headers.Add("User-Agent", "OBS Notifier");
+        updateClient.Headers.Add("User-Agent", appName);
 
         try
         {
@@ -51,7 +54,7 @@ internal class VersionCheckerGitHub : IDisposable
         catch (Exception ex)
         {
             if (!_isSilentCheck)
-                ShowMessageBox($"Failed to request info about the new version.\n{ex.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_request")}\n{ex.Message}");
             ClearUpdateData();
         }
     }
@@ -61,7 +64,7 @@ internal class VersionCheckerGitHub : IDisposable
         if (e.Error is WebException webExp)
         {
             if (!_isSilentCheck)
-                ShowMessageBox($"Failed to get info about the new version.\n{webExp.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_parse_info")}\n{webExp.Message}");
 
             ClearUpdateData();
             return;
@@ -80,7 +83,7 @@ internal class VersionCheckerGitHub : IDisposable
                 // New release
                 if (newVersion > currentVersion)
                 {
-                    var updateDialog = ShowMessageBox($"Current version: {System.Windows.Forms.Application.ProductVersion}\nNew version: {newVersion}\nWould you like to go to the download page?\n\nSelect \"No\" to skip this version.", "A new version of OBS Notifier is available", MessageBoxButton.YesNoCancel);
+                    var updateDialog = ShowMessageBox(Utils.TrFormat("message_box_version_check_new_version_available", System.Windows.Forms.Application.ProductVersion, newVersion), Utils.TrFormat("message_box_version_check_new_version_available_title", appName), MessageBoxButton.YesNoCancel);
                     if (updateDialog == MessageBoxResult.Yes)
                     {
                         // Open the download page
@@ -97,7 +100,7 @@ internal class VersionCheckerGitHub : IDisposable
                     // Don't show this on startup
                     if (!_isSilentCheck)
                     {
-                        ShowMessageBox($"You are using the latest version: {System.Windows.Forms.Application.ProductVersion}");
+                        ShowMessageBox(Utils.TrFormat("message_box_version_check_latest_version", System.Windows.Forms.Application.ProductVersion));
                     }
                 }
             }
@@ -107,7 +110,7 @@ internal class VersionCheckerGitHub : IDisposable
             // Don't show this on startup
             if (!_isSilentCheck)
             {
-                ShowMessageBox($"Failed to check for update.\n{ex.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_to_check")}\n{ex.Message}");
             }
         }
 

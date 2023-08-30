@@ -1,0 +1,15 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Default Module -->
+    <v:String x:Key="default_module_name">Стопка уведомлений</v:String>
+    <v:String x:Key="default_module_desc">Это модуль уведомлений по умолчанию.
+Он отображает одно или несколько уведомлений, расположенных в углу монитора.</v:String>
+
+    <!-- Nvidia-Like Module -->
+    <v:String x:Key="nvidia_like_module_name">Как у Nvidia</v:String>
+    <v:String x:Key="nvidia_like_module_desc">Простое уведомление, похожее на уведомления Nvidia</v:String>
+
+</ResourceDictionary>

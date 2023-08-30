@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Virhe</v:String>
+    <v:String x:Key="message_box_app_already_running">Tämä sovellus on jo käynnissä.
+Sovellus suljetaan.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Sovellus on jo käynnissä</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Todennus epäonnistui</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Nykyinen versio: {0}
+Uusi versio: {1}
+Haluatko mennä lataussivulle?
+
+Valitse 'Ei' ohittaaksesi tämän version.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">Uusi versio {0} on saatavilla</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Käytössäsi on uusin versio: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Uutta versiota koskevia tietoja ei voitu pyytää.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Uutta versiota koskevien tietojen hakeminen epäonnistui.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Päivityksen tarkistus epäonnistui.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Suorita asetukset</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Autostart skripti luotiin onnistuneesti!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Autostart skripti on päivitetty onnistuneesti!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Polku tiedostoon on kopioitu leikepöydälle. @ info: whatsthis</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Jos olet jo lisännyt skriptin OBS ennen, voit turvallisesti sulkea tämän viestin.
+Jos näin ei ole, noudata alla olevia ohjeita.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Nyt sinun täytyy lisätä se OBS-järjestelmään.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">Sinun täytyy avata OBS ja mennä skriptiasetusten ikkunaan.
+Työkalut -&gt; Skriptit.
+Klikkaa sitten + painiketta, liitä polku leikepöydältä 'Tiedostonimi' -kentässä ja napsauta Avaa.
+
+Yhteenveto: Työkalut -&gt; Skriptit -&gt; + button -&gt; Liitä polku 'Tiedoston nimi' -kentässä -&gt; napsauta Avaa.
+
+Tämän jälkeen {0} käynnistyy automaattisesti OBS-järjestelmällä.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Tämä on ohjelma OBS:n ilmoitusten näyttämiseen. Jotta tämä ohjelma toimisi, sinun on asennettava OBS:n versio 28+ sisäänrakennetulla 'obs-websocket' versiolla 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">Näytä lähdekoodi</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">Jotta tämä sovellus toimisi sinun täytyy liittää obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Palvelimen osoite:</v:String>
+    <v:String x:Key="settings_window_password_label">Salasana:</v:String>
+    <v:String x:Key="settings_window_password_warning">Salasana tallennetaan paikalliseen tiedostoon</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Yhdistä</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Katkaise</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Yritetään yhdistää uudelleen... Peruutetaan?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Suorita Windowsin käynnistyksessä</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(ei saatavilla virheen vuoksi.
+Yritä suorittaa järjestelmänvalvojana)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(eri polkua käytetään nyt)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Luo tai päivitä skripti suorittaaksesi ohjelman automaattisesti.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skripti ei vastaa nykyistä versiota,
+tai rekisteröityä polkua {0} ei vastaa nykyistä ohjelmapolkua.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Aloita OBS:n avulla</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(skripti on vanhentunut)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Sulje tämä ohjelma poistuttaessa OBS
+(kun asetusikkuna on suljettu)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Ilmoitusten Asetukset</v:String>
+    <v:String x:Key="settings_window_preview">Esikatselu</v:String>
+    <v:String x:Key="settings_window_screen_label">Näyttö:</v:String>
+    <v:String x:Key="settings_window_module_label">Moduuli:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Valitse Aktiiviset Ilmoitukset</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Käytä turvallista näyttöaluetta
+(ilman tehtäväpalkkia ja muita paneeleja)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Tyylin Valinnat:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Palauta keskelle</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Korjaa asetukset</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Sijainnin Siirtymä:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Häivytyksen Viive (Sekuntia):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Viive ennen ilmoituksen piilotusta</v:String>
+    <v:String x:Key="settings_window_additional_label">Lisätty:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Avaa Moduulin Asetukset</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Valitse Aktiiviset Ilmoitukset</v:String>
+    <v:String x:Key="active_notifications_select_all">Valitse Kaikki</v:String>
+    <v:String x:Key="active_notifications_select_none">Ei Valita</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Palauta nykyiseen</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Palauta oletukset</v:String>
+    <v:String x:Key="active_notifications_save">Tallenna</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Avaa Asetukset</v:String>
+    <v:String x:Key="tray_menu_languages">Kieli</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Käännöksen edistyminen (käännetty % / todennettu %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Tarkista päivitykset</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Avaa lokikansio</v:String>
+    <v:String x:Key="tray_menu_about">Tietoja {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Poistu</v:String>
+    <v:String x:Key="tray_menu_status_connected">Yhdistetty</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Ei yhdistetty</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Yritetään yhdistää uudelleen</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Esikatsele Ilmoituksia</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Joitakin kuvauksia</v:String>
+    <v:String x:Key="notification_events_connected">Yhdistetty</v:String>
+    <v:String x:Key="notification_events_disconnected">Yhteys OBS:ään katkaistu</v:String>
+    <v:String x:Key="notification_events_lost_connection">Yhteys OBS:iin menetetty</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Yritetään yhdistää uudelleen</v:String>
+    <v:String x:Key="notification_events_replay_started">Toisto Aloitettu</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Toisto Pysäytetty</v:String>
+    <v:String x:Key="notification_events_replay_saved">Uusitus Tallennettu</v:String>
+    <v:String x:Key="notification_events_recording_started">Tallennus Aloitettu</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Tallennus Pysäytetty</v:String>
+    <v:String x:Key="notification_events_recording_paused">Tallennus Keskeytetty</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Tallennus Palautettu</v:String>
+    <v:String x:Key="notification_events_streaming_started">Suoratoistaminen Aloitettu</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Lähetys Pysäytetty</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Virtuaalinen Kamera Aloitettu</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Virtuaalinen Kamera Pysäytetty</v:String>
+    <v:String x:Key="notification_events_scene_switched">Skene Vaihdettu</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Nykyinen: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Skene-Kokoelma Vaihdettu</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Nykyinen: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profiili Vaihdettu</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Nykyinen: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Ääni on mykistetty</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Ääni on otettu käyttöön</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Lähde: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Kuvakaappaus tallennettu</v:String>
+    
+</ResourceDictionary>

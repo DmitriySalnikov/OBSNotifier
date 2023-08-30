@@ -71,6 +71,56 @@ namespace OBSNotifier.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [OK] Fetching project info
+        ///Translated:
+        ///	- af: 0%
+        ///	- ar: 78%
+        ///	- ca: 0%
+        ///	- cs: 98%
+        ///	- da: 98%
+        ///	- de: 98%
+        ///	- el: 79%
+        ///	- es-ES: 86%
+        ///	- fi: 98%
+        ///	- fr: 86%
+        ///	- he: 0%
+        ///	- hu: 0%
+        ///	- it: 98%
+        ///	- ja: 84%
+        ///	- ko: 0%
+        ///	- nl: 86%
+        ///	- no: 86%
+        ///	- pl: 86%
+        ///	- pt-BR: 93%
+        ///	- pt-PT: 93%
+        ///	- ro: 98%
+        ///	- ru: 99%
+        ///	- sr: 0%
+        ///	- sv-SE: 98%
+        ///	- tr: 0%
+        ///	- vi: 0%
+        ///	- zh-CN: 75%
+        ///	- zh-TW: 0%
+        ///Approved:
+        ///	- af: 0%
+        ///	- ar: 0%
+        ///	- ca: 0%
+        ///	- cs: 0%
+        ///	- da: 0%
+        ///	- de: 0%
+        ///	- el: 0%
+        ///	- es-ES: 0%
+        ///	- fi: 0%
+        ///	- fr: 0%
+        ///	- [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string localization_status {
+            get {
+                return ResourceManager.GetString("localization_status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap obs_notifier {
@@ -91,25 +141,22 @@ namespace OBSNotifier.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to obs = obslua
+        ///   Looks up a localized string similar to --[[
+        ///	The original code was written by xcasxcursex
+        ///	https://github.com/DmitriySalnikov/OBSNotifier/issues/5
+        ///--]]
         ///
-        ///function script_description()
-        ///	return [[Starts OBSNotifier when OBS starts]]
-        ///end
+        ///obs = obslua
         ///
-        ///function script_defaults(settings)
-        ///	obs.obs_data_set_default_bool(settings, &quot;lowprio&quot;, true)
-        ///end
+        ///-- WinAPI
+        ///-- https://stackoverflow.com/a/61269226/8980874
+        ///local ffi = require(&quot;ffi&quot;)
+        ///local bit32 = require(&quot;bit&quot;)
+        ///local BELOW_NORMAL_PRIORITY_CLASS = 0x00004000
+        ///local NORMAL_PRIORITY_CLASS = 0x00000020
+        ///local CREATE_NEW_PROCESS_GROUP = 0x00000200
         ///
-        ///function script_properties()
-        ///	local properties = obs.obs_properties_create()
-        ///	obs.obs_properties_add_bool(properties, &quot;lowprio&quot;, &quot;Run with lower priority&quot;)
-        ///	obs.obs_properties_apply_settings(properties, settings)
-        ///	return properties
-        ///end
-        ///
-        ///function script_update(settings)
-        ///	lowprio = obs.obs_data_get_bo [rest of string was truncated]&quot;;.
+        ///ffi.cdef [[ typedef struct _STARTUPINFOW { uint32_t cb; void * lpReserved; void * lpDesktop; void * lpTitle; uint32_t dwX; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string obs_notifier_autostart {
             get {

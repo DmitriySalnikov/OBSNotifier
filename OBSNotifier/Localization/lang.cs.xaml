@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Chyba</v:String>
+    <v:String x:Key="message_box_app_already_running">Příklad této aplikace již běží.
+Aplikace bude uzavřena.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Aplikace je již spuštěna</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Ověření se nezdařilo</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Aktuální verze: {0}
+Nová verze: {1}
+Chcete přejít na stránku ke stažení?
+
+Vyberte 'Ne' pro přeskočení této verze.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">Je dostupná nová verze {0}</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Používáte nejnovější verzi: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Nepodařilo se požádat o informace o nové verzi.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Nepodařilo se získat informace o nové verzi.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Nepodařilo se zkontrolovat aktualizace.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Dokončit konfiguraci</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Automatický skript byl úspěšně vytvořen!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Automatický skript byl úspěšně aktualizován!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Cesta k souboru byla zkopírována do schránky.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Pokud jste již do OBS přidali skript, můžete tuto zprávu bezpečně zavřít.
+Pokud ne, postupujte podle níže uvedených pokynů.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Nyní ji musíte přidat do OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">Musíte otevřít OBS a přejít do okna nastavení skriptu.
+Nástroje -&gt; skripty.
+Poté klikněte na tlačítko +, vložte cestu ze schránky do pole 'Název souboru' a klikněte na Otevřít.
+
+Shrnutí: Nástroje -&gt; skripty -&gt; + tlačítko -&gt; Vložte cestu do pole 'Název souboru' -&gt; klikněte na Otevření.
+
+Poté {0} automaticky začne s OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Toto je program pro zobrazení oznámení z OBS. Aby tento program fungoval, musíte nainstalovat OBS verzi 28+ s vestavěnou verzí 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">Zobrazit zdrojový kód</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">Aby tato aplikace fungovala, musíte se připojit k pluginu obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Adresa serveru:</v:String>
+    <v:String x:Key="settings_window_password_label">Heslo:</v:String>
+    <v:String x:Key="settings_window_password_warning">Heslo bude uloženo do místního souboru</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Připojit</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Odpojit</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Pokoušíte se znovu připojit... Zrušit?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Spustit při spuštění systému Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(nedostupné z důvodu chyby.
+Zkuste spustit jako administrátor)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(nyní je použita jiná cesta)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Vytvořte nebo aktualizujte skript pro automatický běh programu.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skript neodpovídá aktuální verzi,
+nebo registrovaná cesta k {0} neodpovídá aktuální cestě programu.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Začít s OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(skript je zastaralý)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Zavřete tento program při ukončení OBS
+(při zavření okna nastavení)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Nastavení oznámení</v:String>
+    <v:String x:Key="settings_window_preview">Náhled</v:String>
+    <v:String x:Key="settings_window_screen_label">Obrazovka:</v:String>
+    <v:String x:Key="settings_window_module_label">Modul:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Vybrat aktivní oznámení</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Použít bezpečný displej oblast
+(bez hlavního panelu a jiných panelů)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Možnosti stylu:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Resetovat do středu</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Opravit konfiguraci</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Odsazení pozice:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Prodleva slábnutí (sekundy):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Zpoždění před skrýváním oznámení</v:String>
+    <v:String x:Key="settings_window_additional_label">Dodatečně:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Otevřít nastavení modulu</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Vybrat aktivní oznámení</v:String>
+    <v:String x:Key="active_notifications_select_all">Vybrat vše</v:String>
+    <v:String x:Key="active_notifications_select_none">Nevybrat žádný</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Obnovit na aktuální</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Obnovit výchozí</v:String>
+    <v:String x:Key="active_notifications_save">Uložit</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Otevřít nastavení</v:String>
+    <v:String x:Key="tray_menu_languages">Jazyk</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Průběh překladu (přeloženo % / ověřeno %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Zkontrolovat aktualizace</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Otevřít složku s logy</v:String>
+    <v:String x:Key="tray_menu_about">O {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Ukončit</v:String>
+    <v:String x:Key="tray_menu_status_connected">Připojeno</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Nepřipojeno</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Pokus o opětovné připojení</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Náhled oznámení</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Nějaký popis</v:String>
+    <v:String x:Key="notification_events_connected">Připojeno</v:String>
+    <v:String x:Key="notification_events_disconnected">Odpojeno od OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Ztracené připojení k OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Pokus o opětovné připojení</v:String>
+    <v:String x:Key="notification_events_replay_started">Přehrávání zahájeno</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Záznam zastaven</v:String>
+    <v:String x:Key="notification_events_replay_saved">Přehrávání uloženo</v:String>
+    <v:String x:Key="notification_events_recording_started">Nahrávání zahájeno</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Nahrávání zastaveno</v:String>
+    <v:String x:Key="notification_events_recording_paused">Nahrávání pozastaveno</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Nahrávání obnoveno</v:String>
+    <v:String x:Key="notification_events_streaming_started">Streamování začalo</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Streamování zastaveno</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Virtuální kamera spuštěna</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Virtuální kamera zastavena</v:String>
+    <v:String x:Key="notification_events_scene_switched">Scéna přepnuta</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Aktuální: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Kolekce scén byla přepnuta</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Aktuální: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil byl přepnut</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Aktuální: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Zvuk je ztlumený</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Zvuk je zapnut</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Zdroj: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Snímek obrazovky uložen</v:String>
+    
+</ResourceDictionary>

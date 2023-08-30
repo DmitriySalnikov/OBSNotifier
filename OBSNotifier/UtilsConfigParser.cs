@@ -18,7 +18,7 @@ namespace OBSNotifier
         /// <summary>
         /// <para>
         /// Parse a simple format for storing config,
-        /// for example in the <see cref="Plugins.OBSNotifierPluginSettings.AdditionalData"/>.
+        /// for example in the <see cref="Modules.OBSNotifierModuleSettings.AdditionalData"/>.
         /// Using reflection, this method will automatically set the values from the config string
         /// to the fields and properties of the passed class object.
         /// </para>
@@ -87,7 +87,7 @@ namespace OBSNotifier
                         var prop = dataType.GetProperty(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty);
                         if (prop != null && prop.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
                         {
-                            prop.SetValue(configToUpdate, ParsePluginConfigValue(prop.PropertyType, propVal, prop.GetValue(configToUpdate)));
+                            prop.SetValue(configToUpdate, ParseModuleConfigValue(prop.PropertyType, propVal, prop.GetValue(configToUpdate)));
                             continue;
                         }
                         else if (dataType.GetProperty(propName) != null)
@@ -102,7 +102,7 @@ namespace OBSNotifier
                         var field = dataType.GetField(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.SetField);
                         if (field != null && field.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
                         {
-                            field.SetValue(configToUpdate, ParsePluginConfigValue(field.FieldType, propVal, field.GetValue(configToUpdate)));
+                            field.SetValue(configToUpdate, ParseModuleConfigValue(field.FieldType, propVal, field.GetValue(configToUpdate)));
                             continue;
                         }
                         else if (dataType.GetField(propName) != null)
@@ -115,7 +115,7 @@ namespace OBSNotifier
             }
         }
 
-        static object ParsePluginConfigValue(Type type, string data, object def)
+        static object ParseModuleConfigValue(Type type, string data, object def)
         {
             if (type == typeof(string))
             {
@@ -235,7 +235,7 @@ namespace OBSNotifier
         /// <summary>
         /// <para>
         /// Serialize a class object into a simple config format, for example,
-        /// can be used for <see cref="Plugins.OBSNotifierPluginSettings.AdditionalData"/>.
+        /// can be used for <see cref="Modules.OBSNotifierModuleSettings.AdditionalData"/>.
         /// Using reflection, this method will automatically get the values from the fields and properties
         /// of the passed class object and write them to the config string.
         /// </para>
@@ -307,7 +307,7 @@ namespace OBSNotifier
                 shown++;
                 sb.Append(prop.Name);
                 sb.Append(" = ");
-                sb.Append(SerializePluginConfigValue(prop.PropertyType, prop.GetValue(configData)));
+                sb.Append(SerializeModuleConfigValue(prop.PropertyType, prop.GetValue(configData)));
                 if (shown < total)
                     sb.AppendLine();
             }
@@ -316,7 +316,7 @@ namespace OBSNotifier
                 shown++;
                 sb.Append(field.Name);
                 sb.Append(" = ");
-                sb.Append(SerializePluginConfigValue(field.FieldType, field.GetValue(configData)));
+                sb.Append(SerializeModuleConfigValue(field.FieldType, field.GetValue(configData)));
                 if (shown < total)
                     sb.AppendLine();
             }
@@ -325,7 +325,7 @@ namespace OBSNotifier
         }
         static readonly Dictionary<Type, (PropertyInfo[], FieldInfo[])> cachedMembers = new Dictionary<Type, (PropertyInfo[], FieldInfo[])>();
 
-        static string SerializePluginConfigValue(Type type, object value)
+        static string SerializeModuleConfigValue(Type type, object value)
         {
             if (type == typeof(string))
             {

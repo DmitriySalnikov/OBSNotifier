@@ -13,38 +13,55 @@ namespace OBSNotifier
         bool IsChangedByCode = false;
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         bool IsConnecting = false;
+        Dictionary<string, TextBlock> module_id_to_text_block_map = new Dictionary<string, TextBlock>();
 
         public SettingsWindow()
         {
             InitializeComponent();
 
+            Title = App.AppNameSpaced;
+
             UpdateConnectButton();
             IsChangedByCode = true;
             App.ConnectionStateChanged += App_ConnectionStateChanged;
+            App.LanguageChanged += App_LanguageChanged; ;
 
-            // Plugins list
-            {
-                foreach (var p in App.plugins.LoadedPlugins)
-                    cb_notification_styles.Items.Add(p.plugin.PluginName);
-
-                if (cb_notification_styles.Items.Contains(Settings.Instance.NotificationStyle))
-                {
-                    cb_notification_styles.SelectedItem = Settings.Instance.NotificationStyle;
-                }
-                else
-                {
-                    Settings.Instance.NotificationStyle = "Default";
-                    Settings.Instance.Save();
-
-                    cb_notification_styles.SelectedItem = "Default";
-                    App.plugins.SelectCurrent((string)cb_notification_styles.SelectedItem);
-                }
-
-                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
-            }
-            OnPluginChanged();
+            UpdateModulesMenu();
+            OnModuleChanged();
 
             IsChangedByCode = false;
+        }
+
+        void UpdateModulesMenu()
+        {
+            cb_notification_modules.Items.Clear();
+            module_id_to_text_block_map.Clear();
+
+            foreach (var p in App.modules.LoadedModules)
+            {
+                var tb = new TextBlock()
+                {
+                    Text = p.instance.ModuleName,
+                    Tag = p.instance.ModuleID,
+                };
+                cb_notification_modules.Items.Add(tb);
+                module_id_to_text_block_map.Add(p.instance.ModuleID, tb);
+            }
+
+            if (module_id_to_text_block_map.ContainsKey(Settings.Instance.NotificationModule))
+            {
+                cb_notification_modules.SelectedItem = module_id_to_text_block_map[Settings.Instance.NotificationModule];
+            }
+            else
+            {
+                Settings.Instance.NotificationModule = "Default";
+                Settings.Instance.Save();
+
+                cb_notification_modules.SelectedItem = module_id_to_text_block_map[Settings.Instance.NotificationModule];
+                App.modules.SelectCurrent(Settings.Instance.NotificationModule);
+            }
+
+            cb_notification_modules.ToolTip = App.modules.CurrentModule.instance.ModuleDescription;
         }
 
         void UpdateConnectButton()
@@ -54,32 +71,32 @@ namespace OBSNotifier
             switch (App.CurrentConnectionState)
             {
                 case App.ConnectionState.Connected:
-                    btn_connect.Content = "Disconnect";
+                    btn_connect.Content = Utils.Tr("settings_window_connect_button_disconnect");
                     break;
                 case App.ConnectionState.Disconnected:
-                    btn_connect.Content = "Connect";
+                    btn_connect.Content = Utils.Tr("settings_window_connect_button_connect");
                     break;
                 case App.ConnectionState.TryingToReconnect:
-                    btn_connect.Content = "Trying to reconnect... Cancel?";
+                    btn_connect.Content = Utils.Tr("settings_window_connect_button_trying_to_reconnect");
                     break;
             }
         }
 
         void UpdateNotification()
         {
-            App.plugins.UpdateCurrentPluginSettings();
+            App.modules.UpdateCurrentModuleSettings();
             if (cb_preview.IsChecked == true)
             {
-                App.plugins.CurrentPlugin.plugin.ShowPreview();
+                App.modules.CurrentModule.instance.ShowPreview();
                 Settings.Instance.IsPreviewShowing = true;
             }
         }
 
         void UpdateAutostartCheckbox(bool isError = false)
         {
-            var def_text = "Run at Windows startup";
-            var not_available_text = "Run at Windows startup\n(unavailable due to an error.\nTry to run as administrator)";
-            var dif_path_text = "Run at Windows startup\n(a different path is used now)";
+            var def_text = $"{Utils.Tr("settings_window_run_with_windows")}";
+            var not_available_text = $"{def_text}\n{Utils.Tr("settings_window_run_with_windows_admin_error")}";
+            var dif_path_text = $"{def_text}\n{Utils.Tr("settings_window_run_with_windows_different_path")}";
 
             if (isError)
             {
@@ -105,71 +122,73 @@ namespace OBSNotifier
 
         void UpdateAutostartScriptButton()
         {
-            var defHint = "Create or update a script to run the program automatically.";
             if (AutostartScriptManager.IsScriptExists() && AutostartScriptManager.IsFileNeedToUpdate(true))
             {
-                tb_autostart_button_text.Text = "Start with OBS\n(script is outdated)";
-                tb_autostart_button_text.ToolTip = defHint + "\nThe script does not match the current version,\nor the default path to OBS Notifier does not match the current program path.";
+                tb_autostart_button_text.Text = $"{Utils.Tr("settings_window_run_with_obs_button")}\n{Utils.Tr("settings_window_run_with_obs_button_outdated")}";
+                tb_autostart_button_text.ToolTip = $"{Utils.Tr("settings_window_run_with_obs_hint")}\n{Utils.Tr("settings_window_run_with_obs_hint_outdated")}";
             }
             else
             {
-                tb_autostart_button_text.Text = "Start with OBS";
-                tb_autostart_button_text.ToolTip = defHint;
+                tb_autostart_button_text.Text = Utils.Tr("settings_window_run_with_obs_button");
+                tb_autostart_button_text.ToolTip = Utils.Tr("settings_window_run_with_obs_hint");
             }
         }
 
-        void OnPluginChanged()
+        void OnModuleChanged()
         {
             IsChangedByCode = true;
 
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
+            var moduleData = App.modules.CurrentModule;
+            if (moduleData.instance != null)
             {
+                cb_use_safe_area.IsChecked = moduleData.instance.ModuleSettings.UseSafeDisplayArea;
+
                 // Update options list
                 cb_notification_options.Items.Clear();
 
-                if (pluginData.plugin.EnumOptionsType != null)
+                if (moduleData.instance.EnumOptionsType != null)
                 {
 
-                    var names = Enum.GetNames(pluginData.plugin.EnumOptionsType);
+                    var names = Enum.GetNames(moduleData.instance.EnumOptionsType);
 
                     foreach (var e in names)
                         cb_notification_options.Items.Add(e);
 
-                    if (names.Contains(Settings.Instance.CurrentPluginSettings.SelectedOption))
-                        cb_notification_options.SelectedItem = Settings.Instance.CurrentPluginSettings.SelectedOption;
+                    if (names.Contains(Settings.Instance.CurrentModuleSettings.SelectedOption))
+                        cb_notification_options.SelectedItem = Settings.Instance.CurrentModuleSettings.SelectedOption;
                     else
-                        cb_notification_options.SelectedItem = Enum.GetName(pluginData.plugin.EnumOptionsType, pluginData.defaultSettings.Option);
+                        cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
                 }
 
                 // additional data
-                if (Settings.Instance.CurrentPluginSettings.AdditionalData == null)
-                    tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+                if (Settings.Instance.CurrentModuleSettings.AdditionalData == null)
+                    tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
                 else
-                    tb_additional_data.Text = pluginData.plugin.PluginSettings.AdditionalData;
+                    tb_additional_data.Text = moduleData.instance.ModuleSettings.AdditionalData;
 
                 // offset
-                sldr_position_offset_x.Value = pluginData.plugin.PluginSettings.Offset.X;
-                sldr_position_offset_y.Value = pluginData.plugin.PluginSettings.Offset.Y;
+                sldr_position_offset_x.Value = moduleData.instance.ModuleSettings.Offset.X;
+                sldr_position_offset_y.Value = moduleData.instance.ModuleSettings.Offset.Y;
 
                 // fade time
-                sldr_fade_delay.Value = pluginData.plugin.PluginSettings.OnScreenTime;
-                sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, pluginData.plugin.PluginSettings.OnScreenTime));
+                sldr_fade_delay.Value = moduleData.instance.ModuleSettings.OnScreenTime;
+                sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, moduleData.instance.ModuleSettings.OnScreenTime));
 
                 // Update visibility of settings groups
-                var groups_map = new Dictionary<Plugins.DefaultPluginSettings, FrameworkElement>()
+                var groups_map = new Dictionary<Modules.AvailableModuleSettings, FrameworkElement>()
                 {
-                    {Plugins.DefaultPluginSettings.Options, group_options},
-                    {Plugins.DefaultPluginSettings.Offset, group_offset},
-                    {Plugins.DefaultPluginSettings.FadeDelay, group_delay},
-                    {Plugins.DefaultPluginSettings.AdditionalData, group_additional_data},
-                    {Plugins.DefaultPluginSettings.CustomSettings, group_open_plugin_settings},
-                    {Plugins.DefaultPluginSettings.AdditionalDataFix, btn_fix_additional_data},
+                    {Modules.AvailableModuleSettings.UseSafeArea, group_safe_area},
+                    {Modules.AvailableModuleSettings.Options, group_options},
+                    {Modules.AvailableModuleSettings.Offset, group_offset},
+                    {Modules.AvailableModuleSettings.FadeDelay, group_delay},
+                    {Modules.AvailableModuleSettings.AdditionalData, group_additional_data},
+                    {Modules.AvailableModuleSettings.CustomSettings, group_open_module_settings},
+                    {Modules.AvailableModuleSettings.AdditionalDataFix, btn_fix_additional_data},
                 };
 
                 foreach (var p in groups_map)
                 {
-                    p.Value.Visibility = pluginData.plugin.AvailableDefaultSettings.HasFlag(p.Key) ? Visibility.Visible : Visibility.Collapsed;
+                    p.Value.Visibility = moduleData.instance.DefaultAvailableSettings.HasFlag(p.Key) ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
 
@@ -238,7 +257,6 @@ namespace OBSNotifier
 
                 // checkboxes
                 cb_close_on_closing.IsChecked = Settings.Instance.IsCloseOnOBSClosing;
-                cb_use_safe_area.IsChecked = Settings.Instance.UseSafeDisplayArea;
 
                 // autostart
                 try
@@ -257,7 +275,7 @@ namespace OBSNotifier
             else
             {
                 // hide preview
-                App.plugins.CurrentPlugin.plugin.HidePreview();
+                App.modules.CurrentModule.instance.HidePreview();
                 Settings.Instance.IsPreviewShowing = false;
 
                 // Save window size
@@ -272,6 +290,14 @@ namespace OBSNotifier
         {
             IsConnecting = false;
             UpdateConnectButton();
+        }
+
+        private void App_LanguageChanged(object sender, EventArgs e)
+        {
+            UpdateModulesMenu();
+            UpdateConnectButton();
+            UpdateAutostartCheckbox();
+            UpdateAutostartScriptButton();
         }
 
         private async void btn_connect_Click(object sender, RoutedEventArgs e)
@@ -377,15 +403,13 @@ namespace OBSNotifier
             {
                 Clipboard.SetText(AutostartScriptManager.ScriptPath);
                 App.ShowMessageBox(string.Join("\n",
-                    (isScriptExists ? "The autostart script has been successfully updated!" : "The autostart script was successfully created!"),
-                    "The path to the file has been copied to the clipboard.",
-                    (isScriptExists ? "\nIf you have already added a script to OBS before, you can safely close this message.\nIf not, follow the instructions below." : "\nNow you need to add it to OBS."),
-                    "\nYou need to open OBS and go to the script settings window.",
-                    "Tools -> Scripts.",
-                    "Then click on the + button, paste the path from the clipboard as the File Name and click Open.",
-                    "\nSummary: Tools -> Scripts -> + button -> Paste the path in the File Name field -> click Open.",
-                    "\nAfter that, OBS Notifier will automatically start with OBS."),
-                    "Complete the configuration", MessageBoxButton.OK, MessageBoxImage.Information);
+                    (isScriptExists ? Utils.Tr("message_box_autostart_script_updated") : Utils.Tr("message_box_autostart_script_created")),
+                    Utils.Tr("message_box_autostart_script_path_copied"),
+                    "",
+                    (isScriptExists ? Utils.Tr("message_box_autostart_script_already_added") : Utils.Tr("message_box_autostart_script_need_to_add")),
+                    "",
+                    Utils.TrFormat("message_box_autostart_script_instruction", App.AppNameSpaced)),
+                    Utils.Tr("message_box_autostart_script_title"), MessageBoxButton.OK, MessageBoxImage.Information);
                 UpdateAutostartScriptButton();
             }
         }
@@ -410,7 +434,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.UseSafeDisplayArea = false;
+            Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = false;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -420,24 +444,25 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.UseSafeDisplayArea = true;
+            Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = true;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void cb_notification_styles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cb_notification_modules_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IsChangedByCode) return;
+            if (cb_notification_modules.SelectedItem == null) return;
 
-            var name = (string)cb_notification_styles.SelectedItem;
-            if (App.plugins.SelectCurrent(name))
+            var module_id = (string)((TextBlock)cb_notification_modules.SelectedItem).Tag;
+            if (App.modules.SelectCurrent(module_id))
             {
-                Settings.Instance.NotificationStyle = name;
+                Settings.Instance.NotificationModule = module_id;
                 Settings.Instance.Save();
-                cb_notification_styles.ToolTip = App.plugins.CurrentPlugin.plugin.PluginDescription;
+                cb_notification_modules.ToolTip = App.modules.CurrentModule.instance.ModuleDescription;
 
-                OnPluginChanged();
+                OnModuleChanged();
                 UpdateNotification();
             }
         }
@@ -446,7 +471,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
+            Settings.Instance.CurrentModuleSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -456,7 +481,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentPluginSettings.Offset.Y);
+            Settings.Instance.CurrentModuleSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentModuleSettings.Offset.Y);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -466,7 +491,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.Offset = new Point(Settings.Instance.CurrentPluginSettings.Offset.X, e.NewValue);
+            Settings.Instance.CurrentModuleSettings.Offset = new Point(Settings.Instance.CurrentModuleSettings.Offset.X, e.NewValue);
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -478,7 +503,7 @@ namespace OBSNotifier
 
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
+            Settings.Instance.CurrentModuleSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -488,7 +513,7 @@ namespace OBSNotifier
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentPluginSettings.AdditionalData = tb_additional_data.Text;
+            Settings.Instance.CurrentModuleSettings.AdditionalData = tb_additional_data.Text;
             Settings.Instance.Save();
 
             UpdateNotification();
@@ -496,7 +521,7 @@ namespace OBSNotifier
 
         private void btn_select_active_notifications_Click(object sender, RoutedEventArgs e)
         {
-            var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes ?? App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
+            var notifs = Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes ?? App.modules.CurrentModule.instance.DefaultActiveNotifications;
 
             var an = new ActiveNotifications(notifs);
             an.Left = Left + Width / 2 - an.Width / 2;
@@ -505,7 +530,7 @@ namespace OBSNotifier
 
             if (an.ShowDialog() == true)
             {
-                Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes = an.GetActiveNotifications();
+                Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes = an.GetActiveNotifications();
                 Settings.Instance.Save();
 
                 UpdateNotification();
@@ -516,18 +541,18 @@ namespace OBSNotifier
 
         private void btn_reset_options_Click(object sender, RoutedEventArgs e)
         {
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
-                cb_notification_options.SelectedItem = Enum.GetName(pluginData.plugin.EnumOptionsType, pluginData.defaultSettings.Option);
+            var moduleData = App.modules.CurrentModule;
+            if (moduleData.instance != null)
+                cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
 
             UpdateNotification();
         }
 
         private void btn_reset_position_offset_Click(object sender, RoutedEventArgs e)
         {
-            var pluginData = App.plugins.CurrentPlugin;
-            sldr_position_offset_x.Value = pluginData.defaultSettings.Offset.X;
-            sldr_position_offset_y.Value = pluginData.defaultSettings.Offset.Y;
+            var moduleData = App.modules.CurrentModule;
+            sldr_position_offset_x.Value = moduleData.defaultSettings.Offset.X;
+            sldr_position_offset_y.Value = moduleData.defaultSettings.Offset.Y;
 
             UpdateNotification();
         }
@@ -542,20 +567,20 @@ namespace OBSNotifier
 
         private void btn_reset_additional_data_Click(object sender, RoutedEventArgs e)
         {
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
-                tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+            var moduleData = App.modules.CurrentModule;
+            if (moduleData.instance != null)
+                tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
 
             UpdateNotification();
         }
 
         private void btn_fix_additional_data_Click(object sender, RoutedEventArgs e)
         {
-            var pluginData = App.plugins.CurrentPlugin;
-            if (pluginData.plugin != null)
+            var moduleData = App.modules.CurrentModule;
+            if (moduleData.instance != null)
             {
-                pluginData.defaultSettings.AdditionalData = pluginData.plugin.GetFixedAdditionalData();
-                tb_additional_data.Text = pluginData.defaultSettings.AdditionalData;
+                moduleData.defaultSettings.AdditionalData = moduleData.instance.GetFixedAdditionalData();
+                tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
             }
 
             UpdateNotification();
@@ -563,15 +588,15 @@ namespace OBSNotifier
 
         private void btn_reset_fade_delay_Click(object sender, RoutedEventArgs e)
         {
-            sldr_fade_delay.Value = App.plugins.CurrentPlugin.defaultSettings.OnScreenTime;
+            sldr_fade_delay.Value = App.modules.CurrentModule.defaultSettings.OnScreenTime;
         }
 
-        private void btn_open_plugin_settings_Click(object sender, RoutedEventArgs e)
+        private void btn_open_module_settings_Click(object sender, RoutedEventArgs e)
         {
-            if (App.plugins.CurrentPlugin.plugin != null)
+            if (App.modules.CurrentModule.instance != null)
             {
-                App.plugins.CurrentPlugin.plugin?.OpenCustomSettings();
-                Settings.Instance.CurrentPluginSettings.CustomSettings = App.plugins.CurrentPlugin.plugin.GetCustomSettingsDataToSave();
+                App.modules.CurrentModule.instance?.OpenCustomSettings();
+                Settings.Instance.CurrentModuleSettings.CustomSettings = App.modules.CurrentModule.instance.GetCustomSettingsDataToSave();
                 Settings.Instance.Save();
 
                 UpdateNotification();
@@ -585,7 +610,7 @@ namespace OBSNotifier
 
         private void cb_preview_Unchecked(object sender, RoutedEventArgs e)
         {
-            App.plugins.CurrentPlugin.plugin.HidePreview();
+            App.modules.CurrentModule.instance.HidePreview();
             Settings.Instance.IsPreviewShowing = false;
         }
     }

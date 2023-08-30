@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Feil</v:String>
+    <v:String x:Key="message_box_app_already_running">En forekomst av denne applikasjonen kjører allerede.
+Programmet vil bli lukket.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Programmet kjører allerede</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Godkjenning mislyktes</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Gjeldende versjon: {0}
+Ny versjon: {1}
+Vil du gå til nedlastingssiden?
+
+Velg 'Nei' for å hoppe over denne versjonen.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">En ny versjon av {0} er tilgjengelig</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Du bruker siste versjon: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Kunne ikke be om informasjon om ny versjon.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Klarte ikke hente informasjon om den nye versjonen.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Kunne ikke se etter oppdatering.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Fullfør konfigurasjonen</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Autostart skriptet ble opprettet!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Autostart skriptet har blitt oppdatert!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Stien til filen har blitt kopiert til utklippstavlen.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Hvis du allerede har lagt til et skript til OBS før, kan du trygt lukke denne meldingen.
+Hvis ikke, følg instruksjonene nedenfor.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Nå må du legge det til OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
+Tools -&gt; Scripts.
+Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+
+Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+
+After that, {0} will automatically start with OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Dette er et program for visning av varsler fra OBS. For at dette programmet skal fungere, må du installere OBS versjon 28+ med innebygget 'obs-websocket' versjon 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">Vis kildekoden</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">For at denne appen skal virke, må du koble deg til pluginen for at den skal virke.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Server adresse:</v:String>
+    <v:String x:Key="settings_window_password_label">Passord:</v:String>
+    <v:String x:Key="settings_window_password_warning">Passordet vil bli lagret i en lokal fil</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Nettverk</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Frakoblet</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Prøver å koble til på nytt... Avbryt?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Kjør ved oppstart av Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(utilgjengelig på grunn av en feil.
+Prøv å kjøre som administrator)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(en annen sti er brukt nå)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Lag eller oppdater et skript for å kjøre programmet automatisk.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skriptet samsvarer ikke med gjeldende versjon,
+eller den registrerte stien til {0} samsvarer ikke med den gjeldende programbanen.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Start med OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(skriptet er utdatert)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Lukk dette programmet når OBS
+avsluttes (når vinduet Innstillinger er lukket)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Innstillinger for varsling</v:String>
+    <v:String x:Key="settings_window_preview">Forhåndsvisning</v:String>
+    <v:String x:Key="settings_window_screen_label">Skjerm:</v:String>
+    <v:String x:Key="settings_window_module_label">Modul:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Velg aktive varsler</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Bruk trygt visningsområde
+(uten oppgavelinjen og andre paneler)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Stil alternativer:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Tilbakestill til midten</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Fiks konfigurasjon</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Posisjons forskyvning:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Fade Forsinkelse (sekunder):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Pause før varsling skjules</v:String>
+    <v:String x:Key="settings_window_additional_label">Tillegg</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Åpne modulinnstillinger</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Velg aktive varsler</v:String>
+    <v:String x:Key="active_notifications_select_all">Velg alle</v:String>
+    <v:String x:Key="active_notifications_select_none">Velg ingen</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Tilbakestill til gjeldende</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Tilbakestill til standard</v:String>
+    <v:String x:Key="active_notifications_save">Lagre</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Åpne Innstillinger</v:String>
+    <v:String x:Key="tray_menu_languages">Språk</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Oversettelse fremgang (oversatt % / verifisert %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Se etter oppdateringer</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Åpne logg-mappe</v:String>
+    <v:String x:Key="tray_menu_about">Om {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Avslutt</v:String>
+    <v:String x:Key="tray_menu_status_connected">Tilkoblet</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Ikke tilkoblet</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Prøver å gjenopprette tilkobling</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Forhåndsvis varsel</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">En beskrivelse</v:String>
+    <v:String x:Key="notification_events_connected">Tilkoblet</v:String>
+    <v:String x:Key="notification_events_disconnected">Koblet fra OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Mistet tilkobling til OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Prøver å gjenopprette tilkobling</v:String>
+    <v:String x:Key="notification_events_replay_started">Spill startet på nytt</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Replay stoppet</v:String>
+    <v:String x:Key="notification_events_replay_saved">Reprise lagret</v:String>
+    <v:String x:Key="notification_events_recording_started">Opptak startet</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Opptak stoppet</v:String>
+    <v:String x:Key="notification_events_recording_paused">Opptak Paused</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Opptak gjenopptatt</v:String>
+    <v:String x:Key="notification_events_streaming_started">Strømming startet</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Streaming stoppet</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Virtuelt kamera startet</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Virtuelt kamera stoppet</v:String>
+    <v:String x:Key="notification_events_scene_switched">Scenen byttet</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Nåværende: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Scenen kolleksjon skift</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Nåværende: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil endret</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Nåværende: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Lyd er dempet</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Lyd er slått på</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Kilde: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Forhåndsvisningsbilde lagret</v:String>
+    
+</ResourceDictionary>

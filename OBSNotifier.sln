@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBSNotifier", "OBSNotifier\OBSNotifier.csproj", "{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NvidiaLikeNotification", "Plugins\NvidiaLikeNotification\NvidiaLikeNotification.csproj", "{847D1F2B-C811-431C-AE28-39C454B91B64}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Release|Any CPU.Build.0 = Release|Any CPU
-		{847D1F2B-C811-431C-AE28-39C454B91B64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{847D1F2B-C811-431C-AE28-39C454B91B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{847D1F2B-C811-431C-AE28-39C454B91B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{847D1F2B-C811-431C-AE28-39C454B91B64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

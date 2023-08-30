@@ -14,13 +14,16 @@ namespace OBSNotifier
 
         public Logger(string saveFile)
         {
-            this.saveFile = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), App.AppName), saveFile);
+            this.saveFile = Path.Combine(App.AppDataFolder, saveFile);
 
             try
             {
                 if (File.Exists(this.saveFile))
                     File.Delete(this.saveFile);
-                logWriter = new StreamWriter(File.OpenWrite(this.saveFile));
+                if (!Directory.Exists(Path.GetDirectoryName(this.saveFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(this.saveFile));
+
+                logWriter = new StreamWriter(File.Open(this.saveFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read));
                 flushFileAction = new DeferredAction(() => logWriter.Flush(), 500);
             }
             catch (Exception ex)

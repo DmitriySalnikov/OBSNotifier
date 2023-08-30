@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">خطأ</v:String>
+    <v:String x:Key="message_box_app_already_running">An instance of this application is already running.
+The application will be closed.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">التطبيق قيد التشغيل بالفعل</v:String>
+    <v:String x:Key="message_box_app_auth_failed">فشل المصادقة</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">الإصدار الحالي: {0}
+إصدار جديد: {1}
+هل ترغب في الذهاب إلى صفحة التنزيل؟
+
+اختر 'لا' لتخطي هذا الإصدار.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">يتوفر إصدار جديد من {0}</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">أنت تستخدم أحدث إصدار: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">فشل في طلب معلومات حول الإصدار الجديد.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">فشل في الحصول على معلومات حول الإصدار الجديد.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">فشل التحقق من وجود تحديث.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">أكمل التكوين</v:String>
+    <v:String x:Key="message_box_autostart_script_created">تم إنشاء البرنامج النصي للتشغيل التلقائي بنجاح!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">تم تحديث البرنامج النصي للتشغيل التلقائي بنجاح!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">تم نسخ المسار إلى الملف إلى الحافظة.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">If you have already added a script to OBS before, you can safely close this message.
+If not, follow the instructions below.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">الآن تحتاج إلى إضافته إلى OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
+Tools -&gt; Scripts.
+Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+
+Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+
+After that, {0} will automatically start with OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">هذا برنامج لعرض الإشعارات من OBS. لكي يعمل هذا البرنامج، تحتاج إلى تثبيت إصدار OBS 28+ مع الإصدار المدمج 'obs-websocket' 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">عرض رمز المصدر</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">لكي يعمل هذا التطبيق فإنك تحتاج إلى الاتصال بالمكون المساعد الخاص بموقع-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_server_address_label">عنوان الخادم:</v:String>
+    <v:String x:Key="settings_window_password_label">كلمة المرور:</v:String>
+    <v:String x:Key="settings_window_password_warning">سيتم حفظ كلمة المرور في ملف محلي</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">الاتصال</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">قطع الاتصال</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">محاولة إعادة الاتصال... إلغاء؟</v:String>
+    <v:String x:Key="settings_window_run_with_windows">تشغيل عند بدء تشغيل Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(غير متوفر بسبب خطأ.
+حاول العمل كمسؤول)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(يتم استخدام مسار مختلف الآن)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">إنشاء أو تحديث برنامج نصي لتشغيل البرنامج تلقائياً.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">البرنامج النصي لا يتطابق مع الإصدار الحالي،
+أو المسار المسجل إلى {0} لا يتطابق مع مسار البرنامج الحالي.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">ابدأ مع OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(البرنامج النصي قديم)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">إغلاق هذا البرنامج عند الخروج من OBS
+(عند إغلاق نافذة الإعدادات)</v:String>
+    <v:String x:Key="settings_window_notification_settings">إعدادات الإشعارات</v:String>
+    <v:String x:Key="settings_window_preview">معاينة</v:String>
+    <v:String x:Key="settings_window_screen_label">الشاشة:</v:String>
+    <v:String x:Key="settings_window_module_label">الوحدة:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">حدد الإشعارات النشطة</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">استخدام منطقة العرض الآمنة
+(بدون شريط المهام واللوحات الأخرى)</v:String>
+    <v:String x:Key="settings_window_style_options_label">خيارات النمط:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">إعادة التعيين إلى الوسط</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">إصلاح التكوين</v:String>
+    <v:String x:Key="settings_window_position_offset_label">إزاحة المنصب:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">تأخر التلاشي (ثانية):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">تأخير قبل إخفاء الإشعار</v:String>
+    <v:String x:Key="settings_window_additional_label">إضافة:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">فتح إعدادات الوحدة النمطية</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">حدد الإشعارات النشطة</v:String>
+    <v:String x:Key="active_notifications_select_all">حدد الكل</v:String>
+    <v:String x:Key="active_notifications_select_none">عدم اختيار أي</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">إعادة التعيين إلى الحالي</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">إعادة التعيين إلى الافتراضي</v:String>
+    <v:String x:Key="active_notifications_save">حفظ</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">فتح الإعدادات</v:String>
+    <v:String x:Key="tray_menu_languages">اللغة</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">تقدم الترجمة (ترجمة % / التحقق %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">التحقق من وجود تحديثات</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">فتح مجلد السجلات</v:String>
+    <v:String x:Key="tray_menu_about">حول {0}</v:String>
+    <v:String x:Key="tray_menu_exit">الخروج</v:String>
+    <v:String x:Key="tray_menu_status_connected">متصل</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">غير متصل</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">محاولة إعادة الاتصال</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">معاينة الإشعار</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">بعض الوصف</v:String>
+    <v:String x:Key="notification_events_connected">متصل</v:String>
+    <v:String x:Key="notification_events_disconnected">قطع الاتصال بOBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">فقدت الاتصال بOBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">محاولة إعادة الاتصال</v:String>
+    <v:String x:Key="notification_events_replay_started">بدأت إعادة العرض</v:String>
+    <v:String x:Key="notification_events_replay_stopped">توقفت إعادة العرض</v:String>
+    <v:String x:Key="notification_events_replay_saved">تم حفظ إعادة العرض</v:String>
+    <v:String x:Key="notification_events_recording_started">بدأ التسجيل</v:String>
+    <v:String x:Key="notification_events_recording_stopped">توقف التسجيل</v:String>
+    <v:String x:Key="notification_events_recording_paused">تم إيقاف التسجيل</v:String>
+    <v:String x:Key="notification_events_recording_resumed">تم استئناف التسجيل</v:String>
+    <v:String x:Key="notification_events_streaming_started">بدأ البث</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">توقف البث</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">بدأت الكاميرا الظاهرية</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">الكاميرا الافتراضية متوقفة</v:String>
+    <v:String x:Key="notification_events_scene_switched">تم تبديل المشهد</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">حاليا: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">تم تبديل مجموعة المشهد</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">حاليا: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">تم تبديل الملف الشخصي</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">حاليا: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">تم كتم الصوت</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">تم تشغيل الصوت</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">المصدر: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">تم حفظ لقطة الشاشة</v:String>
+    
+</ResourceDictionary>

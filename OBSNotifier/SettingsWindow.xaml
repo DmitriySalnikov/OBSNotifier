@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OBSNotifier"
         mc:Ignorable="d"
-        Title="OBS Notifier"
         Height="692" Width="357"
         MinHeight="264" MinWidth="357"
         IsVisibleChanged="Window_IsVisibleChanged"
@@ -18,13 +17,13 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
         <StackPanel Margin="8,0,8,0">
 
-            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="In order for this application to work you need to connect to the obs-websocket plugin." VerticalAlignment="Top" FontWeight="Bold"/>
-            <Label Content="Server address:" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
+            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="{DynamicResource settings_window_top_hint}" VerticalAlignment="Top" FontWeight="Bold"/>
+            <Label Content="{DynamicResource settings_window_server_address_label}" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
             <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
-            <Label Content="Password:" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
+            <Label Content="{DynamicResource settings_window_password_label}" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
-            <Label Content="The password will be saved in a local file" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
-            <Button x:Name="btn_connect" Content="Connect" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
+            <Label Content="{DynamicResource settings_window_password_warning}" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
+            <Button x:Name="btn_connect" Content="{DynamicResource settings_window_connect_button_connect}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
 
             <Separator Height="10" Background="{x:Null}"/>
             <Grid>
@@ -32,43 +31,48 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_autostart_script_create_update , Mode=OneWay}"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="cb_autostart" Content="Run at Windows startup" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="cb_autostart" Content="{DynamicResource settings_window_run_with_windows}" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
                 <Button x:Name="btn_autostart_script_create_update" Grid.Column="1" MinWidth="110" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btn_autostart_script_create_update_Click">
                     <TextBlock x:Name="tb_autostart_button_text" Text="Start with OBS&#xD;&#xA;(update☹️)" TextAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
             </Grid>
             <Separator Height="2" Background="{x:Null}"/>
-            <CheckBox x:Name="cb_close_on_closing" Content="Close this program when exiting OBS&#xD;&#xA;(when Settings window closed)" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+            <CheckBox x:Name="cb_close_on_closing" Content="{DynamicResource settings_window_close_on_obs_exit}" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
             <Separator Height="16"/>
 
-            <Label Content="Notification Settings" HorizontalAlignment="Center" FontWeight="Bold"/>
+            <Label Content="{DynamicResource settings_window_notification_settings}" HorizontalAlignment="Center" FontWeight="Bold"/>
 
-            <CheckBox x:Name="cb_preview" Content="Preview" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
+            <CheckBox x:Name="cb_preview" Content="{DynamicResource settings_window_preview}" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
 
-            <Label Content="Screen:"/>
+            <Label Content="{DynamicResource settings_window_screen_label}"/>
             <ComboBox x:Name="cb_display_to_show" SelectionChanged="cb_display_to_show_SelectionChanged"/>
-            <CheckBox x:Name="cb_use_safe_area" Content="Use safe display area&#xD;&#xA;(without the taskbar and other panels)" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" VerticalContentAlignment="Center"/>
 
-            <Label Content="Style:"/>
-            <ComboBox x:Name="cb_notification_styles" Grid.ColumnSpan="1" SelectionChanged="cb_notification_styles_SelectionChanged" />
+            <Label Content="{DynamicResource settings_window_module_label}"/>
+            <ComboBox x:Name="cb_notification_modules" Grid.ColumnSpan="1" SelectionChanged="cb_notification_modules_SelectionChanged" />
+            
+            <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+            <Button Content="{DynamicResource settings_window_select_active_notifications_button}" Click="btn_select_active_notifications_Click"/>
 
-            <Separator Height="16" Background="{x:Null}" Foreground="{x:Null}"/>
-            <Button Content="Select Active Notifications" Click="btn_select_active_notifications_Click"/>
+            <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+            <StackPanel x:Name="group_safe_area">
+                <CheckBox x:Name="cb_use_safe_area" Content="{DynamicResource settings_window_use_safe_zone}" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" VerticalContentAlignment="Center"/>
+                <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+            </StackPanel>
 
             <StackPanel x:Name="group_options">
-                <Label Content="Options:"/>
+                <Label Content="{DynamicResource settings_window_style_options_label}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_options, Mode=OneWay}"/>
                     </Grid.ColumnDefinitions>
                     <ComboBox x:Name="cb_notification_options" Grid.ColumnSpan="1" SelectionChanged="cb_notification_options_SelectionChanged" />
-                    <Button x:Name="btn_reset_options" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_options_Click"/>
+                    <Button x:Name="btn_reset_options" Content=" ↩️ " ToolTip="{DynamicResource settings_window_reset_hint}" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_options_Click"/>
                 </Grid>
             </StackPanel>
 
             <StackPanel x:Name="group_offset">
-                <Label Content="Position Offset:"/>
+                <Label Content="{DynamicResource settings_window_position_offset_label}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -79,14 +83,14 @@
                         <Slider x:Name="sldr_position_offset_y" AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="3" Maximum="1" LargeChange="0.1" SmallChange="0.001" ValueChanged="sldr_position_offset_y_ValueChanged"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <Button x:Name="btn_reset_position_offset" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Click="btn_reset_position_offset_Click"/>
-                        <Button x:Name="btn_reset_position_offset_center" Content=" ↔️ " ToolTip="Reset Center" HorizontalAlignment="Left" Click="btn_reset_position_offset_center_Click"/>
+                        <Button x:Name="btn_reset_position_offset" Content=" ↩️ " ToolTip="{DynamicResource settings_window_reset_hint}" HorizontalAlignment="Left" Click="btn_reset_position_offset_Click"/>
+                        <Button x:Name="btn_reset_position_offset_center" Content=" ↔️ " ToolTip="{DynamicResource settings_window_reset_center_hint}" HorizontalAlignment="Left" Click="btn_reset_position_offset_center_Click"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
 
             <StackPanel x:Name="group_delay">
-                <Label Content="Fade Delay (Seconds):"/>
+                <Label Content="{DynamicResource settings_window_fade_delay_label}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -94,14 +98,14 @@
                         <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_reset_position_offset, Mode=OneWay}"/>
                     </Grid.ColumnDefinitions>
 
-                    <Slider x:Name="sldr_fade_delay" ToolTip="Delay before hiding notification" Maximum="10000" LargeChange="1000" SmallChange="100" ValueChanged="sldr_fade_delay_ValueChanged"  Grid.Column="0" VerticalAlignment="Center"/>
+                    <Slider x:Name="sldr_fade_delay" ToolTip="{DynamicResource settings_window_fade_delay_hint}" Maximum="10000" LargeChange="1000" SmallChange="100" ValueChanged="sldr_fade_delay_ValueChanged"  Grid.Column="0" VerticalAlignment="Center"/>
                     <TextBlock x:Name="l_delay_sec" Text="10.9" Grid.Column="1" HorizontalAlignment="Center"/>
-                    <Button x:Name="btn_reset_fade_delay" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_fade_delay_Click"/>
+                    <Button x:Name="btn_reset_fade_delay" Content=" ↩️ " ToolTip="{DynamicResource settings_window_reset_hint}" HorizontalAlignment="Left" Grid.Column="2" Click="btn_reset_fade_delay_Click"/>
                 </Grid>
             </StackPanel>
 
             <StackPanel x:Name="group_additional_data">
-                <Label Content="Additional Data:"/>
+                <Label Content="{DynamicResource settings_window_additional_label}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -109,15 +113,15 @@
                     </Grid.ColumnDefinitions>
                     <TextBox x:Name="tb_additional_data" TextWrapping="Wrap" AcceptsReturn="True" TextChanged="TextBox_TextChanged"/>
                     <StackPanel Grid.Column="2">
-                        <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="Reset" HorizontalAlignment="Left" Click="btn_reset_additional_data_Click"/>
-                        <Button x:Name="btn_fix_additional_data" Content="🧰" ToolTip="Fix config" HorizontalAlignment="Left" Click="btn_fix_additional_data_Click"/>
+                        <Button x:Name="btn_reset_additional_data" Content=" ↩️ " ToolTip="{DynamicResource settings_window_reset_hint}" HorizontalAlignment="Left" Click="btn_reset_additional_data_Click"/>
+                        <Button x:Name="btn_fix_additional_data" Content="🧰" ToolTip="{DynamicResource settings_window_fix_config_hint}" HorizontalAlignment="Left" Click="btn_fix_additional_data_Click"/>
                     </StackPanel>
                 </Grid>
             </StackPanel>
 
-            <StackPanel x:Name="group_open_plugin_settings">
+            <StackPanel x:Name="group_open_module_settings">
                 <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
-                <Button Content="Open Plugin Settings" Click="btn_open_plugin_settings_Click"/>
+                <Button Content="{DynamicResource settings_window_open_module_settings}" Click="btn_open_module_settings_Click"/>
             </StackPanel>
             <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
         </StackPanel>

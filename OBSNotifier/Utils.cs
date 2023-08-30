@@ -2,15 +2,73 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Threading;
 
 namespace OBSNotifier
 {
     public static partial class Utils
     {
+        /// <summary>
+        /// Get the translated string by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static string Tr(string id, ResourceDictionary specificResDict = null)
+        {
+            if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException($"{nameof(id)} must not be null or an empty string");
+
+            var is_spec_dict = specificResDict != null;
+            ResourceDictionary dict = is_spec_dict ? specificResDict : Application.Current.Resources;
+
+            if (dict.Contains(id))
+            {
+                var obj = dict[id];
+                if (obj.GetType() != typeof(string))
+                {
+                    App.Log($"Resource with ID \"{id}\" is not a string." + (is_spec_dict? " Using a specific dictionary" : ""));
+                    return $"[{id}]";
+                }
+
+                return (string)obj;
+            }
+
+            App.Log($"Resource ID ({id}) not found." + (is_spec_dict ? " Using a specific dictionary" : ""));
+            return $"[{id}]";
+        }
+
+        /// <summary>
+        /// Get the translated string by ID and apply formatting to it.
+        /// If formatting fails, fallback to the default language and apply formatting to it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static string TrFormat(string id, params object[] args)
+        {
+            var loc_str = Tr(id);
+
+            try
+            {
+                return string.Format(loc_str, args);
+            }
+            catch (Exception ex)
+            {
+                App.Log($"The localized string ({id}) cannot be formatted for {Thread.CurrentThread.CurrentUICulture}");
+                App.Log(ex);
+            }
+
+            // Second try to fallback
+            var dicts = Application.Current.Resources.MergedDictionaries.Where((i) => i.Source != null && i.Source.OriginalString.StartsWith("Localization/lang.")).ToArray();
+            loc_str = Tr(id, dicts[0]);
+
+            return string.Format(loc_str, args);
+        }
+
         public enum AnchorPoint
         {
             TopLeft = 0, TopRight = 1, BottomRight = 2, BottomLeft = 3,
@@ -101,7 +159,7 @@ namespace OBSNotifier
         /// <returns></returns>
         public static Rect GetCurrentDisplayBounds(WPFScreens screen)
         {
-            return Settings.Instance.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
+            return Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
         }
 
         /// <summary>

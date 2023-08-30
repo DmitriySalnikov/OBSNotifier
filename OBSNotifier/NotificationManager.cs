@@ -1,4 +1,4 @@
-﻿using OBSNotifier.Plugins;
+﻿using OBSNotifier.Modules;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using OBSWebsocketDotNet.Types.Events;
@@ -9,12 +9,39 @@ namespace OBSNotifier
 {
     internal class NotificationDescriptionAttribute : Attribute
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public NotificationDescriptionAttribute(string name, string desc = null)
+        string name = "";
+        public string Name
         {
-            Name = name;
-            Description = desc;
+            get
+            {
+                return Utils.Tr(name);
+            }
+            set
+            {
+                name = value;
+            }
+        }
+
+        string desc = "";
+        public string Description
+        {
+            get
+            {
+                return translate_description && !string.IsNullOrWhiteSpace(desc) ? Utils.Tr(desc) : desc;
+            }
+            set
+            {
+                desc = value;
+            }
+        }
+
+        bool translate_description = false;
+
+        public NotificationDescriptionAttribute(string name, string desc = null, bool translateDesc = true)
+        {
+            this.name = name;
+            this.desc = desc;
+            translate_description = translateDesc;
         }
     }
 
@@ -23,53 +50,53 @@ namespace OBSNotifier
     {
         None = 0,
 
-        [NotificationDescription("Connected to OBS")]
+        [NotificationDescription("notification_events_connected")]
         Connected = 1L << 0,
-        [NotificationDescription("Disconnected from OBS")]
+        [NotificationDescription("notification_events_disconnected")]
         Disconnected = 1L << 1,
-        [NotificationDescription("Lost Connection to OBS", "Trying to reconnect")]
+        [NotificationDescription("notification_events_lost_connection", "notification_events_lost_connection_2nd_line")]
         LostConnection = 1L << 2,
 
-        [NotificationDescription("Replay Started")]
+        [NotificationDescription("notification_events_replay_started")]
         ReplayStarted = 1L << 5,
-        [NotificationDescription("Replay Stopped")]
+        [NotificationDescription("notification_events_replay_stopped")]
         ReplayStopped = 1L << 6,
-        [NotificationDescription("Replay Saved", "{0}")]
+        [NotificationDescription("notification_events_replay_saved", "{0}", false)]
         ReplaySaved = 1L << 7,
 
-        [NotificationDescription("Recording Started")]
+        [NotificationDescription("notification_events_recording_started")]
         RecordingStarted = 1L << 8,
-        [NotificationDescription("Recording Stopped", "{0}")]
+        [NotificationDescription("notification_events_recording_stopped", "{0}", false)]
         RecordingStopped = 1L << 9,
-        [NotificationDescription("Recording Paused")]
+        [NotificationDescription("notification_events_recording_paused")]
         RecordingPaused = 1L << 10,
-        [NotificationDescription("Recording Resumed")]
+        [NotificationDescription("notification_events_recording_resumed")]
         RecordingResumed = 1L << 11,
 
-        [NotificationDescription("Streaming Started")]
+        [NotificationDescription("notification_events_streaming_started")]
         StreamingStarted = 1L << 12,
-        [NotificationDescription("Streaming Stopped")]
+        [NotificationDescription("notification_events_streaming_stopped")]
         StreamingStopped = 1L << 13,
 
-        [NotificationDescription("Virtual Camera Started")]
+        [NotificationDescription("notification_events_virtual_camera_started")]
         VirtualCameraStarted = 1L << 14,
-        [NotificationDescription("Virtual Camera Stopped")]
+        [NotificationDescription("notification_events_virtual_camera_stopped")]
         VirtualCameraStopped = 1L << 15,
 
-        [NotificationDescription("Scene Switched", "Current: {0}")]
+        [NotificationDescription("notification_events_scene_switched", "notification_events_scene_switched_2nd_line")]
         SceneSwitched = 1L << 24,
-        [NotificationDescription("Scene Collection Switched", "Current: {0}")]
+        [NotificationDescription("notification_events_scene_collection_switched", "notification_events_scene_collection_switched_2nd_line")]
         SceneCollectionSwitched = 1L << 25,
 
-        [NotificationDescription("Profile Switched", "Current: {0}")]
+        [NotificationDescription("notification_events_profile_switched", "notification_events_profile_switched_2nd_line")]
         ProfileSwitched = 1L << 32,
 
-        [NotificationDescription("Audio is Muted", "Source: {0}")]
+        [NotificationDescription("notification_events_audio_muted", "notification_events_audio_muted_2nd_line")]
         AudioSourceMuted = 1L << 34,
-        [NotificationDescription("Audio is Turned On", "Source: {0}")]
+        [NotificationDescription("notification_events_audio_turned_on", "notification_events_audio_turned_on_2nd_line")]
         AudioSourceUnmuted = 1L << 35,
 
-        [NotificationDescription("Screenshot saved", "{0}")]
+        [NotificationDescription("notification_events_screenshot_saved", "{0}", false)]
         ScreenshotSaved = 1L << 38,
 
         Minimal = Connected | Disconnected | LostConnection |
@@ -79,7 +106,6 @@ namespace OBSNotifier
             SceneSwitched |
             AudioSourceMuted | AudioSourceUnmuted,
 
-        // TODO add ability to open folder with saved files
         WithFilePaths = RecordingStopped | ReplaySaved | ScreenshotSaved,
 
         All = Connected | Disconnected | LostConnection |
@@ -114,7 +140,7 @@ namespace OBSNotifier
             "dshow_output",
         };
 
-        PluginManager.PluginData CurrentPlugin { get => App.plugins.CurrentPlugin; }
+        ModuleManager.ModuleData CurrentModule { get => App.modules.CurrentModule; }
 
         #region NotifData
         static List<NotificationType> SkipNotifTypes = new List<NotificationType> {
@@ -195,14 +221,14 @@ namespace OBSNotifier
 
         bool IsDisabled()
         {
-            return Settings.Instance.IsPreviewShowing || CurrentPlugin.plugin == null;
+            return Settings.Instance.IsPreviewShowing || CurrentModule.instance == null;
         }
 
         bool IsActive(NotificationType type)
         {
-            if (CurrentPlugin.plugin != null)
+            if (CurrentModule.instance != null)
             {
-                var notifs = Settings.Instance.CurrentPluginSettings.ActiveNotificationTypes ?? App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications;
+                var notifs = Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes ?? App.modules.CurrentModule.instance.DefaultActiveNotifications;
                 return notifs.HasFlag(type);
             }
             return false;
@@ -216,7 +242,7 @@ namespace OBSNotifier
                 {
                     string fmt = formatter(NotificationsData[type].Description, origData);
                     App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
-                    CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
+                    CurrentModule.instance.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
                 }
             }
             catch (Exception ex)
@@ -232,7 +258,7 @@ namespace OBSNotifier
                 if (IsActive(type))
                 {
                     App.Log($"New notification: {type}");
-                    CurrentPlugin.plugin.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
+                    CurrentModule.instance.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
                 }
             }
             catch (Exception ex)

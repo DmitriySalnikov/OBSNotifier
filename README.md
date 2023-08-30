@@ -2,6 +2,8 @@
 
 <img src="Images/obs_notifier.png"/>
 
+[![Crowdin](https://badges.crowdin.net/obs-notifier/localized.svg)](https://crowdin.com)
+
 This is a simple program for displaying notifications from OBS on your desktop.
 
 * Currently only Windows is supported.
@@ -19,6 +21,7 @@ This is a simple program for displaying notifications from OBS on your desktop.
 * Nvidia-like plugin out of the box
 * Ability to choose which types of notifications to display
 * Ability to quickly open saved files
+* Multi-language support
 
 ## [Download](https://github.com/DmitriySalnikov/OBSNotifier/releases/latest)
 
@@ -28,7 +31,7 @@ To install OBS Notifier for OBS 27.x and get working notifications about saving 
 
 ## Troubleshooting
 
-If you have found a bug or want to suggest a new feature, then please create a new Issue. If necessary, attach logs, you can find them in `%APPDATA%/OBSNotifier` (`log.txt` and `plugin_manager_log.txt`)
+If you have found a bug or want to suggest a new feature, then please create a new Issue. If necessary, attach logs, you can find them in `%APPDATA%/OBSNotifier/logs` (`log.txt` and `plugin_manager_log.txt`) or use the `Open logs folder` button in the tray.
 
 ## Screenshots
 
@@ -52,40 +55,9 @@ If you have found a bug or want to suggest a new feature, then please create a n
 
 [<img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QIWI_logo.svg" alt="qiwi" width=90px/>](https://qiwi.com/n/DMITRIYSALNIKOV)
 
-## Plugin Development
+## Localization
 
-To make your own plugin, you need to create a library where `IOBSNotifierPlugin` interface will be implemented and exported.
-So you need to add a reference to OBSNotifier.exe or to the OBSNotifier project.
-
-```csharp
-using OBSNotifier;
-using OBSNotifier.Plugins;
-using System.ComponentModel.Composition;
-using ...;
-
-namespace AwesomeNotification
-{
-    [Export(typeof(IOBSNotifierPlugin))]
-    public partial class MyAwesomeNotification : IOBSNotifierPlugin
-    {
-        // Interface implementation here
-    }
-}
-```
-
-**Tip:** For faster implementation of all the methods and properties of the plugin, you can simply place the text cursor on the interface name and press ALT + Enter, then select `Implement interface`.
-
-![Nvidia-like notifications](Images/readme/interface.png)
-
-To position the notification window, you can use the `OBSNotifier.Utils.GetWindowPosition()`. Or just use other functions from the `Utils`.
-
-Also, for more information, you can view the code of the default plugin or `Nvidia-like` plugin in the `Plugins/NvidiaLikeNotification/` folder
-
-To test the plugin, place your dll in the `OBSNotifier/Plugins` folder with installed program, or to a subdirectory, for example `OBSNotifier/Plugins/MyAwesomePlugin/Plugin.dll`.
-
-**Tip:** For ease of development, you can add the command `copy /Y "[your dll]" "[target path]"` in post-build actions ([example](https://github.com/DmitriySalnikov/OBSNotifier/blob/463fcb63f6b07c6a80df4b9cc70f41ccd6f405c8/Plugins/NvidiaLikeNotification/NvidiaLikeNotification.csproj#L106)).
-
-![Post-build Action](Images/readme/post-build.png)
+This application supports several languages into which it is translated by the community (`currently localization is completely based on machine translation`). If you want to help with the translation, you can visit the application page on [Crowdin](https://crowdin.com/project/obs-notifier).
 
 ## License
 

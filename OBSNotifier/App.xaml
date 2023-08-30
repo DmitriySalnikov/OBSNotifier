@@ -6,6 +6,11 @@
              Startup="Application_Startup"
              Exit="Application_Exit">
     <Application.Resources>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Localization/lang.xaml" />
+                <ResourceDictionary Source="Localization/lang_modules.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

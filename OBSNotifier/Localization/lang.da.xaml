@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Fejl</v:String>
+    <v:String x:Key="message_box_app_already_running">En instans af denne applikation kører allerede.
+Applikationen vil blive lukket.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Programmet kører allerede</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Godkendelse mislykkedes</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Nuværende version: {0}
+Ny version: {1}
+Vil du gå til downloadsiden?
+
+Vælg 'Nej' for at springe denne version.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">En ny version af {0} er tilgængelig</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Du bruger den seneste version: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Kunne ikke anmode om info om den nye version.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Kunne ikke hente information om den nye version.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Kunne ikke søge efter opdatering.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Færdiggør konfigurationen</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Autostart-scriptet blev oprettet!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Autostart-scriptet er blevet opdateret!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Stien til filen er blevet kopieret til udklipsholderen.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Hvis du allerede har tilføjet et script til OBS før, kan du trygt lukke denne besked.
+Hvis ikke, Følg instruktionerne nedenfor.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Nu skal du tilføje det til OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">Du skal åbne OBS og gå til script-indstillingsvinduet.
+Tools -&gt; Scripts.
+Klik derefter på + knappen, indsæt stien fra klippebordet i feltet 'Filnavn' og klik åben.
+
+Resumé: Værktøjer -&gt; Scripts -&gt; + knap -&gt; Indsæt stien i feltet 'Filnavn' -&gt; klik åbent.
+
+Efter dette, vil {0} automatisk starte med OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Dette er et program til visning af notifikationer fra OBS. For at dette program kan fungere, skal du installere OBS version 28 + med den indbyggede 'obs-websocket' version 5 +.</v:String>
+    <v:String x:Key="about_window_view_source_code">Vis kildekoden</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">For at dette program kan fungere, skal du oprette forbindelse til obs-websocket plugin'et.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Server adresse:</v:String>
+    <v:String x:Key="settings_window_password_label">Adgangskode:</v:String>
+    <v:String x:Key="settings_window_password_warning">Adgangskoden vil blive gemt i en lokal fil</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Forbind</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Afbryd</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Forsøger at genforbinde... Annuller?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Kør ved Windows opstart</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(utilgængelig på grund af en fejl.
+Prøv at køre som administrator)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(en anden sti bruges nu)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Opret eller opdater et script til at køre programmet automatisk.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Scriptet matcher ikke den aktuelle version,
+eller den registrerede sti til {0} matcher ikke den aktuelle programsti.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Start med OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(script er forældet)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Luk dette program ved afslutning af OBS
+(når vinduet Indstillinger lukkes)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Indstillinger For Notifikationer</v:String>
+    <v:String x:Key="settings_window_preview">Eksempelvisning</v:String>
+    <v:String x:Key="settings_window_screen_label">Skærm:</v:String>
+    <v:String x:Key="settings_window_module_label">Modul:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Vælg Aktive Notifikationer</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Brug sikker display område
+(uden proceslinjen og andre paneler)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Stil Valgmuligheder:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Nulstil til centrum</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Ret konfig</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Position Forskydning:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Fade Forsinkelse (sekunder):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Forsinkelse før meddelelse skjules</v:String>
+    <v:String x:Key="settings_window_additional_label">Tilføjelse:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Åbn Modul Indstillinger</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Vælg Aktive Notifikationer</v:String>
+    <v:String x:Key="active_notifications_select_all">Vælg Alle</v:String>
+    <v:String x:Key="active_notifications_select_none">Vælg Ingen</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Nulstil til aktuel</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Nulstil til standard</v:String>
+    <v:String x:Key="active_notifications_save">Gem</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Åbn Indstillinger</v:String>
+    <v:String x:Key="tray_menu_languages">Sprog</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Oversættelsesfremskridt (oversat % / verificeret %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Søg efter opdateringer</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Åbn logmappe</v:String>
+    <v:String x:Key="tray_menu_about">Om {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Afslut</v:String>
+    <v:String x:Key="tray_menu_status_connected">Forbundet</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Ikke forbundet</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Forsøger at genforbinde</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Forhåndsvis Notifikation</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Nogle beskrivelser</v:String>
+    <v:String x:Key="notification_events_connected">Forbundet</v:String>
+    <v:String x:Key="notification_events_disconnected">Afbrudt fra OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Mistet forbindelse til OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Forsøger at genforbinde</v:String>
+    <v:String x:Key="notification_events_replay_started">Genafspilning Startet</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Genafspilning Stoppet</v:String>
+    <v:String x:Key="notification_events_replay_saved">Genafspilning Gemt</v:String>
+    <v:String x:Key="notification_events_recording_started">Optagelse Startet</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Optagelse Stoppet</v:String>
+    <v:String x:Key="notification_events_recording_paused">Optagelse Pauset</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Optagelse Genstartet</v:String>
+    <v:String x:Key="notification_events_streaming_started">Streaming Startet</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Streaming Stoppet</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Virtuelt Kamera Startet</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Virtuelt Kamera Stoppet</v:String>
+    <v:String x:Key="notification_events_scene_switched">Scene Skiftet</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Nuværende: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Scene Samling Skiftet</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Nuværende: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil Skiftet</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Nuværende: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Lyd er slået fra</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Lyd er slået til</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Kilde: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Skærmbillede gemt</v:String>
+    
+</ResourceDictionary>

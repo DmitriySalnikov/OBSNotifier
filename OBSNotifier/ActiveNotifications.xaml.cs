@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -53,7 +52,7 @@ namespace OBSNotifier
 
         private void btn_reset_Click(object sender, RoutedEventArgs e)
         {
-            UpdateValues(App.plugins.CurrentPlugin.plugin.DefaultActiveNotifications);
+            UpdateValues(App.modules.CurrentModule.instance.DefaultActiveNotifications);
         }
 
         private void btn_reset_to_current_Click(object sender, RoutedEventArgs e)

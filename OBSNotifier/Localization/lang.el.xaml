@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Σφάλμα</v:String>
+    <v:String x:Key="message_box_app_already_running">Ένα παράδειγμα αυτής της εφαρμογής εκτελείται ήδη.
+Η εφαρμογή θα κλείσει.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Η εφαρμογή εκτελείται ήδη</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Αποτυχία ταυτοποίησης</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Τρέχουσα έκδοση: {0}
+Νέα έκδοση: {1}
+Θα θέλατε να μεταβείτε στη σελίδα λήψης?
+
+Επιλέξτε 'Όχι' για να παρακάμψετε αυτή την έκδοση.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">Μια νέα έκδοση του {0} είναι διαθέσιμη</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Χρησιμοποιείτε την τελευταία έκδοση: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Αποτυχία αιτήματος πληροφοριών σχετικά με τη νέα έκδοση.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Αποτυχία λήψης πληροφοριών σχετικά με τη νέα έκδοση.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Αποτυχία ελέγχου για ενημέρωση.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Ολοκλήρωση της ρύθμισης παραμέτρων</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Το σενάριο αυτόματης εκκίνησης δημιουργήθηκε με επιτυχία!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Το σενάριο αυτόματης εκκίνησης ενημερώθηκε επιτυχώς!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Η διαδρομή για το αρχείο έχει αντιγραφεί στο πρόχειρο.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Αν έχετε ήδη προσθέσει μια δέσμη ενεργειών στο OBS πριν, μπορείτε να κλείσετε με ασφάλεια αυτό το μήνυμα.
+Εάν όχι, ακολουθήστε τις παρακάτω οδηγίες.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Τώρα πρέπει να το προσθέσετε στο OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
+Tools -&gt; Scripts.
+Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+
+Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+
+After that, {0} will automatically start with OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Αυτό είναι ένα πρόγραμμα για την εμφάνιση των ειδοποιήσεων από OBS. Για να λειτουργήσει αυτό το πρόγραμμα, πρέπει να εγκαταστήσετε την έκδοση 28+ OBS με την ενσωματωμένη έκδοση 5 + «obs-websocket».</v:String>
+    <v:String x:Key="about_window_view_source_code">Δείτε τον πηγαίο κώδικα</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">Για να λειτουργήσει αυτή η εφαρμογή πρέπει να συνδεθείτε με το obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Διεύθυνση διακομιστή:</v:String>
+    <v:String x:Key="settings_window_password_label">Κωδικός:</v:String>
+    <v:String x:Key="settings_window_password_warning">Ο κωδικός πρόσβασης θα αποθηκευτεί σε ένα τοπικό αρχείο</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Σύνδεση</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Αποσύνδεση</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Προσπάθεια επανασύνδεσης... Ακύρωση?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Εκτέλεση κατά την εκκίνηση των Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(unavailable due to an error.
+Try to run as administrator)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(μια διαφορετική διαδρομή χρησιμοποιείται τώρα)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Δημιουργήστε ή ενημερώστε ένα σενάριο για να εκτελέσετε αυτόματα το πρόγραμμα.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">The script does not match the current version,
+or the registered path to {0} does not match the current program path.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Έναρξη με OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(η δέσμη είναι ξεπερασμένη)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Κλείσιμο αυτού του προγράμματος κατά την έξοδο από το OBS
+(όταν κλείνει το παράθυρο ρυθμίσεων)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Ρυθμίσεις Ειδοποιήσεων</v:String>
+    <v:String x:Key="settings_window_preview">Προεπισκόπηση</v:String>
+    <v:String x:Key="settings_window_screen_label">Οθόνη:</v:String>
+    <v:String x:Key="settings_window_module_label">Ενότητα:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Επιλέξτε Ενεργές Ειδοποιήσεις</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Χρήση ασφαλούς περιοχής οθόνης
+(χωρίς τη γραμμή εργασιών και άλλους πίνακες)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Επιλογές Στυλ:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Επαναφορά στο κέντρο</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Διόρθωση ρυθμίσεων</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Μετατόπιση Θέσης:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Καθυστέρηση Εξόδου (Δευτερόλεπτα):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Καθυστέρηση πριν την απόκρυψη ειδοποίησης</v:String>
+    <v:String x:Key="settings_window_additional_label">Πρόσθετο:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Άνοιγμα Ρυθμίσεων Ενθέματος</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Επιλέξτε Ενεργές Ειδοποιήσεις</v:String>
+    <v:String x:Key="active_notifications_select_all">Επιλογή Όλων</v:String>
+    <v:String x:Key="active_notifications_select_none">Επιλογή Κανενός</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Επαναφορά στην τρέχουσα</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Επαναφορά προεπιλογών</v:String>
+    <v:String x:Key="active_notifications_save">Αποθήκευση</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Άνοιγμα Ρυθμίσεων</v:String>
+    <v:String x:Key="tray_menu_languages">Γλώσσα</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Πρόοδος μετάφρασης (μεταφρασμένο % / verified %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Έλεγχος ενημερώσεων</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Άνοιγμα φακέλου αρχείων καταγραφής</v:String>
+    <v:String x:Key="tray_menu_about">Περί {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Έξοδος</v:String>
+    <v:String x:Key="tray_menu_status_connected">Συνδεδεμένο</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Δεν συνδέθηκε</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Προσπάθεια επανασύνδεσης</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Προεπισκόπηση Ειδοποίησης</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Κάποια περιγραφή</v:String>
+    <v:String x:Key="notification_events_connected">Συνδεδεμένο</v:String>
+    <v:String x:Key="notification_events_disconnected">Αποσύνδεση από το OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Χαμένη σύνδεση με OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Προσπάθεια επανασύνδεσης</v:String>
+    <v:String x:Key="notification_events_replay_started">Η Επανάληψη Ξεκίνησε</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Η Επανάληψη Σταμάτησε</v:String>
+    <v:String x:Key="notification_events_replay_saved">Η Επανάληψη Αποθηκεύτηκε</v:String>
+    <v:String x:Key="notification_events_recording_started">Η Εγγραφή Ξεκίνησε</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Η Εγγραφή Σταμάτησε</v:String>
+    <v:String x:Key="notification_events_recording_paused">Παύση Εγγραφής</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Συνέχιση Εγγραφής</v:String>
+    <v:String x:Key="notification_events_streaming_started">Άρχισε Η Ροή</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Η Ροή Σταμάτησε</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Εκκίνηση Εικονικής Κάμερας</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Η Εικονική Κάμερα Σταμάτησε</v:String>
+    <v:String x:Key="notification_events_scene_switched">Εναλλαγή Σκηνής</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Τρέχον: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Εναλλαγή Συλλογής Σκηνών</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Τρέχον: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Αλλαγή Προφίλ</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Τρέχον: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Ο ήχος είναι σε σίγαση</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Ο Ήχος Ενεργοποιήθηκε</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Πηγή: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Στιγμιότυπο αποθηκεύτηκε</v:String>
+    
+</ResourceDictionary>

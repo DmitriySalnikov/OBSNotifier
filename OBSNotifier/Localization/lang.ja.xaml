@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">エラー</v:String>
+    <v:String x:Key="message_box_app_already_running">このアプリケーションのインスタンスは既に実行されています。
+アプリケーションは閉じられます。</v:String>
+    <v:String x:Key="message_box_app_already_running_title">アプリケーションは既に実行中です</v:String>
+    <v:String x:Key="message_box_app_auth_failed">認証に失敗しました</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">現在のバージョン: {0}
+新しいバージョン: {1}
+ダウンロードページに移動しますか？
+
+このバージョンをスキップするには「いいえ」を選択します。</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">{0} の新しいバージョンが利用可能です</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">最新バージョン： {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">新しいバージョンの情報をリクエストできませんでした。</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">新しいバージョンの情報を取得できませんでした。</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">更新の確認に失敗しました。</v:String>
+    <v:String x:Key="message_box_autostart_script_title">設定を完了する</v:String>
+    <v:String x:Key="message_box_autostart_script_created">自動起動スクリプトの作成に成功しました！</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">自動スタートスクリプトが正常に更新されました！</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">ファイルへのパスがクリップボードにコピーされました。</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">以前にOBSにスクリプトを追加したことがある場合は、このメッセージを安全に閉じることができます。
+そうでない場合は、以下の手順に従ってください。</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">これでOBSに追加する必要があります。</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
+Tools -&gt; Scripts.
+Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+
+Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+
+After that, {0} will automatically start with OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">OBSからの通知を表示するプログラムです。 このプログラムを動作させるには、組み込みの 'obs-websocket' バージョン 5+ で OBS バージョン 28+ をインストールする必要があります。</v:String>
+    <v:String x:Key="about_window_view_source_code">ソースコードを表示</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">このアプリケーションを動作させるには、obs-websocket プラグインに接続する必要があります。</v:String>
+    <v:String x:Key="settings_window_server_address_label">サーバーアドレス:</v:String>
+    <v:String x:Key="settings_window_password_label">パスワード:</v:String>
+    <v:String x:Key="settings_window_password_warning">パスワードはローカルファイルに保存されます</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">接続する</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">接続を解除</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">再接続中... キャンセルしますか？</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Windows起動時に実行</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">
+管理者として実行してください)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">（今は別の道が使われている）</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">プログラムを自動的に実行するスクリプトを作成または更新します。</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">The script does not match the current version,
+or the registred path to {0} does not match the current program path.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">OBSで開始</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(スクリプトが古いです)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Close this program when exiting OBS
+(when Settings window closed)</v:String>
+    <v:String x:Key="settings_window_notification_settings">通知設定</v:String>
+    <v:String x:Key="settings_window_preview">プレビュー</v:String>
+    <v:String x:Key="settings_window_screen_label">画面:</v:String>
+    <v:String x:Key="settings_window_module_label">モジュール:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">アクティブな通知を選択</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">安全表示領域
+を使用する (タスクバーやその他のパネルなし)</v:String>
+    <v:String x:Key="settings_window_style_options_label">スタイルオプション:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">中央にリセット</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">設定を修正</v:String>
+    <v:String x:Key="settings_window_position_offset_label">位置オフセット:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">フェードディレイ（秒）：</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">通知を非表示にするまでの遅延</v:String>
+    <v:String x:Key="settings_window_additional_label">追加:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">モジュール設定を開く</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">アクティブな通知を選択</v:String>
+    <v:String x:Key="active_notifications_select_all">すべて選択</v:String>
+    <v:String x:Key="active_notifications_select_none">なしを選択</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">現在にリセット</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">既定にリセット</v:String>
+    <v:String x:Key="active_notifications_save">保存</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">設定を開く</v:String>
+    <v:String x:Key="tray_menu_languages">言語</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">翻訳の進行状況（%翻訳/検証済み）</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">アップデートを確認</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">ログフォルダを開く</v:String>
+    <v:String x:Key="tray_menu_about">{0} について</v:String>
+    <v:String x:Key="tray_menu_exit">終了</v:String>
+    <v:String x:Key="tray_menu_status_connected">接続しました</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">接続していません</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">再接続中char@@0</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">通知をプレビュー</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">いくつかの説明</v:String>
+    <v:String x:Key="notification_events_connected">接続しました</v:String>
+    <v:String x:Key="notification_events_disconnected">OBSから切断されました</v:String>
+    <v:String x:Key="notification_events_lost_connection">OBSとの接続が失われました</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">再接続中char@@0</v:String>
+    <v:String x:Key="notification_events_replay_started">リプレイ開始</v:String>
+    <v:String x:Key="notification_events_replay_stopped">リプレイが停止しました</v:String>
+    <v:String x:Key="notification_events_replay_saved">リプレイが保存されました</v:String>
+    <v:String x:Key="notification_events_recording_started">録画開始</v:String>
+    <v:String x:Key="notification_events_recording_stopped">録音を停止しました</v:String>
+    <v:String x:Key="notification_events_recording_paused">録音を一時停止しました</v:String>
+    <v:String x:Key="notification_events_recording_resumed">録画が再開されました</v:String>
+    <v:String x:Key="notification_events_streaming_started">配信開始</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">配信を停止しました</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">仮想カメラ開始</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">仮想カメラが停止しました</v:String>
+    <v:String x:Key="notification_events_scene_switched">シーン切り替え</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">現在: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">シーンコレクションを切り替えました</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">現在: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">プロフィールを切り替えました</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">現在: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">オーディオはミュートされています</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">音声がオンになっています</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">ソース: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">スクリーンショットを保存しました</v:String>
+    
+</ResourceDictionary>

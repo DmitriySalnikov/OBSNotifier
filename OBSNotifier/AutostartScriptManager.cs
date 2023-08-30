@@ -11,7 +11,7 @@ namespace OBSNotifier
         const string scriptName = "obs_notifier_autostart.lua";
         readonly static string scriptText = GetScriptCode();
 
-        public readonly static string ScriptPath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), App.AppName), scriptName);
+        public readonly static string ScriptPath = Path.Combine(App.AppDataFolder, scriptName);
         public static string ProgramPath { get => Assembly.GetExecutingAssembly().Location.Replace('\\', '/'); }
 
         public static bool IsScriptExists()

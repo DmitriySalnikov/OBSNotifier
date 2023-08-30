@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Eroare</v:String>
+    <v:String x:Key="message_box_app_already_running">O instanță a acestei aplicații rulează deja.
+Aplicația va fi închisă.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Aplicația rulează deja</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Autentificare eșuată</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Versiunea curentă: {0}
+Noua versiune: {1}
+Vrei să mergi la pagina de descărcare?
+
+Selectează 'Nu' pentru a sări peste această versiune.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">O nouă versiune {0} este disponibilă</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Utilizaţi cea mai recentă versiune: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Solicitarea informațiilor despre noua versiune a eșuat.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Obținerea informațiilor despre noua versiune nu a reușit.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Verificarea actualizării a eșuat.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Completează configurația</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Scriptul de autopornire a fost creat cu succes!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Scriptul de pornire automată a fost actualizat cu succes!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Calea către fișier a fost copiată în clipboard.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Dacă aţi adăugat deja un script la OBS înainte, puteţi închide în siguranţă acest mesaj.
+Dacă nu, urmaţi instrucţiunile de mai jos.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Acum trebuie să îl adaugi la OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">Trebuie să deschideți OBS și să mergeți la fereastra de setări script.
+Unelte -&gt; scripturi.
+Apoi faceţi clic pe butonul +, lipiţi calea din clipboard în câmpul 'Nume fişier' şi faceţi clic pe Open.
+
+Sumarul: Instrumente -&gt; Scripturi -&gt; + buton -&gt; Lipește calea în câmpul 'Nume fișier' -&gt; clic pe Deschis.
+
+După aceea, {0} va începe automat cu OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">Acesta este un program pentru afişarea notificărilor de la OBS. Pentru ca acest program să funcționeze, trebuie să instalați versiunea OBS 28+ cu versiunea încorporată de 'obs-websocket' 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">Vezi codul sursă</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">Pentru ca această aplicaţie să funcţioneze, trebuie să vă conectaţi la plugin-ul obs-websocket .</v:String>
+    <v:String x:Key="settings_window_server_address_label">Adresa serverului:</v:String>
+    <v:String x:Key="settings_window_password_label">Parola:</v:String>
+    <v:String x:Key="settings_window_password_warning">Parola va fi salvată într-un fişier local</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Conectează-te</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Deconectare</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Se încearcă reconectarea... Anulează?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Rulează la pornirea Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(indisponibil din cauza unei erori.
+Încearcă să rulezi ca administrator)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(o cale diferită este folosită acum)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Creează sau actualizează un script pentru a rula programul în mod automat.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Scriptul nu se potrivește cu versiunea curentă,
+sau calea înregistrată la {0} nu se potrivește cu calea curentă a programului.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Pornire cu OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(scriptul este învechit)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Închide acest program la ieșirea din OBS
+(când fereastra Setări este închisă)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Setări de notificare</v:String>
+    <v:String x:Key="settings_window_preview">Previzualizare</v:String>
+    <v:String x:Key="settings_window_screen_label">Ecran:</v:String>
+    <v:String x:Key="settings_window_module_label">Modul:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Selectaţi notificările active</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Utilizați zona de afișare sigură
+(fără bara de activități și alte panouri)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Opțiuni de stil:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Resetare la centru</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Repară configurația</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Decalaj de poziție:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Întârziere estompare (secunde):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Întârziere înainte de a ascunde notificarea</v:String>
+    <v:String x:Key="settings_window_additional_label">Suplimentar:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Deschide Setările Modulului</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Selectaţi notificările active</v:String>
+    <v:String x:Key="active_notifications_select_all">Selectează tot</v:String>
+    <v:String x:Key="active_notifications_select_none">Nu selectați nimic</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Resetare la curent</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Resetare la valorile implicite</v:String>
+    <v:String x:Key="active_notifications_save">Salvează</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Deschide Setările</v:String>
+    <v:String x:Key="tray_menu_languages">Limba</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Progresul traducerii (tradus % / verificat %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Verifică pentru actualizări</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Deschide dosarul jurnalului</v:String>
+    <v:String x:Key="tray_menu_about">Despre {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Ieșire</v:String>
+    <v:String x:Key="tray_menu_status_connected">Conectat</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Nu este conectat</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Se încearcă reconectarea</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Previzualizare notificare</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Unele descrieri</v:String>
+    <v:String x:Key="notification_events_connected">Conectat</v:String>
+    <v:String x:Key="notification_events_disconnected">Deconectat de la OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Conexiune pierdută la OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Se încearcă reconectarea</v:String>
+    <v:String x:Key="notification_events_replay_started">Reluare începută</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Reluare oprită</v:String>
+    <v:String x:Key="notification_events_replay_saved">Reluare salvată</v:String>
+    <v:String x:Key="notification_events_recording_started">Înregistrare începută</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Înregistrare oprită</v:String>
+    <v:String x:Key="notification_events_recording_paused">Înregistrare întreruptă</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Înregistrarea a revenit</v:String>
+    <v:String x:Key="notification_events_streaming_started">Streaming pornit</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Streaming oprit</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Cameră virtuală pornită</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Camera virtuală oprită</v:String>
+    <v:String x:Key="notification_events_scene_switched">Scenă schimbată</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Curent: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Colecția de scene schimbată</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Curent: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil schimbat</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Curent: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Fișierul audio este amuțit</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Audio este pornit</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Sursa: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Screenshot salvat</v:String>
+    
+</ResourceDictionary>

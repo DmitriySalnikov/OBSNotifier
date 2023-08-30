@@ -1,0 +1,127 @@
+﻿<?xml version="1.0"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+    <!-- Use 
+ instead of \n -->
+    
+    <!-- Message Boxes -->
+    <v:String x:Key="message_box_error_title">Błąd</v:String>
+    <v:String x:Key="message_box_app_already_running">Instancja tej aplikacji jest już uruchomiona.
+Aplikacja zostanie zamknięta.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Aplikacja jest już uruchomiona</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Uwierzytelnianie nie powiodło się</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Aktualna wersja: {0}
+Nowa wersja: {1}
+Czy chcesz przejść do strony pobierania?
+
+Wybierz 'Nie', aby pominąć tę wersję.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">Dostępna jest nowa wersja {0}</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">Używasz najnowszej wersji: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Nie udało się uzyskać informacji o nowej wersji.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Nie udało się uzyskać informacji o nowej wersji.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Nie udało się sprawdzić aktualizacji.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Zakończ konfigurację</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Skrypt autostart został pomyślnie utworzony!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Skrypt autostart został pomyślnie zaktualizowany!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Ścieżka do pliku została skopiowana do schowka.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Jeśli już wcześniej dodałeś skrypt do OBS, możesz bezpiecznie zamknąć tę wiadomość.
+Jeśli nie, postępuj zgodnie z poniższymi instrukcjami.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Teraz musisz dodać to do OBS.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
+Tools -&gt; Scripts.
+Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+
+Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+
+After that, {0} will automatically start with OBS.</v:String>
+
+    <!-- About Window -->
+    <v:String x:Key="about_window_description">To jest program do wyświetlania powiadomień z OBS. Aby ten program działał, musisz zainstalować OBS w wersji 28+ z wbudowaną wersją &quot;obs-websocket&quot; 5+.</v:String>
+    <v:String x:Key="about_window_view_source_code">Zobacz kod źródłowy</v:String>
+
+    <!-- Settings Window -->
+    <v:String x:Key="settings_window_top_hint">Aby aplikacja działała musisz połączyć się z wtyczką obs-websocket.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Adres serwera:</v:String>
+    <v:String x:Key="settings_window_password_label">Hasło:</v:String>
+    <v:String x:Key="settings_window_password_warning">Hasło zostanie zapisane w pliku lokalnym</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Połącz</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Rozłącz</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Próba ponownego połączenia... Anulować?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Uruchom przy starcie systemu Windows</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(niedostępne z powodu błędu.
+Spróbuj uruchomić jako administrator)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(używana jest teraz inna ścieżka)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Utwórz lub zaktualizuj skrypt, aby uruchomić program automatycznie.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skrypt nie pasuje do bieżącej wersji,
+lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">Rozpocznij z OBS</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(skrypt jest nieaktualny)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">Zamknij ten program podczas zamykania OBS
+(gdy okno ustawień jest zamknięte)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Ustawienia powiadomień</v:String>
+    <v:String x:Key="settings_window_preview">Podgląd</v:String>
+    <v:String x:Key="settings_window_screen_label">Ekran:</v:String>
+    <v:String x:Key="settings_window_module_label">Moduł:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Wybierz aktywne powiadomienia</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Użyj bezpiecznego obszaru wyświetlania
+(bez paska zadań i innych paneli)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Opcje stylu:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Zresetuj do środka</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Napraw konfigurację</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Przesunięcie pozycji:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Opóźnienie zanikania (sekundy):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Opóźnienie przed ukryciem powiadomienia</v:String>
+    <v:String x:Key="settings_window_additional_label">Dodatkowo:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Otwórz ustawienia modułu</v:String>
+
+    <!-- Active Notifications -->
+    <v:String x:Key="active_notifications_title">Wybierz aktywne powiadomienia</v:String>
+    <v:String x:Key="active_notifications_select_all">Zaznacz wszystko</v:String>
+    <v:String x:Key="active_notifications_select_none">Nie wybierz żadnego</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Przywróć bieżący</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Przywróć domyślne</v:String>
+    <v:String x:Key="active_notifications_save">Zapisz</v:String>
+
+    <!-- Tray Icon menu -->
+    <v:String x:Key="tray_menu_open_settings">Otwórz ustawienia</v:String>
+    <v:String x:Key="tray_menu_languages">Język</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Postęp tłumaczenia (przetłumaczone % / zweryfikowane %)</v:String>
+    <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
+    <v:String x:Key="tray_menu_check_updates">Sprawdź aktualizacje</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Otwórz folder dzienników</v:String>
+    <v:String x:Key="tray_menu_about">O {0}</v:String>
+    <v:String x:Key="tray_menu_exit">Wyjście</v:String>
+    <v:String x:Key="tray_menu_status_connected">Połączono</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Nie połączono</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Próba ponownego połączenia</v:String>
+    
+    <!-- Notification Types -->
+    <v:String x:Key="notification_events_preview">Podgląd powiadomienia</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Opis</v:String>
+    <v:String x:Key="notification_events_connected">Połączono</v:String>
+    <v:String x:Key="notification_events_disconnected">Odłączony od OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">Utracono połączenie z OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Próba ponownego połączenia</v:String>
+    <v:String x:Key="notification_events_replay_started">Powtórka rozpoczęta</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Powtórka zatrzymana</v:String>
+    <v:String x:Key="notification_events_replay_saved">Replay zapisany</v:String>
+    <v:String x:Key="notification_events_recording_started">Nagrywanie rozpoczęte</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Nagrywanie zatrzymane</v:String>
+    <v:String x:Key="notification_events_recording_paused">Nagrywanie wstrzymane</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Nagrywanie wznowione</v:String>
+    <v:String x:Key="notification_events_streaming_started">Strumieniowanie rozpoczęte</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Strumieniowanie zatrzymane</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Rozpoczęto kamerę wirtualną</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Kamera wirtualna zatrzymana</v:String>
+    <v:String x:Key="notification_events_scene_switched">Scena przełączona</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Aktualnie: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Kolekcja scen przełączona</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Aktualnie: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil przełączony</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Aktualnie: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Dźwięk jest wyciszony</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Dźwięk jest włączony</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Źródło: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Zrzut ekranu zapisany</v:String>
+    
+</ResourceDictionary>
