@@ -39,12 +39,12 @@
             <ColumnDefinition Width="0.4*"/>
         </Grid.ColumnDefinitions>
 
-        <Button x:Name="btn_open_folder" Grid.Column="0" Click="btn_open_folder_Click" ToolTip="Open folder">
+        <Button x:Name="btn_open_folder" Grid.Column="0" Click="btn_open_folder_Click" ToolTip="{DynamicResource notification_events_file_save_open_folder}">
             <Viewbox>
                 <TextBlock Text="📁" Margin="0,0,0,2"/>
             </Viewbox>
         </Button>
-        <Button x:Name="btn_open_file" Grid.Column="2" Click="btn_open_file_Click" ToolTip="Open file">
+        <Button x:Name="btn_open_file" Grid.Column="2" Click="btn_open_file_Click" ToolTip="{DynamicResource notification_events_file_save_open_file}">
             <Viewbox>
                 <TextBlock Text="🎞️"/>
             </Viewbox>

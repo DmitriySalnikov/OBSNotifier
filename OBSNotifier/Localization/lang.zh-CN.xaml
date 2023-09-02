@@ -96,6 +96,8 @@ Try to run as administrator)</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">尝试重新连接</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">打开文件夹</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">打开文件</v:String>
     <v:String x:Key="notification_events_preview">预览通知</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">一些描述</v:String>
     <v:String x:Key="notification_events_connected">已连接</v:String>

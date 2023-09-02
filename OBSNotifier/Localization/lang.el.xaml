@@ -96,6 +96,8 @@ or the registered path to {0} does not match the current program path.</v:String
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Προσπάθεια επανασύνδεσης</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Άνοιγμα φακέλου</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Άνοιγμα αρχείου</v:String>
     <v:String x:Key="notification_events_preview">Προεπισκόπηση Ειδοποίησης</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Κάποια περιγραφή</v:String>
     <v:String x:Key="notification_events_connected">Συνδεδεμένο</v:String>

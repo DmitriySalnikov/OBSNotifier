@@ -96,6 +96,8 @@ ou o caminho registrado para {0} não coincide com o caminho atual do programa.<
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Tentando reconectar</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Abrir pasta</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Abrir arquivo</v:String>
     <v:String x:Key="notification_events_preview">Pré-visualizar Notificação</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Alguma descrição</v:String>
     <v:String x:Key="notification_events_connected">Conectado</v:String>

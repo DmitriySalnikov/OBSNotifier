@@ -96,6 +96,8 @@ verwenden (ohne die Taskleiste und andere Bereiche)</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Versucht neu zu verbinden</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Ordner öffnen</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Datei öffnen</v:String>
     <v:String x:Key="notification_events_preview">Vorschau der Benachrichtigung</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Einige Beschreibung</v:String>
     <v:String x:Key="notification_events_connected">Verbunden</v:String>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -26,10 +27,16 @@ namespace OBSNotifier
             App.ConnectionStateChanged += App_ConnectionStateChanged;
             App.LanguageChanged += App_LanguageChanged; ;
 
+            UpdateWindowAppearance();
             UpdateModulesMenu();
             OnModuleChanged();
 
             IsChangedByCode = false;
+        }
+
+        void UpdateWindowAppearance()
+        {
+            FlowDirection = Thread.CurrentThread.CurrentUICulture.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
         void UpdateModulesMenu()
@@ -125,7 +132,7 @@ namespace OBSNotifier
             if (AutostartScriptManager.IsScriptExists() && AutostartScriptManager.IsFileNeedToUpdate(true))
             {
                 tb_autostart_button_text.Text = $"{Utils.Tr("settings_window_run_with_obs_button")}\n{Utils.Tr("settings_window_run_with_obs_button_outdated")}";
-                tb_autostart_button_text.ToolTip = $"{Utils.Tr("settings_window_run_with_obs_hint")}\n{Utils.Tr("settings_window_run_with_obs_hint_outdated")}";
+                tb_autostart_button_text.ToolTip = $"{Utils.Tr("settings_window_run_with_obs_hint")}\n{Utils.TrFormat("settings_window_run_with_obs_hint_outdated", App.AppNameSpaced)}";
             }
             else
             {
@@ -294,6 +301,7 @@ namespace OBSNotifier
 
         private void App_LanguageChanged(object sender, EventArgs e)
         {
+            UpdateWindowAppearance();
             UpdateModulesMenu();
             UpdateConnectButton();
             UpdateAutostartCheckbox();

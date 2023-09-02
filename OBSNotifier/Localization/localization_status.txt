@@ -1,32 +1,32 @@
 [OK] Fetching project info
 Translated:
 	- af: 0%
-	- ar: 75%
+	- ar: 78%
 	- ca: 0%
-	- cs: 94%
-	- da: 94%
-	- de: 94%
-	- el: 76%
-	- es-ES: 82%
-	- fi: 94%
-	- fr: 82%
+	- cs: 100%
+	- da: 100%
+	- de: 100%
+	- el: 82%
+	- es-ES: 88%
+	- fi: 100%
+	- fr: 88%
 	- he: 0%
 	- hu: 0%
-	- it: 94%
-	- ja: 80%
+	- it: 100%
+	- ja: 86%
 	- ko: 0%
-	- nl: 82%
-	- no: 82%
-	- pl: 82%
-	- pt-BR: 89%
-	- pt-PT: 89%
-	- ro: 94%
+	- nl: 88%
+	- no: 88%
+	- pl: 88%
+	- pt-BR: 95%
+	- pt-PT: 95%
+	- ro: 100%
 	- ru: 100%
 	- sr: 0%
-	- sv-SE: 94%
+	- sv-SE: 100%
 	- tr: 0%
 	- vi: 0%
-	- zh-CN: 72%
+	- zh-CN: 78%
 	- zh-TW: 0%
 Approved:
 	- af: 0%

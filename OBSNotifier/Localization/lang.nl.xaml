@@ -96,6 +96,8 @@ of het geregistreerde pad naar {0} komt niet overeen met het pad van het huidige
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Proberen opnieuw te verbinden</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Map openen</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Bestand openen</v:String>
     <v:String x:Key="notification_events_preview">Voorvertoning melding</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Enige beschrijving</v:String>
     <v:String x:Key="notification_events_connected">Verbonden</v:String>

@@ -96,6 +96,8 @@ avsluttes (når vinduet Innstillinger er lukket)</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Prøver å gjenopprette tilkobling</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Åpne mappe</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Åpne fil</v:String>
     <v:String x:Key="notification_events_preview">Forhåndsvis varsel</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">En beskrivelse</v:String>
     <v:String x:Key="notification_events_connected">Tilkoblet</v:String>

@@ -1,0 +1,38 @@
+name: ↗️ Update translations from the community
+run-name: "Update on '${{github.ref_name}}' '${{github.sha}}' #${{github.run_number}}"
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  update:
+    name: Update Translations
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+      
+      - name: Crowdin Action
+        uses: crowdin/github-action@v1
+        with:
+          download_translations: true
+          command: status
+          command_args: "--no-progress > OBSNotifier/Localization/localization_status.txt"
+        env:
+          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      
+      - name: Commit report
+        run: |
+          git config --global user.name 'Auto Updater'
+          git config --global user.email 'auto-updater@users.noreply.github.com'
+          git diff
+          echo "# Changed files:" >> $GITHUB_STEP_SUMMARY
+          git diff --name-only >> $GITHUB_STEP_SUMMARY
+          git add -A
+          git commit -am "[CI] ↗️ Updated Localization"
+          git push

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace OBSNotifier
@@ -17,6 +18,7 @@ namespace OBSNotifier
             this.textBoxDescription.Text = AssemblyDescription;
 
             link_source_code.Text = Utils.Tr("about_window_view_source_code");
+            RightToLeft = Thread.CurrentThread.CurrentUICulture.TextInfo.IsRightToLeft? RightToLeft.Yes : RightToLeft.No;
         }
 
         #region Assembly Attribute Accessors

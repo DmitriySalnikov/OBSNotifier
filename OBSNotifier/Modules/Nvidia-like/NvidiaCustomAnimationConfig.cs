@@ -3,12 +3,13 @@ using System.Windows.Media;
 
 namespace OBSNotifier.Modules.NvidiaLike
 {
-    class CustomAnimationConfig
+    class NvidiaCustomAnimationConfig
     {
         uint duration;
         double iconHeight;
         double scale;
         double lineWidth;
+        double openFileOffset;
 
         [ConfigIgnore]
         public uint Duration { get { return duration; } set { duration = Math.Max(0, value); } }
@@ -28,12 +29,14 @@ namespace OBSNotifier.Modules.NvidiaLike
         public double Scale { get => scale; set => scale = Math.Max(0.001, value); }
 
         public uint MaxPathChars { get; set; }
-        public bool ShowQuickActionsOnFileSave { get; set; }
+        public bool ShowQuickActions { get; set; }
+        public bool ShowQuickActionsColoredLine { get; set; }
+        public double QuickActionsOffset { get => openFileOffset; set => openFileOffset = Math.Max(0, value); }
 
         public double IconHeight { get => iconHeight; set => iconHeight = Math.Max(0, value); }
         public string IconPath { get; set; }
 
-        public CustomAnimationConfig()
+        public NvidiaCustomAnimationConfig()
         {
             Duration = 2500;
             IsOnRightSide = false;
@@ -50,13 +53,15 @@ namespace OBSNotifier.Modules.NvidiaLike
             Scale = 1.0;
 
             MaxPathChars = 32;
-            ShowQuickActionsOnFileSave = false;
+            ShowQuickActions = true;
+            ShowQuickActionsColoredLine = true;
+            QuickActionsOffset = 8.0;
 
             IconHeight = 64;
             IconPath = "INVALID_PATH";
         }
 
-        public bool IsAnimParamsEqual(CustomAnimationConfig b)
+        public bool IsAnimParamsEqual(NvidiaCustomAnimationConfig b)
         {
             if (b == null)
                 return false;
@@ -69,9 +74,9 @@ namespace OBSNotifier.Modules.NvidiaLike
                 LineWidth.Equals(b.LineWidth);
         }
 
-        public CustomAnimationConfig Duplicate()
+        public NvidiaCustomAnimationConfig Duplicate()
         {
-            return new CustomAnimationConfig()
+            return new NvidiaCustomAnimationConfig()
             {
                 Duration = this.Duration,
                 IsOnRightSide = this.IsOnRightSide,
@@ -88,7 +93,9 @@ namespace OBSNotifier.Modules.NvidiaLike
                 Scale = this.Scale,
 
                 MaxPathChars = this.MaxPathChars,
-                ShowQuickActionsOnFileSave = this.ShowQuickActionsOnFileSave,
+                ShowQuickActions = this.ShowQuickActions,
+                ShowQuickActionsColoredLine = this.ShowQuickActionsColoredLine,
+                QuickActionsOffset = this.QuickActionsOffset,
 
                 IconHeight = this.IconHeight,
                 IconPath = this.IconPath,

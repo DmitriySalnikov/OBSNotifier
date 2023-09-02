@@ -79,6 +79,8 @@
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Trying to reconnect</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Open folder</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Open file</v:String>
     <v:String x:Key="notification_events_preview">Preview Notification</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Some description</v:String>
     <v:String x:Key="notification_events_connected">Connected to OBS</v:String>

@@ -96,6 +96,8 @@ tai rekisteröityä polkua {0} ei vastaa nykyistä ohjelmapolkua.</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Yritetään yhdistää uudelleen</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Avaa kansio</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Avaa tiedosto</v:String>
     <v:String x:Key="notification_events_preview">Esikatsele Ilmoituksia</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Joitakin kuvauksia</v:String>
     <v:String x:Key="notification_events_connected">Yhdistetty</v:String>

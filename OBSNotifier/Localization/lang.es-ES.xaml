@@ -96,6 +96,8 @@ o la ruta registrada a {0} no coincide con la ruta actual del programa.</v:Strin
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Intentando reconectar</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Abrir carpeta</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Abrir archivo</v:String>
     <v:String x:Key="notification_events_preview">Vista previa de notificación</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Alguna descripción</v:String>
     <v:String x:Key="notification_events_connected">Conectado</v:String>

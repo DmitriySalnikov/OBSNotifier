@@ -96,6 +96,8 @@ nebo registrovaná cesta k {0} neodpovídá aktuální cestě programu.</v:Strin
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Pokus o opětovné připojení</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Otevřít složku</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Otevřít soubor</v:String>
     <v:String x:Key="notification_events_preview">Náhled oznámení</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Nějaký popis</v:String>
     <v:String x:Key="notification_events_connected">Připojeno</v:String>

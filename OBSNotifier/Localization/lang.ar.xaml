@@ -96,6 +96,8 @@ After that, {0} will automatically start with OBS.</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">محاولة إعادة الاتصال</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">فتح المجلد</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">فتح الملف</v:String>
     <v:String x:Key="notification_events_preview">معاينة الإشعار</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">بعض الوصف</v:String>
     <v:String x:Key="notification_events_connected">متصل</v:String>

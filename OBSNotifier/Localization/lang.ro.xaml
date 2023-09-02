@@ -96,6 +96,8 @@ sau calea înregistrată la {0} nu se potrivește cu calea curentă a programulu
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Se încearcă reconectarea</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Deschide dosarul</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Deschide fișier</v:String>
     <v:String x:Key="notification_events_preview">Previzualizare notificare</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Unele descrieri</v:String>
     <v:String x:Key="notification_events_connected">Conectat</v:String>

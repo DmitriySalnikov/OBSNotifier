@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -29,6 +30,8 @@ namespace OBSNotifier
                 lb_notifs.Items.Add(cb);
                 activeNotifications.Add(e.Key, cb);
             }
+
+            FlowDirection = Thread.CurrentThread.CurrentUICulture.TextInfo.IsRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
         }
 
         void UpdateValues(NotificationType notifs)

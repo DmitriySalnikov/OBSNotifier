@@ -1,6 +1,7 @@
 ﻿<Application x:Class="OBSNotifier.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:OBSNotifier.Modules.UserControls"
              x:ClassModifier="internal"
              ShutdownMode="OnExplicitShutdown"
              Startup="Application_Startup"
@@ -11,6 +12,8 @@
                 <ResourceDictionary Source="Localization/lang.xaml" />
                 <ResourceDictionary Source="Localization/lang_modules.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:BrushToColorConverter x:Key="BrushToColorConverter" />
+            <converters:InverseAlignmentConverter x:Key="InverseAlignmentConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

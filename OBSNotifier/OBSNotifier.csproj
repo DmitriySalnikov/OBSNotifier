@@ -97,6 +97,10 @@
     <Compile Include="AutostartScriptManager.cs" />
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Modules\UserControls\Converters.cs" />
+    <Compile Include="Modules\UserControls\OpenFileActions.xaml.cs">
+      <DependentUpon>OpenFileActions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Modules\Default\DefaultCustomNotifBlockSettings.cs" />
     <Compile Include="Modules\Default\DefaultNotification.cs" />
@@ -104,7 +108,7 @@
       <DependentUpon>DefaultNotificationBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modules\IOBSNotifierModule.cs" />
-    <Compile Include="Modules\Nvidia-like\CustomAnimationConfig.cs" />
+    <Compile Include="Modules\Nvidia-like\NvidiaCustomAnimationConfig.cs" />
     <Compile Include="Modules\Nvidia-like\NvidiaNotification.cs" />
     <Compile Include="Modules\Nvidia-like\NvidiaNotificationWindow.xaml.cs">
       <DependentUpon>NvidiaNotificationWindow.xaml</DependentUpon>
@@ -360,6 +364,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Modules\Nvidia-like\NvidiaNotificationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Modules\UserControls\OpenFileActions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

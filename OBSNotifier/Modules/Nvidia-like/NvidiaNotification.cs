@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.Windows;
 
 namespace OBSNotifier.Modules.NvidiaLike
 {
-    [Export(typeof(IOBSNotifierModule))]
     public partial class NvidiaNotification : IOBSNotifierModule
     {
         internal enum Positions
@@ -27,7 +25,7 @@ namespace OBSNotifier.Modules.NvidiaLike
         OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
         {
             UseSafeDisplayArea = true,
-            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nShowQuickActionsOnFileSave = True\nIconHeight = 64.0\nIconPath = INVALID_PATH",
+            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nShowQuickActions = True\nShowQuickActionsColoredLine = True\nQuickActionsOffset = 8.0\nIconHeight = 64.0\nIconPath = INVALID_PATH",
             Option = Positions.TopRight,
             Offset = new Point(0, 0.1),
             OnScreenTime = 3000,
@@ -108,7 +106,7 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public string GetFixedAdditionalData()
         {
-            return Utils.ConfigFixString<CustomAnimationConfig>(_moduleSettings.AdditionalData);
+            return Utils.ConfigFixString<NvidiaCustomAnimationConfig>(_moduleSettings.AdditionalData);
         }
 
         public void Log(string txt)

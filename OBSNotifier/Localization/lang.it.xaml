@@ -96,6 +96,8 @@ o al percorso registrato di {0} non corrisponde al percorso del programma corren
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Tentativo di riconnettersi</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Apri cartella</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Apri file</v:String>
     <v:String x:Key="notification_events_preview">Notifica Anteprima</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Qualche descrizione</v:String>
     <v:String x:Key="notification_events_connected">Connesso</v:String>

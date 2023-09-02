@@ -3,6 +3,13 @@ name: .NET Desktop
 on:
   push:
     branches: ["master"]
+    paths:
+      [
+        .github/**,
+        "!.github/**/util_*",
+        OBSNotifier/**,
+        OBSNotifier.sln,
+      ]
   pull_request:
     branches: ["master"]
 
@@ -51,6 +58,7 @@ jobs:
   push_translation:
     name: Update localization sources
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout
@@ -62,8 +70,6 @@ jobs:
         uses: crowdin/github-action@v1
         with:
           upload_sources: true
-          upload_translations: false
-          download_translations: false
         env:
           CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
           CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}

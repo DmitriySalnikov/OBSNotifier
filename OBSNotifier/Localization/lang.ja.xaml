@@ -96,6 +96,8 @@ or the registred path to {0} does not match the current program path.</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">再接続中char@@0</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">フォルダを開く</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">ファイルを開く</v:String>
     <v:String x:Key="notification_events_preview">通知をプレビュー</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">いくつかの説明</v:String>
     <v:String x:Key="notification_events_connected">接続しました</v:String>

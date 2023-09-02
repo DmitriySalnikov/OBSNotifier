@@ -2,13 +2,13 @@
 
 <img src="Images/obs_notifier.png"/>
 
-[![Crowdin](https://badges.crowdin.net/obs-notifier/localized.svg)](https://crowdin.com)
+[![Crowdin](https://badges.crowdin.net/obs-notifier/localized.svg)](https://crowdin.com/project/obs-notifier)
 
 This is a simple program for displaying notifications from OBS on your desktop.
 
 * Currently only Windows is supported.
 * Does not display notifications in the form of overlays (such applications are usually banned in game anti-cheats).
-* This program will be useful if you have multiple monitors, or if your game/application is not running in full-screen mode. (You can also create a plugin with sound alerts.)
+* This program will be useful if you have multiple monitors, or if your game/application is not running in full-screen mode.
 
 ## Features
 

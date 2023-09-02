@@ -96,6 +96,8 @@ ou le chemin enregistré vers {0} ne correspond pas au chemin du programme actue
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Tentative de reconnexion</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Ouvrir le dossier</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Ouvrir le fichier</v:String>
     <v:String x:Key="notification_events_preview">Aperçu de la notification</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Une description</v:String>
     <v:String x:Key="notification_events_connected">Connecté</v:String>

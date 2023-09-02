@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.Windows;
 
 namespace OBSNotifier.Modules.Default
 {
-    [Export(typeof(IOBSNotifierModule))]
     internal partial class DefaultNotification : IOBSNotifierModule
     {
         internal enum Positions

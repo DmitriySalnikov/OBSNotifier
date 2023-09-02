@@ -96,6 +96,8 @@ eller den registrerade sökvägen till {0} matchar inte den aktuella sökvägen 
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Försöker återansluta</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Öppna mapp</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Öppna fil</v:String>
     <v:String x:Key="notification_events_preview">Förhandsgranska avisering</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Lite beskrivning</v:String>
     <v:String x:Key="notification_events_connected">Ansluten</v:String>

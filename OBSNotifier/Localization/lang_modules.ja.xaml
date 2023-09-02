@@ -4,12 +4,12 @@
  instead of \n -->
     
     <!-- Default Module -->
-    <v:String x:Key="default_module_name">Stack of notifications</v:String>
-    <v:String x:Key="default_module_desc">This is the default notification module.
-It displays one or more notifications located in the corner of the monitor.</v:String>
+    <v:String x:Key="default_module_name">多数の通知</v:String>
+    <v:String x:Key="default_module_desc">これは、デフォルトの通知モジュールです。
+モニターの隅にある1つ以上の通知を表示します。</v:String>
 
     <!-- Nvidia-Like Module -->
-    <v:String x:Key="nvidia_like_module_name">Nvidia-Like</v:String>
-    <v:String x:Key="nvidia_like_module_desc">Simple notification similar to Nvidia's notifications</v:String>
+    <v:String x:Key="nvidia_like_module_name">Nvidia-like</v:String>
+    <v:String x:Key="nvidia_like_module_desc">Nvidiaの通知に似たシンプルな通知</v:String>
 
 </ResourceDictionary>

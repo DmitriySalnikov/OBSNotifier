@@ -96,6 +96,8 @@ eller den registrerede sti til {0} matcher ikke den aktuelle programsti.</v:Stri
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Forsøger at genforbinde</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Åbn mappe</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Åbn fil</v:String>
     <v:String x:Key="notification_events_preview">Forhåndsvis Notifikation</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Nogle beskrivelser</v:String>
     <v:String x:Key="notification_events_connected">Forbundet</v:String>

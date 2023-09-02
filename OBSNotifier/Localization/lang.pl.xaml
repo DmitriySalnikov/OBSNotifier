@@ -96,6 +96,8 @@ lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Próba ponownego połączenia</v:String>
     
     <!-- Notification Types -->
+    <v:String x:Key="notification_events_file_save_open_folder">Otwórz folder</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Otwórz plik</v:String>
     <v:String x:Key="notification_events_preview">Podgląd powiadomienia</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Opis</v:String>
     <v:String x:Key="notification_events_connected">Połączono</v:String>

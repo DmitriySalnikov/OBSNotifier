@@ -3,14 +3,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace OBSNotifier.Modules.UserControls
 {
     /// <summary>
     /// Interaction logic for OpenFileOverlayActions.xaml
     /// </summary>
-    public partial class OpenFileOverlayActions : UserControl
+    public partial class OpenFileActions : UserControl
     {
+        public static readonly DependencyProperty ForegroundElementsColorProperty = DependencyProperty.Register("ForegroundElementsColor", typeof(Brush), typeof(OpenFileActions), new FrameworkPropertyMetadata(new SolidColorBrush(Colors.White), FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.SubPropertiesDoNotAffectRender));
+        public Brush ForegroundElementsColor
+        {
+            get => (Brush)GetValue(ForegroundElementsColorProperty);
+            set => SetValue(ForegroundElementsColorProperty, value);
+        }
+
         string filePath = null;
         public string FilePath
         {
@@ -31,7 +39,7 @@ namespace OBSNotifier.Modules.UserControls
 
         public bool IsPreview { get; set; } = false;
 
-        public OpenFileOverlayActions()
+        public OpenFileActions()
         {
             InitializeComponent();
         }
