@@ -5,70 +5,71 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">错误</v:String>
-    <v:String x:Key="message_box_app_already_running">此应用程序的实例已在运行。
-应用程序将被关闭。</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} 已经在运行。。
+此应用程序实例将被关闭。</v:String>
     <v:String x:Key="message_box_app_already_running_title">应用程序已在运行</v:String>
-    <v:String x:Key="message_box_app_auth_failed">身份验证失败</v:String>
-    <v:String x:Key="message_box_version_check_new_version_available">Current version: {0}
-New version: {1}
-Would you like to go to the download page?
-
-Select 'No' to skip this version.</v:String>
+    <v:String x:Key="message_box_app_auth_failed">鉴权失败/密码错误</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">当前版本:{0} 
+新版本 :{1}
+你想转到下载页面吗？
+选择“否”跳过此版本。</v:String>
     <v:String x:Key="message_box_version_check_new_version_available_title">{0} 的新版本可用</v:String>
     <v:String x:Key="message_box_version_check_latest_version">您正在使用最新版本： {0}</v:String>
-    <v:String x:Key="message_box_version_check_failed_request">请求新版本信息失败。</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">获取新版本信息失败。</v:String>
     <v:String x:Key="message_box_version_check_failed_parse_info">无法获取关于新版本的信息。</v:String>
     <v:String x:Key="message_box_version_check_failed_to_check">检查更新失败。</v:String>
     <v:String x:Key="message_box_autostart_script_title">完成配置</v:String>
     <v:String x:Key="message_box_autostart_script_created">自动启动脚本创建成功！</v:String>
     <v:String x:Key="message_box_autostart_script_updated">自动启动脚本更新成功！</v:String>
     <v:String x:Key="message_box_autostart_script_path_copied">文件的路径已复制到剪贴板。</v:String>
-    <v:String x:Key="message_box_autostart_script_already_added">If you have already added a script to OBS before, you can safely close this message.
-If not, follow the instructions below.</v:String>
-    <v:String x:Key="message_box_autostart_script_need_to_add">现在你需要将它添加到OBS。</v:String>
-    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
-Tools -&gt; Scripts.
-Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+    <v:String x:Key="message_box_autostart_script_already_added">如果您之前已经向OBS添加了脚本，则可以安全地关闭此消息。
 
-Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+如果没有，请按照以下说明进行操作。</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">现在你需要将它添加到OBS的脚本库。</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">您需要打开OBS并转到脚本设置窗口。
 
-After that, {0} will automatically start with OBS.</v:String>
+工具-&gt;脚本。
+
+然后单击+按钮，将剪贴板中的路径粘贴到“文件名”字段中，并删除AppData\Roaming\OBSNotifier\obs_notifier_autostart.lua中的obs_notifier_autostart.lua字符
+在进入到文件夹后手动选择obs_notifier_autostart.lua脚本添加到OBS脚本列表中，此后请回到
+OBS脚本管理列表中将obs_notifier_autostart.lua在右侧打上勾√启用它
+
+之后，{0}工具将会伴随OBS启动。</v:String>
 
     <!-- About Window -->
     <v:String x:Key="about_window_description">这是一个显示 OBS 通知的程序。 为了使这个程序发挥作用，您需要安装OBS版本28+，并安装内置的 'obs-websocket' 版本 5+。</v:String>
     <v:String x:Key="about_window_view_source_code">查看源代码</v:String>
 
     <!-- Settings Window -->
-    <v:String x:Key="settings_window_top_hint">为了使这个应用程序能够工作，您需要连接到 obs-websocket 插件。</v:String>
-    <v:String x:Key="settings_window_server_address_label">服务器地址：</v:String>
-    <v:String x:Key="settings_window_password_label">密码：</v:String>
+    <v:String x:Key="settings_window_top_hint">为了使这个应用程序能够工作，您需要打开并连接到 obs-websocket 它就在工具的选项菜单里</v:String>
+    <v:String x:Key="settings_window_server_address_label">WebSocket服务器地址：</v:String>
+    <v:String x:Key="settings_window_password_label">服务器密码：</v:String>
     <v:String x:Key="settings_window_password_warning">密码将保存到本地文件</v:String>
     <v:String x:Key="settings_window_connect_button_connect">连接</v:String>
     <v:String x:Key="settings_window_connect_button_disconnect">断开连接</v:String>
-    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">正在尝试重新连接... 取消？</v:String>
-    <v:String x:Key="settings_window_run_with_windows">在 Windows 启动时运行</v:String>
-    <v:String x:Key="settings_window_run_with_windows_admin_error">(unavailable due to an error.
-Try to run as administrator)</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">正在尝试重新连接/单击取消</v:String>
+    <v:String x:Key="settings_window_run_with_windows">开机启动</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(由于未知错误而不可用。尝试以管理员身份运行)</v:String>
     <v:String x:Key="settings_window_run_with_windows_different_path">(现在使用不同的路径)</v:String>
     <v:String x:Key="settings_window_run_with_obs_hint">创建或更新脚本以自动运行程序。</v:String>
     <v:String x:Key="settings_window_run_with_obs_hint_outdated">脚本不匹配当前版本，
 或 {0} 注册路径与当前程序路径不匹配。</v:String>
     <v:String x:Key="settings_window_run_with_obs_button">从OBS开始</v:String>
-    <v:String x:Key="settings_window_run_with_obs_button_outdated">(脚本已过时)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(脚本已过时/失效)</v:String>
     <v:String x:Key="settings_window_close_on_obs_exit">退出OBS
 时关闭此程序 (设置窗口关闭时)</v:String>
     <v:String x:Key="settings_window_notification_settings">通知设置</v:String>
-    <v:String x:Key="settings_window_preview">预览</v:String>
+    <v:String x:Key="settings_window_preview">预览通知提示位置</v:String>
     <v:String x:Key="settings_window_screen_label">屏幕：</v:String>
-    <v:String x:Key="settings_window_module_label">模块：</v:String>
+    <v:String x:Key="settings_window_module_label">通知样式模块：</v:String>
     <v:String x:Key="settings_window_select_active_notifications_button">选择活动通知</v:String>
     <v:String x:Key="settings_window_use_safe_zone">使用安全显示区域
 (没有任务栏和其他面板)</v:String>
-    <v:String x:Key="settings_window_style_options_label">样式选项：</v:String>
-    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
-    <v:String x:Key="settings_window_reset_center_hint">重置为中心</v:String>
+    <v:String x:Key="settings_window_style_options_label">选择通知在屏幕的左侧或右侧</v:String>
+    <v:String x:Key="settings_window_reset_hint">重置</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">重置到中心</v:String>
     <v:String x:Key="settings_window_fix_config_hint">修复配置</v:String>
-    <v:String x:Key="settings_window_position_offset_label">位置偏移量：</v:String>
+    <v:String x:Key="settings_window_position_offset_label">上下/左右位置偏移量：</v:String>
     <v:String x:Key="settings_window_fade_delay_label">淡出延迟 (秒):</v:String>
     <v:String x:Key="settings_window_fade_delay_hint">隐藏通知前延迟</v:String>
     <v:String x:Key="settings_window_additional_label">附加：</v:String>
@@ -77,8 +78,8 @@ Try to run as administrator)</v:String>
     <!-- Active Notifications -->
     <v:String x:Key="active_notifications_title">选择活动通知</v:String>
     <v:String x:Key="active_notifications_select_all">选择所有</v:String>
-    <v:String x:Key="active_notifications_select_none">没有选择</v:String>
-    <v:String x:Key="active_notifications_reset_to_current">重置为当前</v:String>
+    <v:String x:Key="active_notifications_select_none">取消全选</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">重置为保存的设置</v:String>
     <v:String x:Key="active_notifications_reset_to_default">重置为默认值</v:String>
     <v:String x:Key="active_notifications_save">保存</v:String>
 
@@ -93,16 +94,16 @@ Try to run as administrator)</v:String>
     <v:String x:Key="tray_menu_exit">退出</v:String>
     <v:String x:Key="tray_menu_status_connected">已连接</v:String>
     <v:String x:Key="tray_menu_status_not_connected">未连接</v:String>
-    <v:String x:Key="tray_menu_status_trying_to_reconnect">尝试重新连接</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">正在尝试重新连接</v:String>
     
     <!-- Notification Types -->
     <v:String x:Key="notification_events_file_save_open_folder">打开文件夹</v:String>
     <v:String x:Key="notification_events_file_save_open_file">打开文件</v:String>
     <v:String x:Key="notification_events_preview">预览通知</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">一些描述</v:String>
-    <v:String x:Key="notification_events_connected">已连接</v:String>
+    <v:String x:Key="notification_events_connected">已连接到OBS</v:String>
     <v:String x:Key="notification_events_disconnected">从OBS断开连接</v:String>
-    <v:String x:Key="notification_events_lost_connection">失去连接到 OBS</v:String>
+    <v:String x:Key="notification_events_lost_connection">与OBS的连接丢失</v:String>
     <v:String x:Key="notification_events_lost_connection_2nd_line">尝试重新连接</v:String>
     <v:String x:Key="notification_events_replay_started">重播已开始</v:String>
     <v:String x:Key="notification_events_replay_stopped">回放已停止</v:String>
@@ -110,9 +111,9 @@ Try to run as administrator)</v:String>
     <v:String x:Key="notification_events_recording_started">录制已开始</v:String>
     <v:String x:Key="notification_events_recording_stopped">录制已停止</v:String>
     <v:String x:Key="notification_events_recording_paused">录制已暂停</v:String>
-    <v:String x:Key="notification_events_recording_resumed">录制续会</v:String>
-    <v:String x:Key="notification_events_streaming_started">流媒体已开始</v:String>
-    <v:String x:Key="notification_events_streaming_stopped">流已停止</v:String>
+    <v:String x:Key="notification_events_recording_resumed">录制已恢复</v:String>
+    <v:String x:Key="notification_events_streaming_started">流媒体/直播已开始</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">流媒体/直播已停止</v:String>
     <v:String x:Key="notification_events_virtual_camera_started">虚拟摄像机已启动</v:String>
     <v:String x:Key="notification_events_virtual_camera_stopped">虚拟相机已停止</v:String>
     <v:String x:Key="notification_events_scene_switched">已切换场景</v:String>

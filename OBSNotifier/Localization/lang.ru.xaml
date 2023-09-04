@@ -5,7 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Ошибка</v:String>
-    <v:String x:Key="message_box_app_already_running">Экземпляр этого приложения уже запущен.\nПриложение будет закрыто.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} уже запущен.
+Этот экземпляр приложения будет закрыт.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Приложение уже запущено</v:String>
     <v:String x:Key="message_box_app_auth_failed">Ошибка авторизации</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Текущая версия: {0}

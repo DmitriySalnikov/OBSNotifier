@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Σφάλμα</v:String>
-    <v:String x:Key="message_box_app_already_running">Ένα παράδειγμα αυτής της εφαρμογής εκτελείται ήδη.
-Η εφαρμογή θα κλείσει.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} is already running.
+This application instance will be closed.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Η εφαρμογή εκτελείται ήδη</v:String>
     <v:String x:Key="message_box_app_auth_failed">Αποτυχία ταυτοποίησης</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Τρέχουσα έκδοση: {0}

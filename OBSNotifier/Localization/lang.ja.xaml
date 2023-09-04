@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">エラー</v:String>
-    <v:String x:Key="message_box_app_already_running">このアプリケーションのインスタンスは既に実行されています。
-アプリケーションは閉じられます。</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} is already running.
+This application instance will be closed.</v:String>
     <v:String x:Key="message_box_app_already_running_title">アプリケーションは既に実行中です</v:String>
     <v:String x:Key="message_box_app_auth_failed">認証に失敗しました</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">現在のバージョン: {0}

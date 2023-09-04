@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Foutmelding</v:String>
-    <v:String x:Key="message_box_app_already_running">Er is al een exemplaar van deze toepassing actief.
-De applicatie zal worden gesloten.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} is already running.
+This application instance will be closed.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Toepassing wordt al uitgevoerd</v:String>
     <v:String x:Key="message_box_app_auth_failed">Authenticatie mislukt</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Huidige versie: {0}

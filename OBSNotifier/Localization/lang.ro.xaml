@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Eroare</v:String>
-    <v:String x:Key="message_box_app_already_running">O instanță a acestei aplicații rulează deja.
-Aplicația va fi închisă.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} is already running.
+This application instance will be closed.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Aplicația rulează deja</v:String>
     <v:String x:Key="message_box_app_auth_failed">Autentificare eșuată</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Versiunea curentă: {0}
