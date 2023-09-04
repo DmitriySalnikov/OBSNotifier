@@ -91,9 +91,9 @@ namespace OBSNotifier
         [NotificationDescription("notification_events_profile_switched", "notification_events_profile_switched_2nd_line")]
         ProfileSwitched = 1L << 32,
 
-        [NotificationDescription("notification_events_audio_muted", "notification_events_audio_muted_2nd_line")]
+        [NotificationDescription("notification_events_audio_muted", "notification_events_audio_2nd_line")]
         AudioSourceMuted = 1L << 34,
-        [NotificationDescription("notification_events_audio_turned_on", "notification_events_audio_turned_on_2nd_line")]
+        [NotificationDescription("notification_events_audio_turned_on", "notification_events_audio_2nd_line")]
         AudioSourceUnmuted = 1L << 35,
 
         [NotificationDescription("notification_events_screenshot_saved", "{0}", false)]

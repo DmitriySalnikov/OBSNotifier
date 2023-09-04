@@ -54,7 +54,7 @@ internal class VersionCheckerGitHub : IDisposable
         catch (Exception ex)
         {
             if (!_isSilentCheck)
-                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_request")}\n{ex.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_request")}\n{ex.Message}", Utils.Tr("message_box_error_title"));
             ClearUpdateData();
         }
     }
@@ -64,7 +64,7 @@ internal class VersionCheckerGitHub : IDisposable
         if (e.Error is WebException webExp)
         {
             if (!_isSilentCheck)
-                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_parse_info")}\n{webExp.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_parse_info")}\n{webExp.Message}", Utils.Tr("message_box_error_title"));
 
             ClearUpdateData();
             return;
@@ -110,7 +110,7 @@ internal class VersionCheckerGitHub : IDisposable
             // Don't show this on startup
             if (!_isSilentCheck)
             {
-                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_to_check")}\n{ex.Message}");
+                ShowMessageBox($"{Utils.Tr("message_box_version_check_failed_to_check")}\n{ex.Message}", Utils.Tr("message_box_error_title"));
             }
         }
 
