@@ -83,7 +83,7 @@ namespace OBSNotifier
                 ChangeLanguageResourceDictionaries(value, "Localization/lang");
                 ChangeLanguageResourceDictionaries(value, "Localization/lang_modules");
 
-                LanguageChanged(Current, new EventArgs());
+                LanguageChanged?.Invoke(Current, new EventArgs());
             }
         }
 

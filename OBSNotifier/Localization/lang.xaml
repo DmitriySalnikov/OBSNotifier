@@ -4,7 +4,7 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Error</v:String>
-    <v:String x:Key="message_box_app_already_running">An instance of this application is already running.&#10;The application will be closed.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} is already running.&#10;This application instance will be closed.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Application is already running</v:String>
     <v:String x:Key="message_box_app_auth_failed">Authentication failed</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Current version: {0}&#10;New version: {1}&#10;Would you like to go to the download page?&#10;&#10;Select 'No' to skip this version.</v:String>

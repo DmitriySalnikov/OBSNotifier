@@ -70,10 +70,18 @@ namespace OBSNotifier
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
+            // Initialize Settings
+            Settings.Load();
+
+            LanguageChanged += App_LanguageChanged;
+            var start_ui_lang = Thread.CurrentThread.CurrentUICulture;
+            Thread.CurrentThread.CurrentUICulture = DefaultLanguage;
+            SelectLanguageOnStart(start_ui_lang);
+
             if (!mutex.WaitOne(0, false))
             {
                 if (!Environment.CommandLine.Contains("--force_close"))
-                    ShowMessageBox(Utils.Tr("message_box_app_already_running"), Utils.Tr("message_box_app_already_running_title"));
+                    ShowMessageBox(Utils.TrFormat("message_box_app_already_running", AppNameSpaced), Utils.Tr("message_box_app_already_running_title"));
 
                 mutex.Dispose();
                 mutex = null;
@@ -84,8 +92,6 @@ namespace OBSNotifier
             }
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-            var start_ui_lang = Thread.CurrentThread.CurrentUICulture;
-            Thread.CurrentThread.CurrentUICulture = DefaultLanguage;
 
             logger = new Logger("logs/log.txt");
 
@@ -109,10 +115,6 @@ namespace OBSNotifier
             obs.Disconnected += Obs_Disconnected;
             obs.ExitStarted += Obs_ExitStarted;
 
-            LanguageChanged += App_LanguageChanged;
-
-            // Initialize Settings
-            Settings.Load();
             modules = new ModuleManager();
             notifications = new NotificationManager(this, obs);
 
@@ -131,7 +133,6 @@ namespace OBSNotifier
 
             // Update old settings
             Settings.Instance.PatchSavedSettings();
-            SelectLanguageOnStart(start_ui_lang);
 
             // Create tray icon
             trayIcon = new System.Windows.Forms.NotifyIcon();
@@ -286,8 +287,6 @@ namespace OBSNotifier
                 if (Languages.Contains(start_ui_info))
                 {
                     Language = start_ui_info;
-                    Settings.Instance.Language = Language;
-                    Settings.Instance.Save();
                 }
                 // Find a similar language
                 else
@@ -297,8 +296,6 @@ namespace OBSNotifier
                     if (similarLang != null)
                     {
                         Language = similarLang;
-                        Settings.Instance.Language = similarLang;
-                        Settings.Instance.Save();
                     }
                 }
             }
