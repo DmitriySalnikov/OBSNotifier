@@ -10,21 +10,30 @@ jobs:
     name: Update Translations
     runs-on: ubuntu-latest
 
+    env:
+      CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
+      CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
           lfs: true
       
-      - name: Crowdin Action
-        uses: crowdin/github-action@v1
-        with:
-          download_translations: true
-          command: status
-          command_args: "--no-progress > OBSNotifier/Localization/localization_status.txt"
-        env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+      - name: Crowdin Install
+        run: |
+          wget https://artifacts.crowdin.com/repo/deb/crowdin3.deb -O ../crowdin.deb
+          sudo dpkg -i ../crowdin.deb
+      
+      - name: Crowdin Download
+        run: |
+          crowdin pull --no-progress
+      
+      - name: Crowdin Status to file
+        run: |
+          crowdin status --no-progress > OBSNotifier/Localization/localization_status.txt
       
       - name: Commit report
         run: |
@@ -35,4 +44,9 @@ jobs:
           git diff --name-only >> $GITHUB_STEP_SUMMARY
           git add -A
           git commit -am "[CI] ↗️ Updated Localization"
-          git push
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PUSH_TOKEN }}
+          branch: ${{ github.ref }}
