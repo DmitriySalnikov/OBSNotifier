@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Virhe</v:String>
-    <v:String x:Key="message_box_app_already_running">{0} is already running.
-This application instance will be closed.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} on jo käynnissä.
+Tämä sovelluksen instanssi suljetaan.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Sovellus on jo käynnissä</v:String>
     <v:String x:Key="message_box_app_auth_failed">Todennus epäonnistui</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Nykyinen versio: {0}

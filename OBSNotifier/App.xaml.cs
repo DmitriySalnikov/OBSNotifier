@@ -171,6 +171,18 @@ namespace OBSNotifier
             catch (Exception ex) { logger.Write("The SkipVersion string for the updater could not be parsed."); logger.Write(ex.Message); }
 
             versionCheckerGitHub.CheckForUpdates(true);
+
+            // Debug print all languages
+#if false
+            Log(string.Join(", ", TranslationProgress
+                .OrderBy((i)=> new CultureInfo(i.Key).EnglishName)
+                .OrderByDescending((i) => i.Value.Height)
+                .OrderByDescending((i)=>i.Value.Width)
+                .Select((i)=> new CultureInfo(i.Key).EnglishName)
+                .Prepend(DefaultLanguage.EnglishName)
+                .Take(8))
+                + $" and {Languages.Count - 8} other languages");
+#endif
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

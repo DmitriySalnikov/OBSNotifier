@@ -21,7 +21,7 @@ This is a simple program for displaying notifications from OBS on your desktop.
 * Nvidia-like plugin out of the box
 * Ability to choose which types of notifications to display
 * Ability to quickly open saved files
-* Multi-language support
+* Multi-language support (English, Chinese (Simplified, China), Russian, Czech, Danish, Finnish, German, Italian and 21 other languages)
 
 ## [Download](https://github.com/DmitriySalnikov/OBSNotifier/releases/latest)
 

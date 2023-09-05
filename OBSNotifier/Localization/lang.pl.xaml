@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Błąd</v:String>
-    <v:String x:Key="message_box_app_already_running">{0} is already running.
-This application instance will be closed.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} jest już uruchomiony.
+Ta instancja aplikacji zostanie zamknięta.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Aplikacja jest już uruchomiona</v:String>
     <v:String x:Key="message_box_app_auth_failed">Uwierzytelnianie nie powiodło się</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Aktualna wersja: {0}

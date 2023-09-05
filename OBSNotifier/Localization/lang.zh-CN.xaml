@@ -30,9 +30,9 @@
 
 工具-&gt;脚本。
 
-然后单击+按钮，将剪贴板中的路径粘贴到“文件名”字段中，并删除AppData\Roaming\OBSNotifier\obs_notifier_autostart.lua中的obs_notifier_autostart.lua字符
-在进入到文件夹后手动选择obs_notifier_autostart.lua脚本添加到OBS脚本列表中，此后请回到
-OBS脚本管理列表中将obs_notifier_autostart.lua在右侧打上勾√启用它
+然后单击+按钮，将剪贴板中的路径粘贴到“文件名”字段中然后确定并回到OBS脚本客户端检查是否已经出现脚本，如果已经添加进去那么操作就成功了。
+
+右面的选项是以低优先级启动请根据自己的情况进行启用
 
 之后，{0}工具将会伴随OBS启动。</v:String>
 

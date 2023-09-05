@@ -5,8 +5,8 @@
     
     <!-- Message Boxes -->
     <v:String x:Key="message_box_error_title">Chyba</v:String>
-    <v:String x:Key="message_box_app_already_running">{0} is already running.
-This application instance will be closed.</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} je již spuštěn.
+Tato instance aplikace bude uzavřena.</v:String>
     <v:String x:Key="message_box_app_already_running_title">Aplikace je již spuštěna</v:String>
     <v:String x:Key="message_box_app_auth_failed">Ověření se nezdařilo</v:String>
     <v:String x:Key="message_box_version_check_new_version_available">Aktuální verze: {0}
