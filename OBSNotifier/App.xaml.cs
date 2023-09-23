@@ -47,7 +47,7 @@ namespace OBSNotifier
         static CancellationTokenSource reconnectCancellationToken;
         static bool isNeedToSkipDisconnectErrorPrinting = false;
 
-        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier", AppName);
+        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier", AppName, ShowMessageBoxForVersionCheck);
         SettingsWindow settingsWindow;
         AboutBox1 aboutBox;
 
@@ -163,14 +163,7 @@ namespace OBSNotifier
 
             UpdateTrayStatus();
 
-            versionCheckerGitHub.MessageBoxShown += VersionCheckerGitHub_MessageBoxShown;
-            versionCheckerGitHub.VersionSkippedByUser += VersionCheckerGitHub_VersionSkippedByUser;
-
-            // Get SkipVersion for updater
-            try { versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion); }
-            catch (Exception ex) { logger.Write("The SkipVersion string for the updater could not be parsed."); logger.Write(ex.Message); }
-
-            versionCheckerGitHub.CheckForUpdates(true);
+            SetupVersionChecker(true);
 
             // Debug print all languages
 #if false
@@ -225,6 +218,83 @@ namespace OBSNotifier
 
             Settings.Instance?.Save(true);
             mutex?.Dispose();
+        }
+
+        internal void SetupVersionChecker(bool isSilent = true)
+        {
+            versionCheckerGitHub.VersionSkippedByUser += (s, e) =>
+            {
+                Settings.Instance.SkipVersion = e.SkippedVersion.ToString();
+                Settings.Instance.Save();
+            };
+
+            // Get SkipVersion for updater
+            try
+            {
+                versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion);
+            }
+            catch (Exception ex)
+            {
+                logger.Write("The SkipVersion string for the updater could not be parsed.");
+                logger.Write(ex.Message);
+            }
+
+            versionCheckerGitHub.CheckForUpdates(isSilent);
+        }
+
+        static VersionCheckerGitHub.MSGDialogResult ShowMessageBoxForVersionCheck(VersionCheckerGitHub.MSGType type, Dictionary<string, string> customData, Exception ex)
+        {
+            string text = "";
+            string caption = "";
+            MessageBoxImage icon = MessageBoxImage.None;
+            MessageBoxButton buttons = MessageBoxButton.OK;
+
+            switch (type)
+            {
+                case VersionCheckerGitHub.MSGType.InfoUpdateAvailable:
+                    text = Utils.TrFormat("message_box_version_check_new_version_available", customData["current_version"], customData["new_version"]);
+                    caption = Utils.TrFormat("message_box_version_check_new_version_available_title", AppNameSpaced);
+                    icon = MessageBoxImage.Information;
+                    buttons = MessageBoxButton.YesNoCancel;
+                    break;
+                case VersionCheckerGitHub.MSGType.InfoUsingLatestVersion:
+                    text = Utils.TrFormat("message_box_version_check_latest_version", customData["current_version"]);
+                    caption = Utils.Tr("message_box_error_title");
+                    icon = MessageBoxImage.Information;
+                    break;
+                case VersionCheckerGitHub.MSGType.FailedToRequestInfo:
+                    text = $"{Utils.Tr("message_box_version_check_failed_request")}\n\n{ex.Message}";
+                    caption = Utils.Tr("message_box_error_title");
+                    icon = MessageBoxImage.Error;
+                    break;
+                case VersionCheckerGitHub.MSGType.FailedToGetInfo:
+                    text = $"{Utils.Tr("message_box_version_check_failed_parse_info")}\n\n{ex.Message}";
+                    caption = Utils.Tr("message_box_error_title");
+                    icon = MessageBoxImage.Error;
+                    break;
+                case VersionCheckerGitHub.MSGType.FailedToProcessData:
+                    text = $"{Utils.Tr("message_box_version_check_failed_to_check")}\n\n{ex.Message}";
+                    caption = Utils.Tr("message_box_error_title");
+                    icon = MessageBoxImage.Error;
+                    break;
+            }
+
+            MessageBoxResult res = MessageBox.Show(text, caption, buttons, icon, MessageBoxResult.Cancel);
+
+            switch (res)
+            {
+                case MessageBoxResult.None:
+                    return VersionCheckerGitHub.MSGDialogResult.OK;
+                case MessageBoxResult.OK:
+                    return VersionCheckerGitHub.MSGDialogResult.OK;
+                case MessageBoxResult.Cancel:
+                    return VersionCheckerGitHub.MSGDialogResult.Cancel;
+                case MessageBoxResult.Yes:
+                    return VersionCheckerGitHub.MSGDialogResult.Yes;
+                case MessageBoxResult.No:
+                    return VersionCheckerGitHub.MSGDialogResult.No;
+            }
+            return VersionCheckerGitHub.MSGDialogResult.Cancel;
         }
 
         void Menu_ShowAboutWindow(object sender, EventArgs e)
@@ -613,17 +683,6 @@ namespace OBSNotifier
                 StopReconnection();
                 this.InvokeAction(() => Shutdown());
             }
-        }
-
-        private void VersionCheckerGitHub_VersionSkippedByUser(object sender, VersionCheckerGitHub.VersionSkipByUserData e)
-        {
-            Settings.Instance.SkipVersion = e.SkippedVersion.ToString();
-            Settings.Instance.Save();
-        }
-
-        private void VersionCheckerGitHub_MessageBoxShown(object sender, VersionCheckerGitHub.ShowMessageBoxEventData e)
-        {
-            logger?.Write($"MessageBox shown. Text: '{e.Message}', Caption: '{e.Caption}', Button: '{e.Button}', Icon: '{e.Icon}', DefaultResult: '{e.DefaultResult}', Options: '{e.Options}', Result: '{e.Result}'");
         }
     }
 }
