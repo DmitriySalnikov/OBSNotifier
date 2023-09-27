@@ -81,7 +81,7 @@ namespace OBSNotifier
 
         public void Write(Exception ex)
         {
-            Write($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
+            Write($"⚠ {ex.GetType().Name}:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
         }
     }
 }

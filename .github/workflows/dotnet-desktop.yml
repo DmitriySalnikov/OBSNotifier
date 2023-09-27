@@ -2,15 +2,10 @@ name: .NET Desktop
 
 on:
   push:
-    paths:
-      [
-        .github/**,
-        "!.github/**/util_*",
-        OBSNotifier/**,
-        OBSNotifier.sln,
-      ]
-  workflow_dispatch:
+    paths: [.github/**, "!.github/**/util_*", OBSNotifier/**, OBSNotifier.sln]
   pull_request:
+    paths: [.github/**, "!.github/**/util_*", OBSNotifier/**, OBSNotifier.sln]
+  workflow_dispatch:
 
 jobs:
   build:

@@ -30,7 +30,7 @@ namespace OBSNotifier
                 var obj = dict[id];
                 if (obj.GetType() != typeof(string))
                 {
-                    App.Log($"Resource with ID \"{id}\" is not a string." + (is_spec_dict? " Using a specific dictionary" : ""));
+                    App.Log($"Resource with ID \"{id}\" is not a string." + (is_spec_dict ? " Using a specific dictionary" : ""));
                     return $"[{id}]";
                 }
 
@@ -272,33 +272,56 @@ namespace OBSNotifier
         {
             WindowInteropHelper wndHelper = new WindowInteropHelper(wnd);
 
-            int exStyle = (int)GetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE);
+            int exStyle = (int)GetWindowLong(wndHelper.Handle, GWL_EXSTYLE);
 
-            exStyle |= (int)ExtendedWindowStyles.WS_EX_TOOLWINDOW;
-            SetWindowLong(wndHelper.Handle, (int)GetWindowLongFields.GWL_EXSTYLE, (IntPtr)exStyle);
+            exStyle |= WS_EX_TOOLWINDOW;
+            SetWindowLong(wndHelper.Handle, GWL_EXSTYLE, (IntPtr)exStyle);
         }
 
-        #region Native Windows Window styles
+        public static void SetWindowIgnoreMouse(IntPtr hwnd, bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT));
+            }
+            else
+            {
+                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) & ~(WS_EX_TRANSPARENT)));
+            }
+        }
+
+        public static void SetWindowIgnoreFocus(IntPtr hwnd, bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE));
+            }
+            else
+            {
+                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) & ~(WS_EX_NOACTIVATE)));
+            }
+        }
+
+        #region Native Windows
 
         // https://stackoverflow.com/a/551847/8980874
 
-        [Flags]
-        enum ExtendedWindowStyles
-        {
-            // ...
-            WS_EX_TOOLWINDOW = 0x00000080,
-            // ...
-        }
-
-        enum GetWindowLongFields
-        {
-            // ...
-            GWL_EXSTYLE = (-20),
-            // ...
-        }
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+        private const int WS_EX_TRANSPARENT = 0x20;
+        private const int GWL_EXSTYLE = -20;
 
         [DllImport("user32.dll")]
         static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
+        static extern int IntSetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
+        static extern void SetLastError(int dwErrorCode);
 
         static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
         {
@@ -310,7 +333,7 @@ namespace OBSNotifier
             if (IntPtr.Size == 4)
             {
                 // use SetWindowLong
-                Int32 tempResult = IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
+                int tempResult = IntSetWindowLong(hWnd, nIndex, (int)dwNewLong.ToInt64());
                 error = Marshal.GetLastWin32Error();
                 result = new IntPtr(tempResult);
             }
@@ -328,20 +351,6 @@ namespace OBSNotifier
 
             return result;
         }
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-        static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
-        static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
-
-        static int IntPtrToInt32(IntPtr intPtr)
-        {
-            return unchecked((int)intPtr.ToInt64());
-        }
-
-        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
-        static extern void SetLastError(int dwErrorCode);
         #endregion
     }
 }
