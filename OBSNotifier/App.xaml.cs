@@ -469,20 +469,29 @@ namespace OBSNotifier
 
         static void UpdateTrayStatus()
         {
-            switch (CurrentConnectionState)
+            try
             {
-                case ConnectionState.Connected:
-                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_connected_64px;
-                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_connected")}";
-                    break;
-                case ConnectionState.Disconnected:
-                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
-                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_not_connected")}";
-                    break;
-                case ConnectionState.TryingToReconnect:
-                    trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_reconnect_64px;
-                    trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_trying_to_reconnect")}";
-                    break;
+                // max 64 chars
+                switch (CurrentConnectionState)
+                {
+                    case ConnectionState.Connected:
+                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_connected_64px;
+                        trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_connected")}";
+                        break;
+                    case ConnectionState.Disconnected:
+                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
+                        trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_not_connected")}";
+                        break;
+                    case ConnectionState.TryingToReconnect:
+                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_reconnect_64px;
+                        trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_trying_to_reconnect")}";
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
+                trayIcon.Text = $"{AppNameSpaced}";
             }
         }
 

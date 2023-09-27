@@ -29,6 +29,7 @@ namespace OBSNotifier.Modules.NvidiaLike
         public double Scale { get => scale; set => scale = Math.Max(0.001, value); }
 
         public uint MaxPathChars { get; set; }
+        public bool ClickThrough { get; set; }
         public bool ShowQuickActions { get; set; }
         public bool ShowQuickActionsColoredLine { get; set; }
         public double QuickActionsOffset { get => openFileOffset; set => openFileOffset = Math.Max(0, value); }
@@ -53,6 +54,7 @@ namespace OBSNotifier.Modules.NvidiaLike
             Scale = 1.0;
 
             MaxPathChars = 32;
+            ClickThrough = false;
             ShowQuickActions = true;
             ShowQuickActionsColoredLine = true;
             QuickActionsOffset = 8.0;
@@ -93,6 +95,7 @@ namespace OBSNotifier.Modules.NvidiaLike
                 Scale = this.Scale,
 
                 MaxPathChars = this.MaxPathChars,
+                ClickThrough = this.ClickThrough,
                 ShowQuickActions = this.ShowQuickActions,
                 ShowQuickActionsColoredLine = this.ShowQuickActionsColoredLine,
                 QuickActionsOffset = this.QuickActionsOffset,

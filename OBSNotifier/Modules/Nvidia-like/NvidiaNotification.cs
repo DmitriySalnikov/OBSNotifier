@@ -25,7 +25,7 @@ namespace OBSNotifier.Modules.NvidiaLike
         OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
         {
             UseSafeDisplayArea = true,
-            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nShowQuickActions = True\nShowQuickActionsColoredLine = True\nQuickActionsOffset = 8.0\nIconHeight = 64.0\nIconPath = INVALID_PATH",
+            AdditionalData = "BackgroundColor = #2E48BD\nForegroundColor = #000000\nTextColor = #E4E4E4\nSlideDuration = 400\nSlideOffset = 180\nLineWidth = 6.0\nScale = 1.0\nMaxPathChars = 32\nClickThrough = False\nShowQuickActions = True\nShowQuickActionsColoredLine = True\nQuickActionsOffset = 8.0\nIconHeight = 64.0\nIconPath = INVALID_PATH",
             Option = Positions.TopRight,
             Offset = new Point(0, 0.1),
             OnScreenTime = 3000,

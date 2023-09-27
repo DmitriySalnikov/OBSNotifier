@@ -37,9 +37,13 @@ namespace OBSNotifier.Modules.NvidiaLike
             i_icon.SizeChanged += I_icon_SizeChanged;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnSourceInitialized(EventArgs e)
         {
-            Utils.RemoveWindowFromAltTab(this);
+            base.OnSourceInitialized(e);
+
+            var hwnd = this.GetHandle();
+            UtilsWinApi.SetWindowIgnoreFocus(hwnd, true);
+            UtilsWinApi.SetWindowTopmost(hwnd, true);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -96,6 +100,8 @@ namespace OBSNotifier.Modules.NvidiaLike
             // General params
             currentParams.Duration = owner.ModuleSettings.OnScreenTime;
             currentParams.IsOnRightSide = (NvidiaNotification.Positions)owner.ModuleSettings.Option == NvidiaNotification.Positions.TopRight;
+
+            UtilsWinApi.SetWindowIgnoreMouse(this.GetHandle(), currentParams.ClickThrough && !currentParams.ShowQuickActions);
 
             fileOpenOverlay.IsPreview = currentParams.IsPreviewNotif;
             fileOpenOverlay.HorizontalAlignment = currentParams.IsOnRightSide ? HorizontalAlignment.Right : HorizontalAlignment.Left;

@@ -48,7 +48,7 @@ namespace OBSNotifier.Modules.Default
             var notif = NotificationType.None;
             if (isPreview && (
                 (prevMaxPathChars != -1 && prevMaxPathChars != settings.MaxPathChars) ||
-                (prevShowQuickActions != null && prevShowQuickActions != settings.ShowQuickActionsOnFileSave)
+                (prevShowQuickActions != null && prevShowQuickActions != settings.ShowQuickActions)
                ))
             {
                 desc = Utils.GetShortPath(@"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv", settings.MaxPathChars);
@@ -112,7 +112,7 @@ namespace OBSNotifier.Modules.Default
             fileOpenOverlay.IsPreview = isPreview;
             if (type != NotificationType.None && NotificationType.WithFilePaths.HasFlag(type))
             {
-                if (settings.ShowQuickActionsOnFileSave)
+                if (settings.ShowQuickActions)
                 {
                     fileOpenOverlay.FilePath = desc;
                     fileOpenOverlay.Clip = new RectangleGeometry(new Rect(0, 0, Width, Height), r_notif.RadiusX, r_notif.RadiusY);
@@ -133,7 +133,7 @@ namespace OBSNotifier.Modules.Default
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;
 
             prevMaxPathChars = (int)settings.MaxPathChars;
-            prevShowQuickActions = settings.ShowQuickActionsOnFileSave;
+            prevShowQuickActions = settings.ShowQuickActions;
         }
 
         private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
