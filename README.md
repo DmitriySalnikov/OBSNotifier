@@ -49,11 +49,9 @@ If you have found a bug or want to suggest a new feature, then please create a n
 
 ## Support
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I2I53VZ2D)
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/dmitriysalnikov)
-
 [<img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QIWI_logo.svg" alt="qiwi" width=90px/>](https://qiwi.com/n/DMITRIYSALNIKOV)
+
+[<img src="https://static.boosty.to/assets/images/boostyDomainLogo.5Vlxt.svg" alt="Boosty" width=120px/>](https://boosty.to/dmitriysalnikov/donate)
 
 ## Localization
 
