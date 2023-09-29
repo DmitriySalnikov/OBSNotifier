@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:OBSNotifier.Modules.Default"
         mc:Ignorable="d" x:ClassModifier="internal"
         Title="Default Notification"
-        WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStyle="None" AllowsTransparency="True" Topmost="True" ResizeMode="NoResize" ShowInTaskbar="False"
+        ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
         Opacity="1.0"
         Width="180" Height="104"
-        Background="{x:Null}"
-        Loaded="Window_Loaded">
+        Background="{x:Null}">
 
     <StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">
         <local:DefaultNotificationBlock/>

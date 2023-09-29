@@ -6,11 +6,12 @@
         xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
         mc:Ignorable="d"
         Title="Nvidia Notification"
-        WindowStyle="None" AllowsTransparency="True" Topmost="True" ShowActivated="False" ResizeMode="NoResize" ShowInTaskbar="False"
+        WindowStyle="None" AllowsTransparency="True" Topmost="True"
+        ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
+        ResizeMode="NoResize" ShowInTaskbar="False"
         Opacity="1.0" SnapsToDevicePixels="True"
         Background="{x:Null}"
-        MouseDown="Window_MouseDown"
-        Loaded="Window_Loaded">
+        MouseDown="Window_MouseDown">
 
     <Window.Resources>
         <BeginStoryboard x:Key="nvidia_anim">

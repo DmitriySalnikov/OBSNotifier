@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Threading;
 
 namespace OBSNotifier
 {
@@ -83,6 +81,12 @@ namespace OBSNotifier
         public static DispatcherOperation InvokeAction(this DispatcherObject disp, Action act)
         {
             return disp.Dispatcher.BeginInvoke(act);
+        }
+
+        public static void BringToTop(this Window window)
+        {
+            window.Topmost = false;
+            window.Topmost = true;
         }
 
         public static string EncryptString(string plainText)
@@ -263,94 +267,5 @@ namespace OBSNotifier
 
             return img;
         }
-
-        /// <summary>
-        /// Remove a window from the window switching menu (Alt+Tab, Win + Tab)
-        /// </summary>
-        /// <param name="wnd"></param>
-        public static void RemoveWindowFromAltTab(Window wnd)
-        {
-            WindowInteropHelper wndHelper = new WindowInteropHelper(wnd);
-
-            int exStyle = (int)GetWindowLong(wndHelper.Handle, GWL_EXSTYLE);
-
-            exStyle |= WS_EX_TOOLWINDOW;
-            SetWindowLong(wndHelper.Handle, GWL_EXSTYLE, (IntPtr)exStyle);
-        }
-
-        public static void SetWindowIgnoreMouse(IntPtr hwnd, bool isEnabled)
-        {
-            if (isEnabled)
-            {
-                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_TRANSPARENT));
-            }
-            else
-            {
-                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) & ~(WS_EX_TRANSPARENT)));
-            }
-        }
-
-        public static void SetWindowIgnoreFocus(IntPtr hwnd, bool isEnabled)
-        {
-            if (isEnabled)
-            {
-                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_NOACTIVATE));
-            }
-            else
-            {
-                SetWindowLong(hwnd, GWL_EXSTYLE, (IntPtr)((long)GetWindowLong(hwnd, GWL_EXSTYLE) & ~(WS_EX_NOACTIVATE)));
-            }
-        }
-
-        #region Native Windows
-
-        // https://stackoverflow.com/a/551847/8980874
-
-        private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int WS_EX_NOACTIVATE = 0x08000000;
-        private const int WS_EX_TRANSPARENT = 0x20;
-        private const int GWL_EXSTYLE = -20;
-
-        [DllImport("user32.dll")]
-        static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-        static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
-        static extern int IntSetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
-        static extern void SetLastError(int dwErrorCode);
-
-        static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
-        {
-            int error = 0;
-            IntPtr result = IntPtr.Zero;
-            // Win32 SetWindowLong doesn't clear error on success
-            SetLastError(0);
-
-            if (IntPtr.Size == 4)
-            {
-                // use SetWindowLong
-                int tempResult = IntSetWindowLong(hWnd, nIndex, (int)dwNewLong.ToInt64());
-                error = Marshal.GetLastWin32Error();
-                result = new IntPtr(tempResult);
-            }
-            else
-            {
-                // use SetWindowLongPtr
-                result = IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
-                error = Marshal.GetLastWin32Error();
-            }
-
-            if ((result == IntPtr.Zero) && (error != 0))
-            {
-                throw new System.ComponentModel.Win32Exception(error);
-            }
-
-            return result;
-        }
-        #endregion
     }
 }

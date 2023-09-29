@@ -27,7 +27,7 @@ namespace OBSNotifier.Modules.Default
         OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
         {
             UseSafeDisplayArea = true,
-            AdditionalData = "BackgroundColor = #FF4C4C4C\nOutlineColor = #59000000\nTextColor = #FFD8D8D8\nBlocks = 3\nRadius = 4.0\nWidth = 180.0\nHeight = 52.0\nMargin = 4, 4, 4, 4\nMaxPathChars = 32\nShowQuickActionsOnFileSave = True",
+            AdditionalData = "BackgroundColor = #FF4C4C4C\nOutlineColor = #59000000\nTextColor = #FFD8D8D8\nBlocks = 3\nRadius = 4.0\nWidth = 180.0\nHeight = 52.0\nMargin = 4, 4, 4, 4\nMaxPathChars = 32\nClickThrough = False\nShowQuickActions = True",
             Option = Positions.BottomRight,
             Offset = new Point(0, 0),
             OnScreenTime = 3000,

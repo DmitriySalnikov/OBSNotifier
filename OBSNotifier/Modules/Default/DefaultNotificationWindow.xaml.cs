@@ -27,9 +27,13 @@ namespace OBSNotifier.Modules.Default
             owner = module;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnSourceInitialized(EventArgs e)
         {
-            Utils.RemoveWindowFromAltTab(this);
+            base.OnSourceInitialized(e);
+
+            var hwnd = this.GetHandle();
+            UtilsWinApi.SetWindowIgnoreFocus(hwnd, true);
+            UtilsWinApi.SetWindowTopmost(hwnd, true);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -53,6 +57,8 @@ namespace OBSNotifier.Modules.Default
 
                 RemoveUnusedBlocks();
             }
+
+            UtilsWinApi.SetWindowIgnoreMouse(this.GetHandle(), currentNotifBlockSettings.ClickThrough && !currentNotifBlockSettings.ShowQuickActions);
 
             CurrentNotifBlockSettings.Duration = owner.ModuleSettings.OnScreenTime;
             Height = CurrentNotifBlockSettings.Height * CurrentNotifBlockSettings.Blocks;
