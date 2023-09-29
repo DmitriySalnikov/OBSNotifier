@@ -83,12 +83,6 @@ namespace OBSNotifier
             return disp.Dispatcher.BeginInvoke(act);
         }
 
-        public static void BringToTop(this Window window)
-        {
-            window.Topmost = false;
-            window.Topmost = true;
-        }
-
         public static string EncryptString(string plainText)
         {
             if (plainText == null) throw new ArgumentNullException("plainText");

@@ -278,6 +278,9 @@ namespace OBSNotifier
                 }
 
                 UpdateAutostartScriptButton();
+
+                // Bring to top
+                Activate();
             }
             else
             {
