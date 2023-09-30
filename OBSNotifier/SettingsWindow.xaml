@@ -16,7 +16,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
         <StackPanel Margin="8,0,8,0">
-            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" FontWeight="Bold" Text="{StaticResource settings_window_top_hint}"/>
+            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" FontWeight="Bold" Text="{DynamicResource settings_window_top_hint}"/>
             <TextBlock Text="{DynamicResource settings_window_top_hint_how_to}" Style="{StaticResource textblockWithHint}" FontStyle="Normal" HorizontalAlignment="Left" ToolTipService.InitialShowDelay="100">
                 <TextBlock.ToolTip>
                     <StackPanel>
