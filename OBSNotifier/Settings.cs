@@ -30,6 +30,8 @@ namespace OBSNotifier
         [JsonIgnore]
         static string SaveFile = Path.Combine(App.AppDataFolder, SAVE_FILE_NAME);
         [JsonIgnore]
+        static string SaveFileBackup = SaveFile + ".backup";
+        [JsonIgnore]
         static string OldSaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), SAVE_FILE_NAME);
 
         [JsonIgnore]
@@ -126,6 +128,26 @@ namespace OBSNotifier
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(SaveFile));
+
+                try
+                {
+                    // Remove old backup
+                    if (File.Exists(SaveFile) && File.Exists(SaveFileBackup))
+                    {
+                        File.Delete(SaveFileBackup);
+                    }
+
+                    // Create new backup
+                    if (File.Exists(SaveFile))
+                    {
+                        File.Move(SaveFile, SaveFileBackup);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Log(ex);
+                }
+
                 File.WriteAllText(SaveFile, JsonConvert.SerializeObject(this, Formatting.Indented));
             }
             catch (Exception ex)
@@ -136,20 +158,64 @@ namespace OBSNotifier
 
         static public void Load()
         {
-            try
+            Func<string, bool> tryLoad = (file) =>
             {
-                if (File.Exists(SaveFile))
+                if (File.Exists(file))
                 {
-                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SaveFile));
+                    var fileText = File.ReadAllText(file);
+
+                    if (string.IsNullOrWhiteSpace(fileText))
+                    {
+                        throw new FileLoadException($"Save file (\"{file}\") is empty");
+                    }
+
+                    Instance = JsonConvert.DeserializeObject<Settings>(fileText);
                     if (Instance == null)
                         Instance = new Settings();
 
+                    return true;
+                }
+                return false;
+            };
+
+            var is_tried_to_load_backup = false;
+            try
+            {
+                // Attempt to load a regular file
+                if (tryLoad(SaveFile))
+                {
                     return;
+                }
+                else
+                {
+                    // Attempt to load a backup file
+                    is_tried_to_load_backup = true;
+                    if (tryLoad(SaveFileBackup))
+                    {
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 App.Log(ex);
+
+                // Attempt to load a backup file
+                if (!is_tried_to_load_backup)
+                {
+                    try
+                    {
+                        if (tryLoad(SaveFileBackup))
+                        {
+                            return;
+                        }
+                    }
+                    catch (Exception iex)
+                    {
+                        App.Log(iex);
+
+                    }
+                }
             }
 
             // The logic of updating from locally saved settings in the application folder to AppData

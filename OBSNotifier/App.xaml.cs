@@ -69,6 +69,7 @@ namespace OBSNotifier
         {
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            logger = new Logger("logs/log.txt");
 
             // Initialize Settings
             Settings.Load();
@@ -92,8 +93,6 @@ namespace OBSNotifier
             }
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
-            logger = new Logger("logs/log.txt");
 
             // Just log the message if the autorun script exists
             if (AutostartScriptManager.IsScriptExists())

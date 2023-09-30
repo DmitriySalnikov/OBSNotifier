@@ -16,16 +16,25 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
         <StackPanel Margin="8,0,8,0">
+            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" FontWeight="Bold" Text="{StaticResource settings_window_top_hint}"/>
+            <TextBlock Text="{DynamicResource settings_window_top_hint_how_to}" Style="{StaticResource textblockWithHint}" FontStyle="Normal" HorizontalAlignment="Left" ToolTipService.InitialShowDelay="100">
+                <TextBlock.ToolTip>
+                    <StackPanel>
+                        <Image Source="/Images/websocket_hint.png" />
+                        <TextBlock Text="{DynamicResource settings_window_top_hint_tooltip}"/>
+                    </StackPanel>
+                </TextBlock.ToolTip>
+            </TextBlock>
 
-            <TextBlock x:Name="label" TextWrapping="WrapWithOverflow" Text="{DynamicResource settings_window_top_hint}" VerticalAlignment="Top" FontWeight="Bold"/>
             <Label Content="{DynamicResource settings_window_server_address_label}" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
             <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
+
             <Label Content="{DynamicResource settings_window_password_label}" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
             <Label Content="{DynamicResource settings_window_password_warning}" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
             <Button x:Name="btn_connect" Content="{DynamicResource settings_window_connect_button_connect}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
 
-            <Separator Height="10" Background="{x:Null}"/>
+            <Separator Height="10" Style="{StaticResource emptySeparator}"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -36,10 +45,19 @@
                     <TextBlock x:Name="tb_autostart_button_text" Text="Start with OBS&#xD;&#xA;(update☹️)" TextAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
             </Grid>
-            <Separator Height="2" Background="{x:Null}"/>
-            <CheckBox x:Name="cb_close_on_closing" Content="{DynamicResource settings_window_close_on_obs_exit}" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
-            <Separator Height="16"/>
 
+            <Separator Height="2" Style="{StaticResource emptySeparator}"/>
+            <CheckBox x:Name="cb_close_on_closing" Content="{DynamicResource settings_window_close_on_obs_exit}" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+
+            <Separator Height="2" Style="{StaticResource emptySeparator}"/>
+            <TextBlock HorizontalAlignment="Center" Cursor="Hand" MouseLeftButtonUp="SupportTextBlock_MouseLeftButtonUp">
+                <Run Text="{DynamicResource settings_window_support_developer}" TextDecorations="Underline" FontWeight="DemiBold"/>
+                <Run Text="❤"/>
+            </TextBlock>
+            <Separator Height="2" Style="{StaticResource emptySeparator}"/>
+            <TextBlock Text="{DynamicResource settings_window_report_bug}" TextDecorations="Underline" HorizontalAlignment="Center" Cursor="Hand" MouseLeftButtonUp="ReportErrorTextBlock_MouseLeftButtonUp"/>
+
+            <Separator Height="16"/>
             <Label Content="{DynamicResource settings_window_notification_settings}" HorizontalAlignment="Center" FontWeight="Bold"/>
 
             <CheckBox x:Name="cb_preview" Content="{DynamicResource settings_window_preview}" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
@@ -49,14 +67,14 @@
 
             <Label Content="{DynamicResource settings_window_module_label}"/>
             <ComboBox x:Name="cb_notification_modules" Grid.ColumnSpan="1" SelectionChanged="cb_notification_modules_SelectionChanged" />
-            
-            <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+
+            <Separator Height="8" Style="{StaticResource emptySeparator}"/>
             <Button Content="{DynamicResource settings_window_select_active_notifications_button}" Click="btn_select_active_notifications_Click"/>
 
-            <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+            <Separator Height="8" Style="{StaticResource emptySeparator}"/>
             <StackPanel x:Name="group_safe_area">
                 <CheckBox x:Name="cb_use_safe_area" Content="{DynamicResource settings_window_use_safe_zone}" Unchecked="cb_use_safe_area_Unchecked"  Checked="cb_use_safe_area_Checked" VerticalContentAlignment="Center"/>
-                <Separator Height="8" Background="{x:Null}" Foreground="{x:Null}"/>
+                <Separator Height="8" Style="{StaticResource emptySeparator}"/>
             </StackPanel>
 
             <StackPanel x:Name="group_options">
@@ -120,10 +138,10 @@
             </StackPanel>
 
             <StackPanel x:Name="group_open_module_settings">
-                <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
+                <Separator Height="4" Style="{StaticResource emptySeparator}"/>
                 <Button Content="{DynamicResource settings_window_open_module_settings}" Click="btn_open_module_settings_Click"/>
             </StackPanel>
-            <Separator Height="4" Background="{x:Null}" Foreground="{x:Null}"/>
+            <Separator Height="4" Style="{StaticResource emptySeparator}"/>
         </StackPanel>
     </ScrollViewer>
 </Window>

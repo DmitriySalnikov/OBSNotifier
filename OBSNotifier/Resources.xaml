@@ -31,4 +31,31 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style x:Key="textblockWithHint">
+        <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
+        <Setter Property="TextBlock.TextDecorations">
+            <Setter.Value>
+                <TextDecorationCollection>
+                    <TextDecoration PenThicknessUnit="FontRecommended">
+                        <TextDecoration.Pen>
+                            <Pen Thickness="1.5">
+                                <Pen.Brush>
+                                    <SolidColorBrush Color="Blue"/>
+                                </Pen.Brush>
+                                <Pen.DashStyle>
+                                    <DashStyle Dashes="3"/>
+                                </Pen.DashStyle>
+                            </Pen>
+                        </TextDecoration.Pen>
+                    </TextDecoration>
+                </TextDecorationCollection>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="emptySeparator" TargetType="Separator">
+        <Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="{x:Null}"/>
+    </Style>
 </ResourceDictionary>

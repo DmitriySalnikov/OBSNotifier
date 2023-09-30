@@ -456,6 +456,9 @@
   <ItemGroup>
     <Resource Include="Modules\Nvidia-like\obs.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\websocket_hint.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>taskkill /F /IM $(TargetFileName) /FI "STATUS eq RUNNING"</PreBuildEvent>

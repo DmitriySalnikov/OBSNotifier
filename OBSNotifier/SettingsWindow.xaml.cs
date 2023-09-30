@@ -296,6 +296,16 @@ namespace OBSNotifier
             IsChangedByCode = false;
         }
 
+        private void SupportTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://boosty.to/dmitriysalnikov/donate");
+        }
+        
+        private void ReportErrorTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/DmitriySalnikov/OBSNotifier/issues");
+        }
+
         private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
         {
             IsConnecting = false;
