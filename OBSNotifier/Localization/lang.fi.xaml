@@ -40,6 +40,12 @@ Tämän jälkeen {0} käynnistyy automaattisesti OBS-järjestelmällä.</v:Strin
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Jotta tämä sovellus toimisi sinun täytyy liittää obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Miten otan 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Työkalut - 2. WebSocket Server Asetukset - 3. Ota WebSocket palvelin
+?. Valinnainen 'Ota todennus'. Saadaksesi selville nykyisen salasanan, napsauta 'Show Connect Info'.
+Älä unohda klikata Käytä sen jälkeen, kun olet tehnyt muutoksia palvelimeen.</v:String>
+    <v:String x:Key="settings_window_support_developer">Tue kehittäjää!</v:String>
+    <v:String x:Key="settings_window_report_bug">Ilmoita virheestä tai ehdota ominaisuutta.</v:String>
     <v:String x:Key="settings_window_server_address_label">Palvelimen osoite:</v:String>
     <v:String x:Key="settings_window_password_label">Salasana:</v:String>
     <v:String x:Key="settings_window_password_warning">Salasana tallennetaan paikalliseen tiedostoon</v:String>

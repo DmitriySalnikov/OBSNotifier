@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">このアプリケーションを動作させるには、obs-websocket プラグインに接続する必要があります。</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">「obs-websocket」を有効にするにはどうすればいいですか？</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Tools - 2. WebSocket Server Settings - 3. Enable WebSocket server
+?. Optional 'Enable Authentication'. To find out the current password, click 'Show Connect Info'.
+Don't forget to click Apply after making changes to the server.</v:String>
+    <v:String x:Key="settings_window_support_developer">開発者をサポート！</v:String>
+    <v:String x:Key="settings_window_report_bug">バグを報告するか、機能を提案します。</v:String>
     <v:String x:Key="settings_window_server_address_label">サーバーアドレス:</v:String>
     <v:String x:Key="settings_window_password_label">パスワード:</v:String>
     <v:String x:Key="settings_window_password_warning">パスワードはローカルファイルに保存されます</v:String>

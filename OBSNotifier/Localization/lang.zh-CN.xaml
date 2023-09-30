@@ -42,6 +42,12 @@
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">为了使这个应用程序能够工作，您需要打开并连接到 obs-websocket 它就在工具的选项菜单里</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">如何启用'obs-websocket'？</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Tools - 2. WebSocket Server Settings - 3. Enable WebSocket server
+?. Optional 'Enable Authentication'. To find out the current password, click 'Show Connect Info'.
+Don't forget to click Apply after making changes to the server.</v:String>
+    <v:String x:Key="settings_window_support_developer">支持开发者！</v:String>
+    <v:String x:Key="settings_window_report_bug">报告错误或推荐功能。</v:String>
     <v:String x:Key="settings_window_server_address_label">WebSocket服务器地址：</v:String>
     <v:String x:Key="settings_window_password_label">服务器密码：</v:String>
     <v:String x:Key="settings_window_password_warning">密码将保存到本地文件</v:String>

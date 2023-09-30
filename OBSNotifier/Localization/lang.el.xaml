@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Για να λειτουργήσει αυτή η εφαρμογή πρέπει να συνδεθείτε με το obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Πώς μπορώ να ενεργοποιήσω το 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Εργαλεία - 2. Ρυθμίσεις διακομιστή WebSocket - 3. Ενεργοποίηση WebSocket server
+?. Προαιρετικό 'Ενεργοποίηση ελέγχου ταυτότητας'. Για να μάθετε τον τρέχοντα κωδικό πρόσβασης, κάντε κλικ στο κουμπί 'Εμφάνιση πληροφοριών σύνδεσης'.
+Μην ξεχάσετε να πατήσετε Εφαρμογή μετά την πραγματοποίηση αλλαγών στο διακομιστή.</v:String>
+    <v:String x:Key="settings_window_support_developer">Υποστηρίξτε τον προγραμματιστή!</v:String>
+    <v:String x:Key="settings_window_report_bug">Αναφέρετε ένα σφάλμα ή προτείνετε μια λειτουργία.</v:String>
     <v:String x:Key="settings_window_server_address_label">Διεύθυνση διακομιστή:</v:String>
     <v:String x:Key="settings_window_password_label">Κωδικός:</v:String>
     <v:String x:Key="settings_window_password_warning">Ο κωδικός πρόσβασης θα αποθηκευτεί σε ένα τοπικό αρχείο</v:String>

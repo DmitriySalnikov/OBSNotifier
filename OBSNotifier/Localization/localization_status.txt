@@ -1,23 +1,23 @@
-﻿✔️  Fetching project info
+✔️  Fetching project info
 Translated:
 	- af: 0%
-	- ar: 80%
+	- ar: 82%
 	- ca: 0%
 	- cs: 100%
 	- da: 100%
 	- de: 100%
-	- el: 80%
-	- es-ES: 88%
+	- el: 82%
+	- es-ES: 89%
 	- fi: 100%
-	- fr: 88%
+	- fr: 89%
 	- he: 0%
 	- hu: 0%
 	- it: 100%
-	- ja: 86%
+	- ja: 81%
 	- ko: 0%
-	- nl: 88%
-	- no: 86%
-	- pl: 88%
+	- nl: 89%
+	- no: 88%
+	- pl: 89%
 	- pt-BR: 95%
 	- pt-PT: 95%
 	- ro: 100%
@@ -26,7 +26,7 @@ Translated:
 	- sv-SE: 100%
 	- tr: 0%
 	- vi: 0%
-	- zh-CN: 100%
+	- zh-CN: 93%
 	- zh-TW: 0%
 Approved:
 	- af: 0%
@@ -55,5 +55,5 @@ Approved:
 	- sv-SE: 0%
 	- tr: 0%
 	- vi: 0%
-	- zh-CN: 100%
+	- zh-CN: 90%
 	- zh-TW: 0%

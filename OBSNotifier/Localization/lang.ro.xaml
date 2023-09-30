@@ -40,6 +40,12 @@ După aceea, {0} va începe automat cu OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Pentru ca această aplicaţie să funcţioneze, trebuie să vă conectaţi la plugin-ul obs-websocket .</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Cum pot activa 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Unelte - 2. Setări WebSocket Server - 3. Activează serverul WebSocket
+?. Opţional &quot;Activează Autentificarea&quot;. Pentru a afla parola curentă, faceţi clic pe &quot;Show Connect Info&quot;.
+Nu uitaţi să faceţi clic pe Aplicare după ce aţi făcut modificări pe server.</v:String>
+    <v:String x:Key="settings_window_support_developer">Sprijină dezvoltatorul!</v:String>
+    <v:String x:Key="settings_window_report_bug">Raportează o eroare sau sugerează o caracteristică.</v:String>
     <v:String x:Key="settings_window_server_address_label">Adresa serverului:</v:String>
     <v:String x:Key="settings_window_password_label">Parola:</v:String>
     <v:String x:Key="settings_window_password_warning">Parola va fi salvată într-un fişier local</v:String>

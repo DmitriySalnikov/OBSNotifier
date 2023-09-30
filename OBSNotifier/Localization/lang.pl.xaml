@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Aby aplikacja działała musisz połączyć się z wtyczką obs-websocket.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Jak włączyć 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Narzędzia - 2. Ustawienia serwera WebSocket - 3. Włącz serwer WebSocket
+?. Opcjonalnie 'Włącz uwierzytelnienienie'. Aby uzyskać aktualne hasło, kliknij 'Pokaż informacje o połączeniu'.
+Nie zapomnij kliknąć Zastosuj po dokonaniu zmian na serwerze.</v:String>
+    <v:String x:Key="settings_window_support_developer">Wesprzyj programistę!</v:String>
+    <v:String x:Key="settings_window_report_bug">Zgłoś błąd lub zaproponuj funkcję.</v:String>
     <v:String x:Key="settings_window_server_address_label">Adres serwera:</v:String>
     <v:String x:Key="settings_window_password_label">Hasło:</v:String>
     <v:String x:Key="settings_window_password_warning">Hasło zostanie zapisane w pliku lokalnym</v:String>

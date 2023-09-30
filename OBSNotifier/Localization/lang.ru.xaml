@@ -40,6 +40,12 @@
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Для работы этого приложения необходимо подключение к плагину obs-websocket.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Как включить 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Сервис - 2. Настройки сервера WebSocket - 3. Включить сервер WebSocket
+?. Опционально 'Включить аутентификацию'. Чтобы узнать текущий пароль, нажмите 'Показать сведения о подключении'.
+Не забывайте нажимать кнопку 'Применить' после внесения изменений в сервер.</v:String>
+    <v:String x:Key="settings_window_support_developer">Поддержать разработчика!</v:String>
+    <v:String x:Key="settings_window_report_bug">Сообщить об ошибке или предложить функцию.</v:String>
     <v:String x:Key="settings_window_server_address_label">Адрес сервера:</v:String>
     <v:String x:Key="settings_window_password_label">Пароль:</v:String>
     <v:String x:Key="settings_window_password_warning">Пароль будет сохранен в локальном файле</v:String>

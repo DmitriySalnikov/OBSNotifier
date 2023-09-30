@@ -40,6 +40,12 @@ Efter dette, vil {0} automatisk starte med OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">For at dette program kan fungere, skal du oprette forbindelse til obs-websocket plugin'et.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Hvordan aktiverer jeg 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Værktøjer - 2. WebSocket Server Indstillinger - 3. Aktiver WebSocket server
+?. Valgfri 'Aktiver Autentificering'. For at finde ud af den aktuelle adgangskode, skal du klikke på 'Vis forbindelsesinfo'.
+Glem ikke at klikke på Anvend efter at have foretaget ændringer på serveren.</v:String>
+    <v:String x:Key="settings_window_support_developer">Støt udvikleren!</v:String>
+    <v:String x:Key="settings_window_report_bug">Rapporter en fejl eller foreslå en funktion.</v:String>
     <v:String x:Key="settings_window_server_address_label">Server adresse:</v:String>
     <v:String x:Key="settings_window_password_label">Adgangskode:</v:String>
     <v:String x:Key="settings_window_password_warning">Adgangskoden vil blive gemt i en lokal fil</v:String>

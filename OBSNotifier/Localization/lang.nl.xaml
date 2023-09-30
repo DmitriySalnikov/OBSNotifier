@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Om deze toepassing te laten werken, moet je verbinding maken met de obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Hoe kan ik 'obs-websocket' inschakelen?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Hulpmiddelen - 2. WebSocket Server Instellingen - 3. Activeer WebSocket server
+?. Optioneel 'Authenticatie inschakelen'. Om het huidige wachtwoord te achterhalen, klikt u op 'Show Connect Info'.
+Vergeet niet op Toepassen te klikken na het wijzigen van de server.</v:String>
+    <v:String x:Key="settings_window_support_developer">Ondersteun de ontwikkelaar!</v:String>
+    <v:String x:Key="settings_window_report_bug">Rapporteer een bug of suggereer een functie.</v:String>
     <v:String x:Key="settings_window_server_address_label">Server adres:</v:String>
     <v:String x:Key="settings_window_password_label">Wachtwoord:</v:String>
     <v:String x:Key="settings_window_password_warning">Het wachtwoord wordt opgeslagen in een lokaal bestand</v:String>

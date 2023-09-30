@@ -40,6 +40,12 @@ Poté {0} automaticky začne s OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">Aby tato aplikace fungovala, musíte se připojit k pluginu obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Jak mohu povolit 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Nástroje - 2. Nastavení WebSocket Server - 3. Povolit WebSocket server
+?. Volitelné 'Povolit ověřování'. Chcete-li zjistit aktuální heslo, klikněte na 'Zobrazit informace o připojení'.
+Nezapomeňte kliknout na Použít po provedení změn na serveru.</v:String>
+    <v:String x:Key="settings_window_support_developer">Podpořte vývojáře!</v:String>
+    <v:String x:Key="settings_window_report_bug">Nahlásit chybu nebo navrhnout funkci.</v:String>
     <v:String x:Key="settings_window_server_address_label">Adresa serveru:</v:String>
     <v:String x:Key="settings_window_password_label">Heslo:</v:String>
     <v:String x:Key="settings_window_password_warning">Heslo bude uloženo do místního souboru</v:String>

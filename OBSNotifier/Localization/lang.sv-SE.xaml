@@ -40,6 +40,12 @@ Efter det startar {0} automatiskt med OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">För att denna ansökan ska fungera måste du ansluta till obs-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Hur aktiverar jag 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Verktyg - 2. WebSocket serverinställningar - 3. Aktivera WebSocket server
+?. Valfri &quot;Aktivera autentisering&quot;. För att ta reda på det aktuella lösenordet, klicka på &quot;Visa anslutningsinformation&quot;.
+Glöm inte att klicka på Verkställ efter att ha gjort ändringar på servern.</v:String>
+    <v:String x:Key="settings_window_support_developer">Stöd utvecklaren!</v:String>
+    <v:String x:Key="settings_window_report_bug">Rapportera en bugg eller föreslå en funktion.</v:String>
     <v:String x:Key="settings_window_server_address_label">Serverns adress:</v:String>
     <v:String x:Key="settings_window_password_label">Lösenord:</v:String>
     <v:String x:Key="settings_window_password_warning">Lösenordet kommer att sparas i en lokal fil</v:String>

@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">For at denne appen skal virke, må du koble deg til pluginen for at den skal virke.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">Hvordan aktiverer jeg 'obs-websocket'?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Verktøy - 2. WebSocket Server-innstillinger - 3. Aktiver WebSocket server
+?. Valgfritt 'Aktiver autentisering'. For å finne ut gjeldende passord, klikk &quot;Vis tilkoblingsinfo&quot;.
+Ikke glem å klikke på Bruk når du har gjort endringer på serveren.</v:String>
+    <v:String x:Key="settings_window_support_developer">Støtt utvikleren!</v:String>
+    <v:String x:Key="settings_window_report_bug">Rapporter feil eller foreslå en funksjon.</v:String>
     <v:String x:Key="settings_window_server_address_label">Server adresse:</v:String>
     <v:String x:Key="settings_window_password_label">Passord:</v:String>
     <v:String x:Key="settings_window_password_warning">Passordet vil bli lagret i en lokal fil</v:String>

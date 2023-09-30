@@ -40,6 +40,12 @@ After that, {0} will automatically start with OBS.</v:String>
 
     <!-- Settings Window -->
     <v:String x:Key="settings_window_top_hint">لكي يعمل هذا التطبيق فإنك تحتاج إلى الاتصال بالمكون المساعد الخاص بموقع-websocket plugin.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">كيف يمكنني تمكين 'obs-websocket'؟</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. أدوات-2. إعدادات خادم WebSocket - 3. تمكين خادم WebSocket
+?. اختياري 'تمكين المصادقة'. لمعرفة كلمة المرور الحالية، انقر فوق 'إظهار معلومات الاتصال'.
+لا تنسى أن تنقر على التطبيق بعد إجراء تغييرات على الخادم.</v:String>
+    <v:String x:Key="settings_window_support_developer">دعم المطور!</v:String>
+    <v:String x:Key="settings_window_report_bug">أبلغ عن خطأ أو اقترح ميزة.</v:String>
     <v:String x:Key="settings_window_server_address_label">عنوان الخادم:</v:String>
     <v:String x:Key="settings_window_password_label">كلمة المرور:</v:String>
     <v:String x:Key="settings_window_password_warning">سيتم حفظ كلمة المرور في ملف محلي</v:String>
