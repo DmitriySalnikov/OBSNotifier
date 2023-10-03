@@ -2,13 +2,15 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace OBSNotifier
 {
-    static class AutostartScriptManager
+    static class AutostartManager
     {
         const string OBSNotifierPathReplacePattern = "&OBS_NOTIFIER_PATH&";
         const string scriptName = "obs_notifier_autostart.lua";
+        const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         readonly static string scriptText = GetScriptCode();
 
         public readonly static string ScriptPath = Path.Combine(App.AppDataFolder, scriptName);
@@ -70,6 +72,38 @@ namespace OBSNotifier
         static string GetScriptCode()
         {
             return Resources.obs_notifier_autostart.Replace(OBSNotifierPathReplacePattern, ProgramPath);
+        }
+
+        /// <summary>
+        /// Get the autostart path from the registry
+        /// </summary>
+        /// <param name="appName"></param>
+        /// <returns></returns>
+        public static string GetAutostartPath(string appName)
+        {
+            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                return (string)rkApp.GetValue(appName);
+        }
+
+        /// <summary>
+        /// Create autostart in the registry
+        /// </summary>
+        /// <param name="appName"></param>
+        /// <param name="exeName"></param>
+        public static void SetAutostart(string appName, string exeName = null)
+        {
+            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                rkApp.SetValue(appName, exeName ?? Assembly.GetEntryAssembly().Location);
+        }
+
+        /// <summary>
+        /// Remove autostart from the registry
+        /// </summary>
+        /// <param name="appName"></param>
+        public static void RemoveAutostart(string appName)
+        {
+            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+                rkApp.DeleteValue(appName, false);
         }
     }
 }

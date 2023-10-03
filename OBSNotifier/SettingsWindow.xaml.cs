@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using OBSNotifier.Modules.Event;
+﻿using OBSNotifier.Modules.Event;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,7 +12,6 @@ namespace OBSNotifier
     public partial class SettingsWindow : Window
     {
         bool IsChangedByCode = false;
-        const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         bool IsConnecting = false;
         Dictionary<string, TextBlock> module_id_to_text_block_map = new Dictionary<string, TextBlock>();
 
@@ -117,8 +115,7 @@ namespace OBSNotifier
                 {
                     try
                     {
-                        using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                            cb_autostart.Content = (string)rkApp.GetValue(App.AppName) == System.Windows.Forms.Application.ExecutablePath ? def_text : dif_path_text;
+                        cb_autostart.Content = AutostartManager.GetAutostartPath(App.AppName) == System.Windows.Forms.Application.ExecutablePath ? def_text : dif_path_text;
                     }
                     catch
                     {
@@ -130,7 +127,7 @@ namespace OBSNotifier
 
         void UpdateAutostartScriptButton()
         {
-            if (AutostartScriptManager.IsScriptExists() && AutostartScriptManager.IsFileNeedToUpdate(true))
+            if (AutostartManager.IsScriptExists() && AutostartManager.IsFileNeedToUpdate(true))
             {
                 tb_autostart_button_text.Text = $"{Utils.Tr("settings_window_run_with_obs_button")}\n{Utils.Tr("settings_window_run_with_obs_button_outdated")}";
                 tb_autostart_button_text.ToolTip = $"{Utils.Tr("settings_window_run_with_obs_hint")}\n{Utils.TrFormat("settings_window_run_with_obs_hint_outdated", App.AppNameSpaced)}";
@@ -269,8 +266,7 @@ namespace OBSNotifier
                 // autostart
                 try
                 {
-                    using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                        cb_autostart.IsChecked = rkApp.GetValue(App.AppName) != null;
+                    cb_autostart.IsChecked = !string.IsNullOrEmpty(AutostartManager.GetAutostartPath(App.AppName));
                     UpdateAutostartCheckbox();
                 }
                 catch
@@ -384,8 +380,7 @@ namespace OBSNotifier
 
             try
             {
-                using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                    rkApp.SetValue(App.AppName, System.Windows.Forms.Application.ExecutablePath);
+                AutostartManager.SetAutostart(App.AppName);
                 UpdateAutostartCheckbox();
             }
             catch
@@ -404,8 +399,7 @@ namespace OBSNotifier
 
             try
             {
-                using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                    rkApp.DeleteValue(App.AppName, false);
+                AutostartManager.RemoveAutostart(App.AppName);
                 UpdateAutostartCheckbox();
             }
             catch
@@ -420,10 +414,10 @@ namespace OBSNotifier
 
         private void btn_autostart_script_create_update_Click(object sender, RoutedEventArgs e)
         {
-            var isScriptExists = AutostartScriptManager.IsScriptExists();
-            if (AutostartScriptManager.CreateScript())
+            var isScriptExists = AutostartManager.IsScriptExists();
+            if (AutostartManager.CreateScript())
             {
-                Clipboard.SetText(AutostartScriptManager.ScriptPath);
+                Clipboard.SetText(AutostartManager.ScriptPath);
                 App.ShowMessageBox(string.Join("\n",
                     (isScriptExists ? Utils.Tr("message_box_autostart_script_updated") : Utils.Tr("message_box_autostart_script_created")),
                     Utils.Tr("message_box_autostart_script_path_copied"),

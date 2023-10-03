@@ -97,7 +97,7 @@
       <DependentUpon>ActiveNotifications.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppLang.cs" />
-    <Compile Include="AutostartScriptManager.cs" />
+    <Compile Include="AutostartManager.cs" />
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Modules\Event\UserControls\Converters.cs" />

@@ -95,8 +95,8 @@ namespace OBSNotifier
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             // Just log the message if the autorun script exists
-            if (AutostartScriptManager.IsScriptExists())
-                AutostartScriptManager.IsFileNeedToUpdate();
+            if (AutostartManager.IsScriptExists())
+                AutostartManager.IsFileNeedToUpdate();
 
             // Global exception handlers
             // https://stackoverflow.com/a/10203030/8980874
