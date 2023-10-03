@@ -11,7 +11,7 @@
         StateChanged="Window_StateChanged"
         SnapsToDevicePixels="True">
     <Window.Resources>
-        <ResourceDictionary Source="Resources.xaml"/>
+        <ResourceDictionary Source="../Resources.xaml"/>
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
