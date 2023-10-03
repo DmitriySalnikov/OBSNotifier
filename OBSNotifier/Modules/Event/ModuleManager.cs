@@ -1,11 +1,11 @@
-﻿using OBSNotifier.Modules.Default;
-using OBSNotifier.Modules.NvidiaLike;
+﻿using OBSNotifier.Modules.Event.Default;
+using OBSNotifier.Modules.Event.NvidiaLike;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace OBSNotifier.Modules
+namespace OBSNotifier.Modules.Event
 {
     internal class ModuleManager : IDisposable
     {
@@ -39,9 +39,9 @@ namespace OBSNotifier.Modules
             LoadedModules.Add(new ModuleData(new DefaultNotification()));
             LoadedModules.Add(new ModuleData(new NvidiaNotification()));
 
-            foreach(var pd in LoadedModules)
+            foreach (var pd in LoadedModules)
             {
-                if(!pd.instance.ModuleInit((s) => WriteLog($"{pd.instance.ModuleID}: {s}")))
+                if (!pd.instance.ModuleInit((s) => WriteLog($"{pd.instance.ModuleID}: {s}")))
                 {
                     throw new Exception($"{pd.instance.GetType()} is broken!");
                 }

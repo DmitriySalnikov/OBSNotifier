@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace OBSNotifier.Modules
+namespace OBSNotifier.Modules.Event
 {
     public struct OBSNotifierModuleSettings
     {
@@ -22,7 +22,7 @@ namespace OBSNotifier.Modules
         /// <summary>
         /// Define which default settings will be available for this module
         /// </summary>
-        AvailableModuleSettings DefaultAvailableSettings { get; }
+        EventModuleAvailableSettings DefaultAvailableSettings { get; }
         /// <summary>
         /// The type of enumeration of items for settings. Can be null
         /// </summary>

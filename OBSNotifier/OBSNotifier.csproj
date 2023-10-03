@@ -100,25 +100,25 @@
     <Compile Include="AutostartScriptManager.cs" />
     <Compile Include="DeferredAction.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Modules\UserControls\Converters.cs" />
-    <Compile Include="Modules\UserControls\OpenFileActions.xaml.cs">
+    <Compile Include="Modules\Event\UserControls\Converters.cs" />
+    <Compile Include="Modules\Event\UserControls\OpenFileActions.xaml.cs">
       <DependentUpon>OpenFileActions.xaml</DependentUpon>
     </Compile>
     <Compile Include="NotificationManager.cs" />
-    <Compile Include="Modules\Default\DefaultCustomNotifBlockSettings.cs" />
-    <Compile Include="Modules\Default\DefaultNotification.cs" />
-    <Compile Include="Modules\Default\DefaultNotificationBlock.xaml.cs">
+    <Compile Include="Modules\Event\Default\DefaultCustomNotifBlockSettings.cs" />
+    <Compile Include="Modules\Event\Default\DefaultNotification.cs" />
+    <Compile Include="Modules\Event\Default\DefaultNotificationBlock.xaml.cs">
       <DependentUpon>DefaultNotificationBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modules\IOBSNotifierModule.cs" />
-    <Compile Include="Modules\Nvidia-like\NvidiaCustomAnimationConfig.cs" />
-    <Compile Include="Modules\Nvidia-like\NvidiaNotification.cs" />
-    <Compile Include="Modules\Nvidia-like\NvidiaNotificationWindow.xaml.cs">
+    <Compile Include="Modules\Event\IOBSNotifierModule.cs" />
+    <Compile Include="Modules\Event\Nvidia-like\NvidiaCustomAnimationConfig.cs" />
+    <Compile Include="Modules\Event\Nvidia-like\NvidiaNotification.cs" />
+    <Compile Include="Modules\Event\Nvidia-like\NvidiaNotificationWindow.xaml.cs">
       <DependentUpon>NvidiaNotificationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Modules\ModuleEnums.cs" />
-    <Compile Include="Modules\ModuleManager.cs" />
-    <Compile Include="Modules\UserControls\OpenFileOverlayActions.xaml.cs">
+    <Compile Include="Modules\Event\ModuleEnums.cs" />
+    <Compile Include="Modules\Event\ModuleManager.cs" />
+    <Compile Include="Modules\Event\UserControls\OpenFileOverlayActions.xaml.cs">
       <DependentUpon>OpenFileOverlayActions.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
@@ -363,19 +363,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Modules\Default\DefaultNotificationBlock.xaml">
+    <Page Include="Modules\Event\Default\DefaultNotificationBlock.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Modules\Nvidia-like\NvidiaNotificationWindow.xaml">
+    <Page Include="Modules\Event\Nvidia-like\NvidiaNotificationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Modules\UserControls\OpenFileActions.xaml">
+    <Page Include="Modules\Event\UserControls\OpenFileActions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Modules\UserControls\OpenFileOverlayActions.xaml">
+    <Page Include="Modules\Event\UserControls\OpenFileOverlayActions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -391,7 +391,7 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Modules\Default\DefaultNotificationWindow.xaml">
+    <Page Include="Modules\Event\Default\DefaultNotificationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -401,7 +401,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modules\Default\DefaultNotificationWindow.xaml.cs">
+    <Compile Include="Modules\Event\Default\DefaultNotificationWindow.xaml.cs">
       <DependentUpon>DefaultNotificationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -454,10 +454,13 @@
     <Resource Include="Localization\localization_status.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Modules\Nvidia-like\obs.png" />
+    <Resource Include="Modules\Event\Nvidia-like\obs.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\websocket_hint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\Persistent\Default\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

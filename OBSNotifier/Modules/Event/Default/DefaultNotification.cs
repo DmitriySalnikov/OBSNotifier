@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace OBSNotifier.Modules.Default
+namespace OBSNotifier.Modules.Event.Default
 {
     internal partial class DefaultNotification : IOBSNotifierModule
     {
@@ -22,7 +22,7 @@ namespace OBSNotifier.Modules.Default
 
         public string ModuleDescription => Utils.Tr("default_module_desc");
 
-        public AvailableModuleSettings DefaultAvailableSettings => AvailableModuleSettings.AllNoCustomSettings;
+        public EventModuleAvailableSettings DefaultAvailableSettings => EventModuleAvailableSettings.AllNoCustomSettings;
 
         OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
         {

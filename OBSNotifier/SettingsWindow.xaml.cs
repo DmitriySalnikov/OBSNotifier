@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using OBSNotifier.Modules.Event;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -182,15 +183,15 @@ namespace OBSNotifier
                 sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, moduleData.instance.ModuleSettings.OnScreenTime));
 
                 // Update visibility of settings groups
-                var groups_map = new Dictionary<Modules.AvailableModuleSettings, FrameworkElement>()
+                var groups_map = new Dictionary<EventModuleAvailableSettings, FrameworkElement>()
                 {
-                    {Modules.AvailableModuleSettings.UseSafeArea, group_safe_area},
-                    {Modules.AvailableModuleSettings.Options, group_options},
-                    {Modules.AvailableModuleSettings.Offset, group_offset},
-                    {Modules.AvailableModuleSettings.FadeDelay, group_delay},
-                    {Modules.AvailableModuleSettings.AdditionalData, group_additional_data},
-                    {Modules.AvailableModuleSettings.CustomSettings, group_open_module_settings},
-                    {Modules.AvailableModuleSettings.AdditionalDataFix, btn_fix_additional_data},
+                    {EventModuleAvailableSettings.UseSafeArea, group_safe_area},
+                    {EventModuleAvailableSettings.Options, group_options},
+                    {EventModuleAvailableSettings.Offset, group_offset},
+                    {EventModuleAvailableSettings.FadeDelay, group_delay},
+                    {EventModuleAvailableSettings.AdditionalData, group_additional_data},
+                    {EventModuleAvailableSettings.CustomSettings, group_open_module_settings},
+                    {EventModuleAvailableSettings.AdditionalDataFix, btn_fix_additional_data},
                 };
 
                 foreach (var p in groups_map)
@@ -300,7 +301,7 @@ namespace OBSNotifier
         {
             System.Diagnostics.Process.Start("https://boosty.to/dmitriysalnikov/donate");
         }
-        
+
         private void ReportErrorTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/DmitriySalnikov/OBSNotifier/issues");

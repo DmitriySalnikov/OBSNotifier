@@ -1,4 +1,4 @@
-﻿using OBSNotifier.Modules;
+﻿using OBSNotifier.Modules.Event;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using System;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace OBSNotifier.Modules.Default
+namespace OBSNotifier.Modules.Event.Default
 {
     internal partial class DefaultNotificationWindow : Window
     {

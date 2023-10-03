@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 
-namespace OBSNotifier.Modules.NvidiaLike
+namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     class NvidiaCustomAnimationConfig
     {

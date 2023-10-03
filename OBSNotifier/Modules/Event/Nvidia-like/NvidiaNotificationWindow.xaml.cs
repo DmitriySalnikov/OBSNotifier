@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media.Animation;
 
-namespace OBSNotifier.Modules.NvidiaLike
+namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     public partial class NvidiaNotificationWindow : Window
     {

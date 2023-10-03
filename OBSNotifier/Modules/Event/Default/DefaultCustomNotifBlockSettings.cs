@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace OBSNotifier.Modules.Default
+namespace OBSNotifier.Modules.Event.Default
 {
     public class DefaultCustomNotifBlockSettings
     {

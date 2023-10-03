@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace OBSNotifier.Modules
+namespace OBSNotifier.Modules.Event
 {
     [Flags]
-    public enum AvailableModuleSettings : long
+    public enum EventModuleAvailableSettings : long
     {
         None = 0,
         /// <summary>

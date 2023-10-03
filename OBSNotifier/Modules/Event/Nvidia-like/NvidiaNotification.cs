@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace OBSNotifier.Modules.NvidiaLike
+namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     public partial class NvidiaNotification : IOBSNotifierModule
     {
@@ -20,7 +20,7 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public string ModuleDescription => Utils.Tr("nvidia_like_module_desc");
 
-        public AvailableModuleSettings DefaultAvailableSettings => AvailableModuleSettings.AllNoCustomSettings;
+        public EventModuleAvailableSettings DefaultAvailableSettings => EventModuleAvailableSettings.AllNoCustomSettings;
 
         OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
         {

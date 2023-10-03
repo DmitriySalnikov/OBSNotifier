@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace OBSNotifier.Modules.Default
+namespace OBSNotifier.Modules.Event.Default
 {
     /// <summary>
     /// Interaction logic for NotificationBlock.xaml

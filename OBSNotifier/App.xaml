@@ -1,7 +1,7 @@
 ﻿<Application x:Class="OBSNotifier.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:converters="clr-namespace:OBSNotifier.Modules.Event.UserControls"
              x:ClassModifier="internal"
              ShutdownMode="OnExplicitShutdown"
              Startup="Application_Startup"
