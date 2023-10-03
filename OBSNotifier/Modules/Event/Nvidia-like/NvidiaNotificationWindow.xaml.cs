@@ -6,7 +6,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     public partial class NvidiaNotificationWindow : Window
     {
-        const string default_icon_path = "pack://application:,,,/Modules/Nvidia-like/obs.png";
+        const string default_icon_path = "pack://application:,,,/Modules/Event/Nvidia-like/obs.png";
         const double default_window_width = 300;
         const double default_window_height = 90;
 
@@ -96,6 +96,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 };
                 Utils.ConfigParseString(owner.ModuleSettings.AdditionalData, ref currentParams);
             }
+
+            // TODO add limit to scale
 
             // General params
             currentParams.Duration = owner.ModuleSettings.OnScreenTime;

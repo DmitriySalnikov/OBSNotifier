@@ -16,7 +16,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Resources.xaml"/>
+                <ResourceDictionary Source="../../../Resources.xaml"/>
                 <ResourceDictionary>
                     <BeginStoryboard x:Key="nvidia_anim">
                         <Storyboard Completed="AnimationNV_Finished">
