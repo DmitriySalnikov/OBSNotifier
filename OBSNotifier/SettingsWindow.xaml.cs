@@ -106,20 +106,20 @@ namespace OBSNotifier
 
             if (isError)
             {
-                cb_autostart.Content = not_available_text;
+                cb_autostart_text.Text = not_available_text;
             }
             else
             {
-                cb_autostart.Content = def_text;
+                cb_autostart_text.Text = def_text;
                 if (cb_autostart.IsChecked.HasValue && cb_autostart.IsChecked.Value)
                 {
                     try
                     {
-                        cb_autostart.Content = AutostartManager.GetAutostartPath(App.AppName) == System.Windows.Forms.Application.ExecutablePath ? def_text : dif_path_text;
+                        cb_autostart_text.Text = AutostartManager.GetAutostartPath(App.AppName) == System.Windows.Forms.Application.ExecutablePath ? def_text : dif_path_text;
                     }
                     catch
                     {
-                        cb_autostart.Content = not_available_text;
+                        cb_autostart_text.Text = not_available_text;
                     }
                 }
             }

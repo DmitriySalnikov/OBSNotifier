@@ -40,7 +40,9 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="{Binding ActualWidth, ElementName=btn_autostart_script_create_update , Mode=OneWay}"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="cb_autostart" Content="{DynamicResource settings_window_run_with_windows}" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="cb_autostart" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="cb_autostart_text" Text="{DynamicResource settings_window_run_with_windows}" TextWrapping="Wrap"/>
+                </CheckBox>
                 <Button x:Name="btn_autostart_script_create_update" Grid.Column="1" MinWidth="110" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btn_autostart_script_create_update_Click">
                     <TextBlock x:Name="tb_autostart_button_text" Text="Start with OBS&#xD;&#xA;(update☹️)" TextAlignment="Center" HorizontalAlignment="Center"/>
                 </Button>
