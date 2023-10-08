@@ -1,8 +1,5 @@
-﻿using OBSNotifier.Properties;
-using System;
-using System.IO;
-using System.Reflection;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System.Xml.Linq;
 
 namespace OBSNotifier
 {
@@ -27,20 +24,17 @@ namespace OBSNotifier
             {
                 try
                 {
-                    using (var f = File.Open(ScriptPath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        using (var sr = new StreamReader(f))
-                        {
-                            var isOutdated = sr.ReadToEnd() != scriptText;
-                            if (!suppressLogs)
-                                App.Log($"The autorun script was read and compared with the current version: {(isOutdated ? "The file needs to be updated." : "The file is up-to-date.")}");
-                            return isOutdated;
-                        }
-                    }
+                    using var f = File.Open(ScriptPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    using var sr = new StreamReader(f);
+                    var isOutdated = sr.ReadToEnd() != scriptText;
+                    if (!suppressLogs)
+                        App.Log($"The autorun script was read and compared with the current version: {(isOutdated ? "The file needs to be updated." : "The file is up-to-date.")}");
+                    return isOutdated;
                 }
                 catch (Exception ex)
                 {
-                    App.Log($"The autorun script file cannot be opened: {ex.Message}");
+                    App.LogError("The autorun script file cannot be opened.");
+                    App.Log(ex);
                     return false;
                 }
             }
@@ -52,26 +46,23 @@ namespace OBSNotifier
         {
             try
             {
-                using (var f = File.Open(ScriptPath, FileMode.Create, FileAccess.Write, FileShare.Write))
-                {
-                    using (var sw = new StreamWriter(f))
-                    {
-                        sw.Write(scriptText);
-                        App.Log($"The autorun script has been written. File path: {ScriptPath}");
-                        return true;
-                    }
-                }
+                using var f = File.Open(ScriptPath, FileMode.Create, FileAccess.Write, FileShare.Write);
+                using var sw = new StreamWriter(f);
+                sw.Write(scriptText);
+                App.Log($"The autorun script has been written. File path: {ScriptPath}");
+                return true;
             }
             catch (Exception ex)
             {
-                App.Log($"The autorun script file cannot be written: {ex.Message}");
+                App.LogError("The autorun script file cannot be written.");
+                App.Log(ex);
             }
             return false;
         }
 
         static string GetScriptCode()
         {
-            return Resources.obs_notifier_autostart.Replace(OBSNotifierPathReplacePattern, ProgramPath);
+            return AppResources.obs_notifier_autostart.Replace(OBSNotifierPathReplacePattern, ProgramPath);
         }
 
         /// <summary>
@@ -81,8 +72,11 @@ namespace OBSNotifier
         /// <returns></returns>
         public static string GetAutostartPath(string appName)
         {
-            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                return (string)rkApp.GetValue(appName);
+            using var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true);
+            if (rkApp != null)
+                return (string)(rkApp.GetValue(appName) ?? string.Empty);
+            else
+                throw new NullReferenceException(nameof(rkApp));
         }
 
         /// <summary>
@@ -90,10 +84,13 @@ namespace OBSNotifier
         /// </summary>
         /// <param name="appName"></param>
         /// <param name="exeName"></param>
-        public static void SetAutostart(string appName, string exeName = null)
+        public static void SetAutostart(string appName, string? exeName = null)
         {
-            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
-                rkApp.SetValue(appName, exeName ?? Assembly.GetEntryAssembly().Location);
+            using var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true);
+            if (rkApp != null)
+                rkApp.SetValue(appName, exeName ?? Assembly.GetExecutingAssembly().Location);
+            else
+                throw new NullReferenceException(nameof(rkApp));
         }
 
         /// <summary>
@@ -102,8 +99,11 @@ namespace OBSNotifier
         /// <param name="appName"></param>
         public static void RemoveAutostart(string appName)
         {
-            using (var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true))
+            using var rkApp = Registry.CurrentUser.OpenSubKey(autostartKeyName, true);
+            if (rkApp != null)
                 rkApp.DeleteValue(appName, false);
+            else
+                throw new NullReferenceException(nameof(rkApp));
         }
     }
 }

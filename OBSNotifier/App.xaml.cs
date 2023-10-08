@@ -1,16 +1,9 @@
-﻿using OBSNotifier.Modules.Event;
-using OBSWebsocketDotNet;
-using OBSWebsocketDotNet.Communication;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Ninja.WebSocketClient;
+using OBSNotifier.Modules.Event;
+using OBSWebsocketSharp;
 using System.Windows;
 using System.Windows.Threading;
+using Forms = System.Windows.Forms;
 
 namespace OBSNotifier
 {
@@ -21,8 +14,9 @@ namespace OBSNotifier
     {
         public const string AppName = "OBSNotifier";
         public const string AppNameSpaced = "OBS Notifier";
+        internal const string EncryptionKey = "0E38B5E89F6C4C7E9FC653E179F98E56";
         private const string appGUID = "EAC71402-ACC2-40F1-A75A-4060C19E1F9F";
-        Mutex mutex = new Mutex(false, "Global\\" + appGUID);
+        Mutex mutex = new(false, "Global\\" + appGUID);
 
         public enum ConnectionState
         {
@@ -31,45 +25,35 @@ namespace OBSNotifier
             TryingToReconnect,
         }
 
-        static Logger logger;
+        static Logger logger = null!;
         public static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
-        public static event EventHandler<ConnectionState> ConnectionStateChanged;
-        public static OBSWebsocket obs;
-        public static ModuleManager modules;
-        public static NotificationManager notifications;
+        public static event EventHandler<ConnectionState>? ConnectionStateChanged;
+        public static OBSWebsocket obs = null!;
+        public static ModuleManager modules = null!;
+        public static NotificationManager? notifications;
         public static ConnectionState CurrentConnectionState { get; private set; }
         public static bool IsNeedToSkipNextConnectionNotifications = false;
-        public DeferredAction gc_collect = new DeferredAction(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
+        public DeferredActionWPF gc_collect = new(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
 
-        static System.Windows.Forms.NotifyIcon trayIcon;
-        static DispatcherOperation close_reconnect;
-        static Task reconnectThread;
-        static CancellationTokenSource reconnectCancellationToken;
+        static Forms.NotifyIcon trayIcon = null!;
+        static DispatcherOperation? close_reconnect;
+        static Task? reconnectThread;
+        static CancellationTokenSource? reconnectCancellationToken;
         static bool isNeedToSkipDisconnectErrorPrinting = false;
 
-        VersionCheckerGitHub versionCheckerGitHub = new VersionCheckerGitHub("DmitriySalnikov", "OBSNotifier", AppName, ShowMessageBoxForVersionCheck);
-        SettingsWindow settingsWindow;
-        AboutBox1 aboutBox;
+        VersionCheckerGitHub versionCheckerGitHub = new("DmitriySalnikov", "OBSNotifier", AppName, ShowMessageBoxForVersionCheck);
+        SettingsWindow? settingsWindow;
+        AboutBox1? aboutBox;
 
-        // TODO mb can be fixed by updating obs-websocket-dotnet, but currently 1 click on "Connect" can spawn 3 Auth Failed boxes
-        Dictionary<int, FrequentMsgPair> frequentMessageBoxBlocker = new Dictionary<int, FrequentMsgPair>();
-        class FrequentMsgPair
+        private void Application_Startup(object? sender, StartupEventArgs ee)
         {
-            public bool IsNotFrequent;
-            public DeferredAction ResetAction;
+#if DEBUG
+            UtilsWinApi.CreateUnicodeConsole();
+#endif
 
-            public FrequentMsgPair()
-            {
-                IsNotFrequent = true;
-                ResetAction = new DeferredAction(() => IsNotFrequent = true, 2500);
-            }
-        }
-
-        private void Application_Startup(object sender, StartupEventArgs ee)
-        {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            logger = new Logger("logs/log.txt");
+            Forms.Application.EnableVisualStyles();
+            Forms.Application.SetCompatibleTextRenderingDefault(false);
+            logger ??= new Logger("logs/log.txt");
 
             // Initialize Settings
             Settings.Load();
@@ -83,9 +67,10 @@ namespace OBSNotifier
             {
                 if (!Environment.CommandLine.Contains("--force_close"))
                     ShowMessageBox(Utils.TrFormat("message_box_app_already_running", AppNameSpaced), Utils.Tr("message_box_app_already_running_title"));
+                else
+                    LogError(Utils.TrFormat("message_box_app_already_running", AppNameSpaced));
 
                 mutex.Dispose();
-                mutex = null;
 
                 Environment.ExitCode = -1;
                 Shutdown();
@@ -103,16 +88,21 @@ namespace OBSNotifier
             AppDomain.CurrentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
 
             // Fix the current directory if app starts using autorun (in System32...)
-            if (Environment.CurrentDirectory.ToLower() == Environment.GetFolderPath(Environment.SpecialFolder.System).ToLower())
-                Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(GetType().Assembly.Location);
+            if (Environment.CurrentDirectory.Equals(Environment.GetFolderPath(Environment.SpecialFolder.System), StringComparison.CurrentCultureIgnoreCase))
+            {
+                string? path = Path.GetDirectoryName(GetType().Assembly.Location);
+                if (path != null)
+                {
+                    Environment.CurrentDirectory = path;
+                }
+            }
 
             CurrentConnectionState = ConnectionState.Disconnected;
 
-            obs = new OBSWebsocket();
-            obs.WSTimeout = TimeSpan.FromMilliseconds(500);
+            obs = new(OBSEventInvoke);
             obs.Connected += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
-            obs.ExitStarted += Obs_ExitStarted;
+            obs.Events.ExitStarted += Obs_ExitStarted;
 
             modules = new ModuleManager();
             notifications = new NotificationManager(this, obs);
@@ -134,9 +124,11 @@ namespace OBSNotifier
             Settings.Instance.PatchSavedSettings();
 
             // Create tray icon
-            trayIcon = new System.Windows.Forms.NotifyIcon();
-            trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
-            trayIcon.Visible = true;
+            trayIcon = new()
+            {
+                Icon = AppImages.obs_notifier_64px,
+                Visible = true
+            };
             trayIcon.DoubleClick += Menu_OpenSettingsWindow;
 
             ReconstructTrayMenu();
@@ -148,7 +140,7 @@ namespace OBSNotifier
                 Settings.Instance.Save();
 
                 trayIcon.ShowBalloonTip(3000, $"{AppNameSpaced} Info", $"The {AppNameSpaced} will always be in the tray while it's running", System.Windows.Forms.ToolTipIcon.Info);
-                Menu_OpenSettingsWindow(this, null);
+                Menu_OpenSettingsWindow(this, EventArgs.Empty);
             }
             else
             {
@@ -177,21 +169,24 @@ namespace OBSNotifier
 #endif
         }
 
-        private void Application_Exit(object sender, ExitEventArgs e)
+        void OBSEventInvoke(Action action)
+        {
+            Dispatcher.BeginInvoke(action);
+        }
+
+        private void Application_Exit(object? sender, ExitEventArgs e)
         {
             Log("App exit");
             StopReconnection();
 
-            if (obs != null)
             {
                 obs.Connected -= Obs_Connected;
                 obs.Disconnected -= Obs_Disconnected;
-                obs.Disconnect();
-                obs = null;
+                obs.Events.ExitStarted -= Obs_ExitStarted;
+                _ = obs.Disconnect();
             }
 
             gc_collect.Dispose();
-            gc_collect = null;
 
             settingsWindow?.Close();
             settingsWindow = null;
@@ -201,22 +196,22 @@ namespace OBSNotifier
             aboutBox = null;
 
             modules?.Dispose();
-            modules = null;
 
             trayIcon?.Dispose();
-            trayIcon = null;
 
             close_reconnect?.Abort();
             close_reconnect = null;
 
-            versionCheckerGitHub.Dispose();
-            versionCheckerGitHub = null;
+            versionCheckerGitHub?.Dispose();
 
             logger?.Dispose();
-            logger = null;
 
             Settings.Instance?.Save(true);
             mutex?.Dispose();
+
+#if DEBUG
+            UtilsWinApi.DeleteConsole();
+#endif
         }
 
         internal void SetupVersionChecker(bool isSilent = true)
@@ -230,18 +225,19 @@ namespace OBSNotifier
             // Get SkipVersion for updater
             try
             {
-                versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion);
+                if (!string.IsNullOrWhiteSpace(Settings.Instance.SkipVersion))
+                    versionCheckerGitHub.SkipVersion = new Version(Settings.Instance.SkipVersion);
             }
             catch (Exception ex)
             {
-                logger.Write("The SkipVersion string for the updater could not be parsed.");
-                logger.Write(ex.Message);
+                LogError("The SkipVersion string for the updater could not be parsed.");
+                Log(ex);
             }
 
             versionCheckerGitHub.CheckForUpdates(isSilent);
         }
 
-        static VersionCheckerGitHub.MSGDialogResult ShowMessageBoxForVersionCheck(VersionCheckerGitHub.MSGType type, Dictionary<string, string> customData, Exception ex)
+        static VersionCheckerGitHub.MSGDialogResult ShowMessageBoxForVersionCheck(VersionCheckerGitHub.MSGType type, Dictionary<string, string> customData, Exception? ex)
         {
             string text = "";
             string caption = "";
@@ -262,17 +258,17 @@ namespace OBSNotifier
                     icon = MessageBoxImage.Information;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToRequestInfo:
-                    text = $"{Utils.Tr("message_box_version_check_failed_request")}\n\n{ex.Message}";
+                    text = $"{Utils.Tr("message_box_version_check_failed_request")}\n\n{ex?.Message ?? string.Empty}";
                     caption = Utils.Tr("message_box_error_title");
                     icon = MessageBoxImage.Error;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToGetInfo:
-                    text = $"{Utils.Tr("message_box_version_check_failed_parse_info")}\n\n{ex.Message}";
+                    text = $"{Utils.Tr("message_box_version_check_failed_parse_info")}\n\n{ex?.Message ?? string.Empty}";
                     caption = Utils.Tr("message_box_error_title");
                     icon = MessageBoxImage.Error;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToProcessData:
-                    text = $"{Utils.Tr("message_box_version_check_failed_to_check")}\n\n{ex.Message}";
+                    text = $"{Utils.Tr("message_box_version_check_failed_to_check")}\n\n{ex?.Message ?? string.Empty}";
                     caption = Utils.Tr("message_box_error_title");
                     icon = MessageBoxImage.Error;
                     break;
@@ -280,23 +276,18 @@ namespace OBSNotifier
 
             MessageBoxResult res = MessageBox.Show(text, caption, buttons, icon, MessageBoxResult.Cancel);
 
-            switch (res)
+            return res switch
             {
-                case MessageBoxResult.None:
-                    return VersionCheckerGitHub.MSGDialogResult.OK;
-                case MessageBoxResult.OK:
-                    return VersionCheckerGitHub.MSGDialogResult.OK;
-                case MessageBoxResult.Cancel:
-                    return VersionCheckerGitHub.MSGDialogResult.Cancel;
-                case MessageBoxResult.Yes:
-                    return VersionCheckerGitHub.MSGDialogResult.Yes;
-                case MessageBoxResult.No:
-                    return VersionCheckerGitHub.MSGDialogResult.No;
-            }
-            return VersionCheckerGitHub.MSGDialogResult.Cancel;
+                MessageBoxResult.None => VersionCheckerGitHub.MSGDialogResult.OK,
+                MessageBoxResult.OK => VersionCheckerGitHub.MSGDialogResult.OK,
+                MessageBoxResult.Cancel => VersionCheckerGitHub.MSGDialogResult.Cancel,
+                MessageBoxResult.Yes => VersionCheckerGitHub.MSGDialogResult.Yes,
+                MessageBoxResult.No => VersionCheckerGitHub.MSGDialogResult.No,
+                _ => VersionCheckerGitHub.MSGDialogResult.Cancel,
+            };
         }
 
-        void Menu_ShowAboutWindow(object sender, EventArgs e)
+        void Menu_ShowAboutWindow(object? sender, EventArgs e)
         {
             if (aboutBox != null)
                 return;
@@ -306,7 +297,7 @@ namespace OBSNotifier
             aboutBox.ShowDialog();
         }
 
-        void Menu_OpenSettingsWindow(object sender, EventArgs e)
+        void Menu_OpenSettingsWindow(object? sender, EventArgs e)
         {
             if (settingsWindow == null)
             {
@@ -320,19 +311,24 @@ namespace OBSNotifier
             }
         }
 
-        void Menu_CheckForUpdates(object sender, EventArgs e)
+        void Menu_CheckForUpdates(object? sender, EventArgs e)
         {
             versionCheckerGitHub.CheckForUpdates();
         }
 
-        void Menu_OpenLogsFolder(object sender, EventArgs e)
+        void Menu_OpenLogsFolder(object? sender, EventArgs e)
         {
-            Process.Start(Path.Combine(AppDataFolder, "logs"));
+            Utils.ProcessStartShell(Path.Combine(AppDataFolder, "logs"));
         }
 
         public static void Log(string txt)
         {
-            logger?.Write(txt);
+            logger.Write(txt);
+        }
+
+        public static void LogError(string txt)
+        {
+            logger.WriteError(txt);
         }
 
         public static void Log(Exception ex)
@@ -340,17 +336,18 @@ namespace OBSNotifier
             logger.Write(ex);
         }
 
-        void GlobalUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        void GlobalUnhandledExceptionHandler(object? sender, UnhandledExceptionEventArgs e)
         {
-            Log("--- The program crashed due to an exception ---");
+            LogError("--- The program crashed due to an exception ---");
             Log((Exception)e.ExceptionObject);
+            logger.Dispose();
         }
 
         public static MessageBoxResult ShowMessageBox(string messageBoxText, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None, MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxOptions options = MessageBoxOptions.None)
         {
-            logger?.Write($"MessageBox shown. Text: '{messageBoxText}', Caption: '{caption}', Button: '{button}', Icon: '{icon}', DefaultResult: '{defaultResult}', Options: '{options}'");
+            logger.Write($"MessageBox shown. Text: '{messageBoxText}', Caption: '{caption}', Button: '{button}', Icon: '{icon}', DefaultResult: '{defaultResult}', Options: '{options}'");
             MessageBoxResult res = MessageBox.Show(messageBoxText, caption, button, icon, defaultResult, options);
-            logger?.Write($"MessageBox result for box with Text: '{messageBoxText}' and Caption: '{caption}' is: '{res}'");
+            logger.Write($"MessageBox result for box with Text: '{messageBoxText}' and Caption: '{caption}' is: '{res}'");
 
             return res;
         }
@@ -384,61 +381,60 @@ namespace OBSNotifier
 
         internal void ReconstructTrayMenu()
         {
-            if (trayIcon != null)
+            if (trayIcon == null)
+                return;
+
+            // Create lang menu
+            var lang_menu = new Forms.ToolStripMenuItem(Utils.Tr("tray_menu_languages"));
+
+            // Sort all except default one, so skip(1)
+            var sorted_langs = Languages.Skip(1).ToArray();
+            // Sort by codes
+            Array.Sort(sorted_langs, (CultureInfo x, CultureInfo y) => x.Name.CompareTo(y.Name));
+
+            var lang_hint = lang_menu.DropDownItems.Add(Utils.Tr("tray_menu_languages_completion_hint"));
+            lang_hint.Enabled = false;
+
+            // Don't forget to prepend(default)
+            foreach (var l in sorted_langs.Prepend(Languages.First()))
             {
-                // Create lang menu
-                var lang_menu = new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_languages"));
+                var progress_tr = "~";
+                var progress_apr = "~";
 
-                // Sort all except default one, so skip(1)
-                var sorted_langs = Languages.Skip(1).ToArray();
-                // Sort by codes
-                Array.Sort(sorted_langs, (CultureInfo x, CultureInfo y) => x.Name.CompareTo(y.Name));
-
-                var lang_hint = lang_menu.MenuItems.Add(Utils.Tr("tray_menu_languages_completion_hint"));
-                lang_hint.Enabled = false;
-
-                // Don't forget to prepend(default)
-                foreach (var l in sorted_langs.Prepend(Languages.First()))
+                if (TranslationProgress.TryGetValue(l.Name, out Size value))
                 {
-                    var progress_tr = "~";
-                    var progress_apr = "~";
-
-                    if (TranslationProgress.ContainsKey(l.Name))
-                    {
-                        var sz = TranslationProgress[l.Name];
-                        progress_tr = sz.Width.ToString();
-                        progress_apr = sz.Height.ToString();
-                    }
-
-                    var lang_item_str = l.Name == DefaultLanguage.Name ? l.NativeName : Utils.TrFormat("tray_menu_languages_completion_template", l.NativeName, progress_tr, progress_apr);
-                    var item = lang_menu.MenuItems.Add(lang_item_str, (s, e) => Language = l);
-
-                    // Highlight the currently selected language
-                    if (Language.Equals(l))
-                    {
-                        item.DefaultItem = true;
-                    }
+                    progress_tr = value.Width.ToString();
+                    progress_apr = value.Height.ToString();
                 }
 
-                // Link to the translations page
-                lang_menu.MenuItems.Add("Help with translations!", (s, e) => Process.Start("https://crowdin.com/project/obs-notifier"));
+                var lang_item_str = l.Name == DefaultLanguage.Name ? l.NativeName : Utils.TrFormat("tray_menu_languages_completion_template", l.NativeName, progress_tr, progress_apr);
+                var item = lang_menu.DropDownItems.Add(lang_item_str, null, (s, e) => Language = l);
 
+                // Highlight the currently selected language
+                if (Language.Equals(l))
+                {
+                    Utils.UpdateContextItemStyle(item, System.Drawing.FontStyle.Bold);
+                }
+            }
 
-                trayIcon.ContextMenu?.MenuItems.Clear();
+            // Link to the translations page
+            lang_menu.DropDownItems.Add("Help with translations!", null, (s, e) => Utils.ProcessStartShell("https://crowdin.com/project/obs-notifier"));
 
-                trayIcon.ContextMenu = new System.Windows.Forms.ContextMenu(new System.Windows.Forms.MenuItem[] {
-                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_open_settings"), Menu_OpenSettingsWindow),
-                    new System.Windows.Forms.MenuItem("-"),
+            trayIcon.ContextMenuStrip?.Dispose();
+            trayIcon.ContextMenuStrip = new();
+
+            trayIcon.ContextMenuStrip.Items.AddRange(new Forms.ToolStripItem[] {
+                    new Forms.ToolStripMenuItem(Utils.Tr("tray_menu_open_settings"), null, Menu_OpenSettingsWindow),
+                    new Forms.ToolStripSeparator(),
                     lang_menu,
-                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_check_updates"), Menu_CheckForUpdates),
-                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_open_logs_folder"), Menu_OpenLogsFolder),
-                    new System.Windows.Forms.MenuItem(Utils.TrFormat("tray_menu_about", AppNameSpaced), Menu_ShowAboutWindow),
-                    new System.Windows.Forms.MenuItem("-"),
-                    new System.Windows.Forms.MenuItem(Utils.Tr("tray_menu_exit"), (s,e) => Shutdown()),
+                    new Forms.ToolStripMenuItem(Utils.Tr("tray_menu_check_updates"), null, Menu_CheckForUpdates),
+                    new Forms.ToolStripMenuItem(Utils.Tr("tray_menu_open_logs_folder"),  null, Menu_OpenLogsFolder),
+                    new Forms.ToolStripMenuItem(Utils.TrFormat("tray_menu_about", AppNameSpaced), null, Menu_ShowAboutWindow),
+                    new Forms.ToolStripSeparator(),
+                    new Forms.ToolStripMenuItem(Utils.Tr("tray_menu_exit"), null, (s, e) => Shutdown())
                 });
 
-                trayIcon.ContextMenu.MenuItems[0].DefaultItem = true;
-            }
+            Utils.UpdateContextItemStyle(trayIcon.ContextMenuStrip.Items[0], System.Drawing.FontStyle.Bold);
         }
 
         static void ChangeConnectionState(ConnectionState newState)
@@ -468,21 +464,24 @@ namespace OBSNotifier
 
         static void UpdateTrayStatus()
         {
+            if (trayIcon == null)
+                return;
+
             try
             {
-                // max 64 chars
+                // max 128 chars
                 switch (CurrentConnectionState)
                 {
                     case ConnectionState.Connected:
-                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_connected_64px;
+                        trayIcon.Icon = AppImages.obs_notifier_connected_64px;
                         trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_connected")}";
                         break;
                     case ConnectionState.Disconnected:
-                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_64px;
+                        trayIcon.Icon = AppImages.obs_notifier_64px;
                         trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_not_connected")}";
                         break;
                     case ConnectionState.TryingToReconnect:
-                        trayIcon.Icon = OBSNotifier.Properties.Resources.obs_notifier_reconnect_64px;
+                        trayIcon.Icon = AppImages.obs_notifier_reconnect_64px;
                         trayIcon.Text = $"{AppNameSpaced}:\n{Utils.Tr("tray_menu_status_trying_to_reconnect")}";
                         break;
                 }
@@ -511,24 +510,24 @@ namespace OBSNotifier
 
                 try
                 {
-                    await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password));
+                    await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password, EncryptionKey) ?? "");
                 }
                 catch (Exception ex)
                 {
                     if (attempts < 5)
                     {
-                        Log(ex.Message);
+                        Log(ex?.Message ?? string.Empty);
                     }
                     else if (attempts == 5)
                     {
-                        Log(ex.Message);
+                        Log(ex?.Message ?? string.Empty);
                         Log("5 Connection errors are printed. The next errors will not be displayed.");
                         isNeedToSkipDisconnectErrorPrinting = true;
                     }
 
                 }
 
-                if (obs.IsConnected || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
+                if ((obs != null && obs.IsConnected) || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
                 {
                     isNeedToSkipDisconnectErrorPrinting = false;
                     return;
@@ -543,16 +542,16 @@ namespace OBSNotifier
             if (reconnectCancellationToken != null)
             {
                 reconnectCancellationToken.Cancel();
-                reconnectThread.Wait();
+                reconnectThread?.Wait();
 
                 reconnectCancellationToken.Dispose();
-                reconnectThread.Dispose();
+                reconnectThread?.Dispose();
                 reconnectThread = null;
                 reconnectCancellationToken = null;
             }
         }
 
-        internal static Task ConnectToOBS(string adr, string pas)
+        internal static Task ConnectToOBS(string adr, string pass)
         {
             var adrs = adr;
             try
@@ -561,15 +560,14 @@ namespace OBSNotifier
                     adrs = "ws://localhost:4455";
                 if (!adrs.StartsWith("ws://"))
                     adrs = "ws://" + adrs;
-                var pass = pas;
 
                 if (CurrentConnectionState != ConnectionState.TryingToReconnect)
                     Settings.Instance.Save();
-                return obs.ConnectAsync(adrs, pass);
+                return obs.Connect(adrs, pass, EventSubscription.All);
             }
             catch (Exception ex)
             {
-                ShowMessageBox(ex.Message, Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox(ex?.Message ?? string.Empty, Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
             return Task.CompletedTask;
@@ -579,7 +577,7 @@ namespace OBSNotifier
         {
             try
             {
-                obs.Disconnect();
+                _ = obs.Disconnect();
             }
             catch (Exception ex)
             {
@@ -593,67 +591,72 @@ namespace OBSNotifier
             Settings.Instance.Save();
         }
 
-        private void Obs_Connected(object sender, EventArgs e)
+        private void Obs_Connected(object? sender, EventArgs e)
         {
             Log($"Connected to OBS");
             ChangeConnectionState(ConnectionState.Connected);
             Settings.Instance.IsManuallyConnected = true;
         }
 
-        private void Obs_Disconnected(object sender, ObsDisconnectionInfo e)
+        private void Obs_Disconnected(object? sender, OBSDisconnectInfo e)
         {
             if (isNeedToSkipDisconnectErrorPrinting)
                 return;
 
-            if ((int)e.ObsCloseCode < 4000)
+            if (e.Exception is WebSocketClosedException wse && wse.CloseCode.HasValue)
             {
-                var ee = (System.Net.WebSockets.WebSocketCloseStatus)e.ObsCloseCode;
-                Log($"Disconnected from OBS: {ee}");
-
-                switch (ee)
+                Log($"Disconnected from OBS: {(int)wse.CloseCode}");
+                if ((int)wse.CloseCode < 4000)
                 {
-                    case System.Net.WebSockets.WebSocketCloseStatus.NormalClosure:
-                    case System.Net.WebSockets.WebSocketCloseStatus.EndpointUnavailable:
-                    case System.Net.WebSockets.WebSocketCloseStatus.ProtocolError:
-                    case System.Net.WebSockets.WebSocketCloseStatus.InvalidMessageType:
-                    case System.Net.WebSockets.WebSocketCloseStatus.Empty:
-                    case System.Net.WebSockets.WebSocketCloseStatus.InvalidPayloadData:
-                    case System.Net.WebSockets.WebSocketCloseStatus.PolicyViolation:
-                    case System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig:
-                    case System.Net.WebSockets.WebSocketCloseStatus.MandatoryExtension:
-                    case System.Net.WebSockets.WebSocketCloseStatus.InternalServerError:
-                        // no need to mark connection as manually disconnected and prevent reconnect
-                        // Settings.Instance.IsConnected = false;
-                        break;
+                    switch (wse.CloseCode)
+                    {
+                        case System.Net.WebSockets.WebSocketCloseStatus.NormalClosure:
+                        case System.Net.WebSockets.WebSocketCloseStatus.EndpointUnavailable:
+                        case System.Net.WebSockets.WebSocketCloseStatus.ProtocolError:
+                        case System.Net.WebSockets.WebSocketCloseStatus.InvalidMessageType:
+                        case System.Net.WebSockets.WebSocketCloseStatus.Empty:
+                        case System.Net.WebSockets.WebSocketCloseStatus.InvalidPayloadData:
+                        case System.Net.WebSockets.WebSocketCloseStatus.PolicyViolation:
+                        case System.Net.WebSockets.WebSocketCloseStatus.MessageTooBig:
+                        case System.Net.WebSockets.WebSocketCloseStatus.MandatoryExtension:
+                        case System.Net.WebSockets.WebSocketCloseStatus.InternalServerError:
+                            // no need to mark connection as manually disconnected and prevent reconnect
+                            // Settings.Instance.IsConnected = false;
+                            break;
+                    }
+                }
+                else
+                {
+                    var ee = (WebSocketCloseCode)wse.CloseCode;
+
+                    switch (ee)
+                    {
+                        case WebSocketCloseCode.UnknownReason:
+                        case WebSocketCloseCode.MessageDecodeError:
+                        case WebSocketCloseCode.MissingDataField:
+                        case WebSocketCloseCode.InvalidDataFieldType:
+                        case WebSocketCloseCode.InvalidDataFieldValue:
+                        case WebSocketCloseCode.UnknownOpCode:
+                        case WebSocketCloseCode.NotIdentified:
+                        case WebSocketCloseCode.AlreadyIdentified:
+                        case WebSocketCloseCode.UnsupportedRpcVersion:
+                        case WebSocketCloseCode.SessionInvalidated:
+                        case WebSocketCloseCode.UnsupportedFeature:
+                            // reconnect
+                            break;
+                        case WebSocketCloseCode.AuthenticationFailed:
+                            ShowMessageBox(Utils.Tr("message_box_app_auth_failed"), Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            StopReconnection();
+
+                            Settings.Instance.IsManuallyConnected = false;
+                            DisconnectFromOBS();
+                            break;
+                    }
                 }
             }
             else
             {
-                Log($"Disconnected from OBS: {e.ObsCloseCode}");
-
-                switch (e.ObsCloseCode)
-                {
-                    case ObsCloseCodes.UnknownReason:
-                    case ObsCloseCodes.MessageDecodeError:
-                    case ObsCloseCodes.MissingDataField:
-                    case ObsCloseCodes.InvalidDataFieldType:
-                    case ObsCloseCodes.InvalidDataFieldValue:
-                    case ObsCloseCodes.UnknownOpCode:
-                    case ObsCloseCodes.NotIdentified:
-                    case ObsCloseCodes.AlreadyIdentified:
-                    case ObsCloseCodes.UnsupportedRpcVersion:
-                    case ObsCloseCodes.SessionInvalidated:
-                    case ObsCloseCodes.UnsupportedFeature:
-                        break;
-                    case ObsCloseCodes.AuthenticationFailed:
-                        if (IsNotTooFrequentMessage((int)e.ObsCloseCode))
-                            ShowMessageBox(Utils.Tr("message_box_app_auth_failed"), Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        StopReconnection();
-
-                        Settings.Instance.IsManuallyConnected = false;
-                        DisconnectFromOBS();
-                        break;
-                }
+                // TODO wtf?
             }
 
             if (Settings.Instance.IsManuallyConnected)
@@ -662,34 +665,14 @@ namespace OBSNotifier
                 ChangeConnectionState(ConnectionState.Disconnected);
         }
 
-        // TODO it can be deleted if the "authorization error" error does not appear many times when the connection button is pressed once
-        bool IsNotTooFrequentMessage(int messageId)
-        {
-            if (!frequentMessageBoxBlocker.ContainsKey(messageId))
-            {
-                frequentMessageBoxBlocker.Add(messageId, new FrequentMsgPair());
-            }
-
-            if (frequentMessageBoxBlocker[messageId].IsNotFrequent)
-            {
-                frequentMessageBoxBlocker[messageId].IsNotFrequent = false;
-                frequentMessageBoxBlocker[messageId].ResetAction.CallDeferred();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private void Obs_ExitStarted(object sender, EventArgs e)
+        private void Obs_ExitStarted(object? sender, EventArgs e)
         {
             Log("OBS is about to close");
 
             if (Settings.Instance.IsCloseOnOBSClosing && settingsWindow == null)
             {
                 StopReconnection();
-                this.InvokeAction(() => Shutdown());
+                Dispatcher.BeginInvoke(() => Shutdown());
             }
         }
     }

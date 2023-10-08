@@ -58,4 +58,18 @@
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="{x:Null}"/>
     </Style>
+
+    <Style x:Key="colorToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border BorderThickness="0" Background="{TemplateBinding Background}">
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

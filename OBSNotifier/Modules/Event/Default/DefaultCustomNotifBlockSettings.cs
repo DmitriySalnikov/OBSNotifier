@@ -4,43 +4,100 @@ using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.Default
 {
-    public class DefaultCustomNotifBlockSettings
+    internal class DefaultCustomNotifBlockSettings : OBSModuleSettings
     {
-        uint blocks;
-        uint duration;
-        double radius;
-        double width;
-        double height;
+        double onScreenDuration = 2;
+        uint blocks = 3;
+        double borderRadius = 4;
+        double borderThickness = 1;
+        uint width = 180;
+        uint height = 52;
 
-        [ConfigIgnore]
-        public uint Duration { get { return duration; } set { duration = Math.Max(0, value); } }
-
-        public Color BackgroundColor { get; set; }
-        public Color OutlineColor { get; set; }
-        public Color TextColor { get; set; }
-        public uint Blocks { get => blocks; set { blocks = Math.Max(1, value); } }
-        public double Radius { get { return radius; } set { radius = Math.Max(0, value); } }
-        public double Width { get { return width; } set { width = Math.Max(1, value); } }
-        public double Height { get { return height; } set { height = Math.Max(1, value); } }
-        public Thickness Margin { get; set; }
-        public uint MaxPathChars { get; set; }
-        public bool ClickThrough { get; set; }
-        public bool ShowQuickActions { get; set; }
-
-        public DefaultCustomNotifBlockSettings()
+        [SettingsItemStringDisplayID]
+        public string DisplayID { get; set; } = string.Empty;
+        public bool UseSafeDisplayArea { get; set; }
+        [SettingsItemNumberRange(0, 30, 0.1)]
+        public double OnScreenTime
         {
-            Blocks = 1;
-            BackgroundColor = (Color)ColorConverter.ConvertFromString("#4C4C4C");
-            TextColor = (Color)ColorConverter.ConvertFromString("#D8D8D8");
-            OutlineColor = (Color)ColorConverter.ConvertFromString("#59000000");
-            Duration = 2000;
-            Radius = 4;
-            Width = 180;
-            Height = 52;
-            Margin = new Thickness(4);
-            MaxPathChars = 32;
-            ClickThrough = false;
-            ShowQuickActions = true;
+            get => onScreenDuration;
+            set => onScreenDuration = Utils.Clamp(value, 0, 30);
+        }
+        public DefaultNotification.Positions Option { get; set; }
+
+        [SettingsItemNumberRange(0, 1, 0.01)]
+        public Point Offset { get; set; }
+
+        public Color BackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#4C4C4C");
+        public Color OutlineColor { get; set; } = (Color)ColorConverter.ConvertFromString("#59000000");
+        public Color TextColor { get; set; } = (Color)ColorConverter.ConvertFromString("#D8D8D8");
+
+        [SettingsItemNumberRange(1, 24)]
+        public uint Blocks
+        {
+            get => blocks;
+            set => blocks = (uint)Utils.Clamp(value, 1, 24);
+        }
+
+        [SettingsItemNumberRange(1, 2048)]
+        public uint Width
+        {
+            get => width;
+            set => width = (uint)Utils.Clamp(value, 1, 2048);
+        }
+        [SettingsItemNumberRange(1, 2048)]
+        public uint Height
+        {
+            get => height;
+            set => height = (uint)Utils.Clamp(value, 1, 2048);
+        }
+
+        [SettingsItemNumberRange(0, 500)]
+        public double BorderRadius
+        {
+            get => borderRadius;
+            set => borderRadius = Utils.Clamp(value, 0, 500);
+        }
+
+        [SettingsItemNumberRange(0, 64, 0.5)]
+        public double BorderThickness
+        {
+            get => borderThickness;
+            set => borderThickness = Utils.Clamp(value, 0, 64);
+        }
+
+        [SettingsItemNumberRange(0, 1024, 0.1)]
+        public Thickness Margin { get; set; } = new Thickness(4);
+        public bool ClickThrough { get; set; } = false;
+
+        [SettingsItemNumberRange(0, 256)]
+        public uint MaxPathChars { get; set; } = 32;
+        public bool ShowQuickActions { get; set; } = true;
+
+        public override OBSModuleSettings Clone()
+        {
+            return new DefaultCustomNotifBlockSettings()
+            {
+                DisplayID = DisplayID,
+                UseSafeDisplayArea = UseSafeDisplayArea,
+                OnScreenTime = OnScreenTime,
+                Option = Option,
+                Offset = Offset,
+
+                BackgroundColor = BackgroundColor,
+                OutlineColor = OutlineColor,
+                TextColor = TextColor,
+
+                Blocks = Blocks,
+                BorderRadius = BorderRadius,
+                Width = Width,
+                Height = Height,
+                Margin = Margin,
+
+                ClickThrough = ClickThrough,
+
+                MaxPathChars = MaxPathChars,
+                ShowQuickActions = ShowQuickActions,
+            };
         }
     }
 }

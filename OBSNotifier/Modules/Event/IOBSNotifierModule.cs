@@ -1,16 +1,19 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 
 namespace OBSNotifier.Modules.Event
 {
-    public struct OBSNotifierModuleSettings
+    public class OBSModuleSettings : INotifyPropertyChanged
     {
-        public bool UseSafeDisplayArea;
-        public uint OnScreenTime;
-        public Enum Option;
-        public Point Offset;
-        public string AdditionalData;
-        public string CustomSettings;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public virtual OBSModuleSettings Clone() => throw new NotImplementedException();
     }
 
     public interface IOBSNotifierModule
@@ -20,17 +23,10 @@ namespace OBSNotifier.Modules.Event
         string ModuleAuthor { get; }
         string ModuleDescription { get; }
         /// <summary>
-        /// Define which default settings will be available for this module
-        /// </summary>
-        EventModuleAvailableSettings DefaultAvailableSettings { get; }
-        /// <summary>
         /// The type of enumeration of items for settings. Can be null
         /// </summary>
         Type EnumOptionsType { get; }
-        /// <summary>
-        /// A set of common settings for the module
-        /// </summary>
-        OBSNotifierModuleSettings ModuleSettings { get; set; }
+        OBSModuleSettings Settings { get; set; }
         /// <summary>
         /// Default types of active notifications
         /// </summary>
@@ -67,20 +63,6 @@ namespace OBSNotifier.Modules.Event
         /// <param name="description">Description</param>
         /// <param name="originalData">The original OBS callback arguments, so you can show them as you wish</param>
         /// <returns></returns>
-        bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null);
-        /// <summary>
-        /// Calling on Custom Settings Button pressed
-        /// </summary>
-        void OpenCustomSettings();
-        /// <summary>
-        /// Default mechanism for saving module settings data into <see cref="OBSNotifierModuleSettings.CustomSettings"/>
-        /// </summary>
-        /// <returns>Any string with your settings or null</returns>
-        string GetCustomSettingsDataToSave();
-        /// <summary>
-        /// This method is needed to format or correct user's errors in <see cref="OBSNotifierModuleSettings.AdditionalData"/>
-        /// </summary>
-        /// <returns>Any string with fixed settings or null</returns>
-        string GetFixedAdditionalData();
+        bool ShowNotification(NotificationType type, string title, string? description = null, object[]? originalData = null);
     }
 }

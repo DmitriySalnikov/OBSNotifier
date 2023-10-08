@@ -18,36 +18,44 @@ jobs:
     env:
       Project_Name: OBSNotifier
       Solution_Name: OBSNotifier.sln
+      SDK_Name: net8.0-windows
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Setup Nuget
-        uses: Nuget/setup-nuget@v1.1.1
+      # Add nuget to cache
+      - name: Setup Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{runner.os}}-nuget-${{hashFiles('**/*.csproj')}}
+          restore-keys: |
+            ${{runner.os}}-nuget
 
       - name: Restore nuget packages
-        run: nuget restore ${{ env.Solution_Name }}
+        run: nuget restore ${{env.Solution_Name}}
 
       - name: Build solution
         shell: powershell
-        run: msbuild ${{ env.Solution_Name }} /p:Configuration=${{ matrix.configuration }} /p:Platform="Any CPU"
+        run: msbuild ${{env.Solution_Name}} /p:Configuration=${{matrix.configuration}} /p:Platform="Any CPU"
 
       - name: Prepare artifacts
         if: matrix.configuration == 'Release'
         shell: powershell
-        run: Remove-Item ${{ env.Project_Name }}/bin/${{ matrix.configuration }}/* -Include *.xml,*.pdb -Force
+        run: Remove-Item bin/${{env.Project_Name}}/${{matrix.configuration}}/* -Include *.xml,*.pdb -Force
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.Project_Name }}_${{ matrix.configuration }}
-          path: ${{ env.Project_Name }}/bin/${{ matrix.configuration }}/
+          name: ${{matrix.configuration == 'Release' && env.Project_Name || format('{0}_{1}', env.Project_Name, matrix.configuration)}}
+          path: bin/${{env.Project_Name}}/${{matrix.configuration}}/${{env.SDK_Name}}
 
   push_translation:
     name: Update localization sources
@@ -56,7 +64,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
@@ -65,5 +73,5 @@ jobs:
         with:
           upload_sources: true
         env:
-          CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
-          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          CROWDIN_PROJECT_ID: ${{secrets.CROWDIN_PROJECT_ID}}
+          CROWDIN_PERSONAL_TOKEN: ${{secrets.CROWDIN_PERSONAL_TOKEN}}

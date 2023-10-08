@@ -41,7 +41,7 @@ namespace OBSNotifier
 
         public static WPFScreens Primary
         {
-            get { return new WPFScreens(Screen.PrimaryScreen); }
+            get { return new WPFScreens(Screen.PrimaryScreen ?? throw new NullReferenceException("Screen.PrimaryScreen")); }
         }
 
         private readonly Screen screen;

@@ -1,11 +1,8 @@
-﻿using OBSNotifier.Modules.Event;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
+﻿using OBSNotifier.Modules;
+using OBSNotifier.Modules.UserControls.SettingsItems;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace OBSNotifier
 {
@@ -13,12 +10,19 @@ namespace OBSNotifier
     {
         bool IsChangedByCode = false;
         bool IsConnecting = false;
-        Dictionary<string, TextBlock> module_id_to_text_block_map = new Dictionary<string, TextBlock>();
+        readonly Dictionary<string, TextBlock> module_id_to_text_block_map = [];
+        ModuleSettingsContainer? moduleSettings = null;
 
+        static SettingsWindow? Instance = null;
+        public static Popup CPP { get => Instance?.colorPicker_popup ?? throw new NullReferenceException(nameof(Instance)); }
+        public static ColorPicker.StandardColorPicker CP { get => Instance?.colorPicker ?? throw new NullReferenceException(nameof(Instance)); }
+
+        // TODO add `reset all`
         public SettingsWindow()
         {
             InitializeComponent();
 
+            Instance = this;
             Title = App.AppNameSpaced;
 
             UpdateConnectButton();
@@ -139,6 +143,11 @@ namespace OBSNotifier
             }
         }
 
+        void OnEventModuleSettingChanged(object? sender, EventArgs e)
+        {
+            UpdateNotification();
+        }
+
         void OnModuleChanged()
         {
             IsChangedByCode = true;
@@ -146,7 +155,19 @@ namespace OBSNotifier
             var moduleData = App.modules.CurrentModule;
             if (moduleData.instance != null)
             {
-                cb_use_safe_area.IsChecked = moduleData.instance.ModuleSettings.UseSafeDisplayArea;
+                if (moduleSettings != null)
+                {
+                    moduleSettings.ValueChanged -= OnEventModuleSettingChanged;
+                    moduleSettings.Children.Clear();
+                }
+
+                // TODO animations does not update
+                module_settings_container.Children.Clear();
+                moduleSettings = SettingsMenuGenerator.GenerateMenu(moduleData.instance.Settings, moduleData.defaultSettings);
+                moduleSettings.ValueChanged += OnEventModuleSettingChanged;
+                module_settings_container.Children.Add(moduleSettings);
+
+                //  cb_use_safe_area.IsChecked = moduleData.instance.ModuleSettings.UseSafeDisplayArea;
 
                 // Update options list
                 cb_notification_options.Items.Clear();
@@ -159,48 +180,33 @@ namespace OBSNotifier
                     foreach (var e in names)
                         cb_notification_options.Items.Add(e);
 
-                    if (names.Contains(Settings.Instance.CurrentModuleSettings.SelectedOption))
-                        cb_notification_options.SelectedItem = Settings.Instance.CurrentModuleSettings.SelectedOption;
-                    else
-                        cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
+                    //  if (names.Contains(Settings.Instance.CurrentModuleSettings.SelectedOption))
+                    //      cb_notification_options.SelectedItem = Settings.Instance.CurrentModuleSettings.SelectedOption;
+                    // else
+                    //      cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
                 }
 
                 // additional data
-                if (Settings.Instance.CurrentModuleSettings.AdditionalData == null)
-                    tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
-                else
-                    tb_additional_data.Text = moduleData.instance.ModuleSettings.AdditionalData;
+                //  if (Settings.Instance.CurrentModuleSettings.AdditionalData == null)
+                //     tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
+                // else
+                //     tb_additional_data.Text = moduleData.instance.ModuleSettings.AdditionalData;
 
                 // offset
-                sldr_position_offset_x.Value = moduleData.instance.ModuleSettings.Offset.X;
-                sldr_position_offset_y.Value = moduleData.instance.ModuleSettings.Offset.Y;
+                //  sldr_position_offset_x.Value = moduleData.instance.ModuleSettings.Offset.X;
+                //  sldr_position_offset_y.Value = moduleData.instance.ModuleSettings.Offset.Y;
 
                 // fade time
-                sldr_fade_delay.Value = moduleData.instance.ModuleSettings.OnScreenTime;
-                sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, moduleData.instance.ModuleSettings.OnScreenTime));
+                //  sldr_fade_delay.Value = moduleData.instance.ModuleSettings.OnScreenTime;
+                //  sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, moduleData.instance.ModuleSettings.OnScreenTime));
 
                 // Update visibility of settings groups
-                var groups_map = new Dictionary<EventModuleAvailableSettings, FrameworkElement>()
-                {
-                    {EventModuleAvailableSettings.UseSafeArea, group_safe_area},
-                    {EventModuleAvailableSettings.Options, group_options},
-                    {EventModuleAvailableSettings.Offset, group_offset},
-                    {EventModuleAvailableSettings.FadeDelay, group_delay},
-                    {EventModuleAvailableSettings.AdditionalData, group_additional_data},
-                    {EventModuleAvailableSettings.CustomSettings, group_open_module_settings},
-                    {EventModuleAvailableSettings.AdditionalDataFix, btn_fix_additional_data},
-                };
-
-                foreach (var p in groups_map)
-                {
-                    p.Value.Visibility = moduleData.instance.DefaultAvailableSettings.HasFlag(p.Key) ? Visibility.Visible : Visibility.Collapsed;
-                }
             }
 
             IsChangedByCode = false;
         }
 
-        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void Window_IsVisibleChanged(object? sender, DependencyPropertyChangedEventArgs e)
         {
             IsChangedByCode = true;
 
@@ -234,7 +240,7 @@ namespace OBSNotifier
 
                 // Server & Password
                 tb_address.Text = Settings.Instance.ServerAddress;
-                tb_password.Password = Utils.DecryptString(Settings.Instance.Password);
+                tb_password.Password = Utils.DecryptString(Settings.Instance.Password, App.EncryptionKey) ?? "";
 
                 // Update monitors list
                 {
@@ -281,6 +287,7 @@ namespace OBSNotifier
             }
             else
             {
+                Instance = null;
                 // hide preview
                 App.modules.CurrentModule.instance.HidePreview();
                 Settings.Instance.IsPreviewShowing = false;
@@ -293,23 +300,23 @@ namespace OBSNotifier
             IsChangedByCode = false;
         }
 
-        private void SupportTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SupportTextBlock_MouseLeftButtonUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://boosty.to/dmitriysalnikov/donate");
+            Utils.ProcessStartShell("https://boosty.to/dmitriysalnikov/donate");
         }
 
-        private void ReportErrorTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ReportErrorTextBlock_MouseLeftButtonUp(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/DmitriySalnikov/OBSNotifier/issues");
+            Utils.ProcessStartShell("https://github.com/DmitriySalnikov/OBSNotifier/issues");
         }
 
-        private void App_ConnectionStateChanged(object sender, App.ConnectionState e)
+        private void App_ConnectionStateChanged(object? sender, App.ConnectionState e)
         {
             IsConnecting = false;
             UpdateConnectButton();
         }
 
-        private void App_LanguageChanged(object sender, EventArgs e)
+        private void App_LanguageChanged(object? sender, EventArgs e)
         {
             UpdateWindowAppearance();
             UpdateModulesMenu();
@@ -318,7 +325,7 @@ namespace OBSNotifier
             UpdateAutostartScriptButton();
         }
 
-        private async void btn_connect_Click(object sender, RoutedEventArgs e)
+        private async void btn_connect_Click(object? sender, RoutedEventArgs e)
         {
             if (!App.obs.IsConnected)
             {
@@ -342,7 +349,7 @@ namespace OBSNotifier
                     UpdateConnectButton();
 
                     Settings.Instance.ServerAddress = tb_address.Text;
-                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password);
+                    Settings.Instance.Password = Utils.EncryptString(tb_password.Password, App.EncryptionKey);
                     Settings.Instance.Save();
                 }
             }
@@ -355,18 +362,18 @@ namespace OBSNotifier
             UpdateConnectButton();
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
+        private void Window_StateChanged(object? sender, EventArgs e)
         {
             if (WindowState == WindowState.Minimized)
                 Close();
         }
 
-        private void cb_display_to_show_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cb_display_to_show_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (IsChangedByCode) return;
 
             if (e.AddedItems.Count > 0)
-                Settings.Instance.DisplayID = e.AddedItems[0].ToString();
+                Settings.Instance.DisplayID = e.AddedItems[0]?.ToString() ?? string.Empty;
             else
                 Settings.Instance.DisplayID = string.Empty;
 
@@ -374,7 +381,7 @@ namespace OBSNotifier
             UpdateNotification();
         }
 
-        private void cb_autostart_Checked(object sender, RoutedEventArgs e)
+        private void cb_autostart_Checked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
@@ -393,7 +400,7 @@ namespace OBSNotifier
             }
         }
 
-        private void cb_autostart_Unchecked(object sender, RoutedEventArgs e)
+        private void cb_autostart_Unchecked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
@@ -412,7 +419,7 @@ namespace OBSNotifier
             }
         }
 
-        private void btn_autostart_script_create_update_Click(object sender, RoutedEventArgs e)
+        private void btn_autostart_script_create_update_Click(object? sender, RoutedEventArgs e)
         {
             var isScriptExists = AutostartManager.IsScriptExists();
             if (AutostartManager.CreateScript())
@@ -430,7 +437,7 @@ namespace OBSNotifier
             }
         }
 
-        private void cb_close_on_closing_Checked(object sender, RoutedEventArgs e)
+        private void cb_close_on_closing_Checked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
@@ -438,7 +445,7 @@ namespace OBSNotifier
             Settings.Instance.Save();
         }
 
-        private void cb_close_on_closing_Unchecked(object sender, RoutedEventArgs e)
+        private void cb_close_on_closing_Unchecked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
@@ -446,27 +453,27 @@ namespace OBSNotifier
             Settings.Instance.Save();
         }
 
-        private void cb_use_safe_area_Unchecked(object sender, RoutedEventArgs e)
+        private void cb_use_safe_area_Unchecked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = false;
+            //     Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = false;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void cb_use_safe_area_Checked(object sender, RoutedEventArgs e)
+        private void cb_use_safe_area_Checked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = true;
+            //       Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = true;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void cb_notification_modules_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void cb_notification_modules_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (IsChangedByCode) return;
             if (cb_notification_modules.SelectedItem == null) return;
@@ -483,59 +490,60 @@ namespace OBSNotifier
             }
         }
 
-        private void cb_notification_options_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        // TODO Replace everything with new generator!
+        private void cb_notification_options_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
+            //         Settings.Instance.CurrentModuleSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void sldr_position_offset_x_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void sldr_position_offset_x_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentModuleSettings.Offset.Y);
+            //      Settings.Instance.CurrentModuleSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentModuleSettings.Offset.Y);
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void sldr_position_offset_y_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void sldr_position_offset_y_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.Offset = new Point(Settings.Instance.CurrentModuleSettings.Offset.X, e.NewValue);
+            //       Settings.Instance.CurrentModuleSettings.Offset = new Point(Settings.Instance.CurrentModuleSettings.Offset.X, e.NewValue);
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void sldr_fade_delay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void sldr_fade_delay_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
         {
             l_delay_sec.Text = (e.NewValue / 1000.0).ToString("F1", CultureInfo.InvariantCulture);
 
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
+            //          Settings.Instance.CurrentModuleSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_TextChanged(object? sender, TextChangedEventArgs e)
         {
             if (IsChangedByCode) return;
 
-            Settings.Instance.CurrentModuleSettings.AdditionalData = tb_additional_data.Text;
+            //    Settings.Instance.CurrentModuleSettings.AdditionalData = tb_additional_data.Text;
             Settings.Instance.Save();
 
             UpdateNotification();
         }
 
-        private void btn_select_active_notifications_Click(object sender, RoutedEventArgs e)
+        private void btn_select_active_notifications_Click(object? sender, RoutedEventArgs e)
         {
             var notifs = Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes ?? App.modules.CurrentModule.instance.DefaultActiveNotifications;
 
@@ -555,25 +563,25 @@ namespace OBSNotifier
             an.Close();
         }
 
-        private void btn_reset_options_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_options_Click(object? sender, RoutedEventArgs e)
         {
             var moduleData = App.modules.CurrentModule;
-            if (moduleData.instance != null)
-                cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
+            //    if (moduleData.instance != null)
+            //        cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
 
             UpdateNotification();
         }
 
-        private void btn_reset_position_offset_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_position_offset_Click(object? sender, RoutedEventArgs e)
         {
             var moduleData = App.modules.CurrentModule;
-            sldr_position_offset_x.Value = moduleData.defaultSettings.Offset.X;
-            sldr_position_offset_y.Value = moduleData.defaultSettings.Offset.Y;
+            //    sldr_position_offset_x.Value = moduleData.defaultSettings.Offset.X;
+            //      sldr_position_offset_y.Value = moduleData.defaultSettings.Offset.Y;
 
             UpdateNotification();
         }
 
-        private void btn_reset_position_offset_center_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_position_offset_center_Click(object? sender, RoutedEventArgs e)
         {
             sldr_position_offset_x.Value = 0.5;
             sldr_position_offset_y.Value = 0.5;
@@ -581,50 +589,50 @@ namespace OBSNotifier
             UpdateNotification();
         }
 
-        private void btn_reset_additional_data_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_additional_data_Click(object? sender, RoutedEventArgs e)
         {
             var moduleData = App.modules.CurrentModule;
-            if (moduleData.instance != null)
-                tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
+            //      if (moduleData.instance != null)
+            //          tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
 
             UpdateNotification();
         }
 
-        private void btn_fix_additional_data_Click(object sender, RoutedEventArgs e)
+        private void btn_fix_additional_data_Click(object? sender, RoutedEventArgs e)
         {
             var moduleData = App.modules.CurrentModule;
             if (moduleData.instance != null)
             {
-                moduleData.defaultSettings.AdditionalData = moduleData.instance.GetFixedAdditionalData();
-                tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
+                //        moduleData.defaultSettings.AdditionalData = moduleData.instance.GetFixedAdditionalData();
+                //       tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
             }
 
             UpdateNotification();
         }
 
-        private void btn_reset_fade_delay_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_fade_delay_Click(object? sender, RoutedEventArgs e)
         {
-            sldr_fade_delay.Value = App.modules.CurrentModule.defaultSettings.OnScreenTime;
+            //    sldr_fade_delay.Value = App.modules.CurrentModule.defaultSettings.OnScreenTime;
         }
 
-        private void btn_open_module_settings_Click(object sender, RoutedEventArgs e)
+        private void btn_open_module_settings_Click(object? sender, RoutedEventArgs e)
         {
             if (App.modules.CurrentModule.instance != null)
             {
-                App.modules.CurrentModule.instance?.OpenCustomSettings();
-                Settings.Instance.CurrentModuleSettings.CustomSettings = App.modules.CurrentModule.instance.GetCustomSettingsDataToSave();
+                //       App.modules.CurrentModule.instance?.OpenCustomSettings();
+                //       Settings.Instance.CurrentModuleSettings.CustomSettings = App.modules.CurrentModule.instance.GetCustomSettingsDataToSave();
                 Settings.Instance.Save();
 
                 UpdateNotification();
             }
         }
 
-        private void cb_preview_Checked(object sender, RoutedEventArgs e)
+        private void cb_preview_Checked(object? sender, RoutedEventArgs e)
         {
             UpdateNotification();
         }
 
-        private void cb_preview_Unchecked(object sender, RoutedEventArgs e)
+        private void cb_preview_Unchecked(object? sender, RoutedEventArgs e)
         {
             App.modules.CurrentModule.instance.HidePreview();
             Settings.Instance.IsPreviewShowing = false;

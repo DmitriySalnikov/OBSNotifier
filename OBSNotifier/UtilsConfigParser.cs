@@ -10,6 +10,7 @@ using System.Windows.Media;
 
 namespace OBSNotifier
 {
+    // TODO remove
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class ConfigIgnoreAttribute : Attribute { }
 
@@ -87,7 +88,7 @@ namespace OBSNotifier
                         var prop = dataType.GetProperty(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty);
                         if (prop != null && prop.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
                         {
-                            prop.SetValue(configToUpdate, ParseModuleConfigValue(prop.PropertyType, propVal, prop.GetValue(configToUpdate)));
+                            prop.SetValue(configToUpdate, ParseModuleConfigValue(prop.PropertyType, propVal, prop.GetValue(configToUpdate) ?? ""));
                             continue;
                         }
                         else if (dataType.GetProperty(propName) != null)
@@ -102,7 +103,7 @@ namespace OBSNotifier
                         var field = dataType.GetField(propName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField | BindingFlags.SetField);
                         if (field != null && field.GetCustomAttribute<ConfigIgnoreAttribute>() == null)
                         {
-                            field.SetValue(configToUpdate, ParseModuleConfigValue(field.FieldType, propVal, field.GetValue(configToUpdate)));
+                            field.SetValue(configToUpdate, ParseModuleConfigValue(field.FieldType, propVal, field.GetValue(configToUpdate) ?? ""));
                             continue;
                         }
                         else if (dataType.GetField(propName) != null)
@@ -307,7 +308,7 @@ namespace OBSNotifier
                 shown++;
                 sb.Append(prop.Name);
                 sb.Append(" = ");
-                sb.Append(SerializeModuleConfigValue(prop.PropertyType, prop.GetValue(configData)));
+                sb.Append(SerializeModuleConfigValue(prop.PropertyType, prop.GetValue(configData) ?? ""));
                 if (shown < total)
                     sb.AppendLine();
             }
@@ -316,14 +317,14 @@ namespace OBSNotifier
                 shown++;
                 sb.Append(field.Name);
                 sb.Append(" = ");
-                sb.Append(SerializeModuleConfigValue(field.FieldType, field.GetValue(configData)));
+                sb.Append(SerializeModuleConfigValue(field.FieldType, field.GetValue(configData) ?? ""));
                 if (shown < total)
                     sb.AppendLine();
             }
 
             return sb.ToString();
         }
-        static readonly Dictionary<Type, (PropertyInfo[], FieldInfo[])> cachedMembers = new Dictionary<Type, (PropertyInfo[], FieldInfo[])>();
+        static readonly Dictionary<Type, (PropertyInfo[], FieldInfo[])> cachedMembers = [];
 
         static string SerializeModuleConfigValue(Type type, object value)
         {
@@ -345,7 +346,7 @@ namespace OBSNotifier
                 return FormattableString.Invariant($"{t.Left:0.####}, {t.Top:0.####}, {t.Right:0.####}, {t.Bottom:0.####}");
             }
 
-            return Convert.ToString(value, CultureInfo.InvariantCulture);
+            return Convert.ToString(value, CultureInfo.InvariantCulture) ?? "";
         }
 
         /// <summary>

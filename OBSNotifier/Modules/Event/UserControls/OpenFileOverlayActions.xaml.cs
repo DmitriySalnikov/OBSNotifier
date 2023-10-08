@@ -11,7 +11,7 @@ namespace OBSNotifier.Modules.Event.UserControls
     /// </summary>
     public partial class OpenFileOverlayActions : UserControl
     {
-        string filePath = null;
+        string filePath = string.Empty;
         public string FilePath
         {
             get => filePath;
@@ -36,13 +36,13 @@ namespace OBSNotifier.Modules.Event.UserControls
             InitializeComponent();
         }
 
-        private void btn_open_folder_Click(object sender, RoutedEventArgs e)
+        private void btn_open_folder_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
-                    Process.Start(Path.GetFullPath(Path.GetDirectoryName(FilePath)));
+                    Utils.ProcessStartShell(Path.GetFullPath(Path.GetDirectoryName(FilePath) ?? "C:/"));
                 }
                 catch (Exception ex)
                 {
@@ -51,13 +51,13 @@ namespace OBSNotifier.Modules.Event.UserControls
             }
         }
 
-        private void btn_open_file_Click(object sender, RoutedEventArgs e)
+        private void btn_open_file_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
-                    Process.Start(Path.GetFullPath(FilePath));
+                    Utils.ProcessStartShell(Path.GetFullPath(FilePath));
                 }
                 catch (Exception ex)
                 {

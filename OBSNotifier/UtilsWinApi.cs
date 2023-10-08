@@ -33,6 +33,24 @@ namespace OBSNotifier
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         static extern int WA_GetWindowLong(IntPtr hWnd, int nIndex);
 
+        #region Console
+
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll")]
+        static extern bool FreeConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool SetConsoleOutputCP(uint wCodePageID);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool SetConsoleCP(uint wCodePageID);
+
+        #endregion // Console
+
         #endregion
 
         static void UpdateWindowLong(IntPtr hwnd, bool isEnabled, int updateWith)
@@ -87,6 +105,20 @@ namespace OBSNotifier
         {
             IntPtr hwndIdx = fAlwaysTop ? HWND_TOPMOST : HWND_NOTOPMOST;
             WA_SetWindowPos(hwnd, hwndIdx, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        public static void CreateUnicodeConsole()
+        {
+            if (AllocConsole())
+            {
+                SetConsoleOutputCP(65001);
+                SetConsoleCP(65001);
+            }
+        }
+
+        public static void DeleteConsole()
+        {
+            FreeConsole();
         }
     }
 }

@@ -16,9 +16,9 @@ namespace OBSNotifier.Modules.Event.Default
         int prevMaxPathChars = -1;
         bool? prevShowQuickActions = null;
 
-        public delegate void VoidHandler(object sender, EventArgs e);
+        public delegate void VoidHandler(object? sender, EventArgs e);
         public event VoidHandler Finished;
-        uint prevDuration = 0;
+        double prevDuration = 0;
 
         public DefaultNotificationBlock()
         {
@@ -78,13 +78,13 @@ namespace OBSNotifier.Modules.Event.Default
             Visibility = Visibility.Visible;
             notifFade.Storyboard.Stop(g_notif);
 
-            if (settings.Duration != prevDuration)
+            if (settings.OnScreenTime != prevDuration)
             {
-                prevDuration = settings.Duration;
+                prevDuration = settings.OnScreenTime;
 
                 var d_anim = (notifFade.Storyboard.Children[0] as DoubleAnimationUsingKeyFrames);
                 var keys = d_anim.KeyFrames;
-                var dur = TimeSpan.FromMilliseconds(settings.Duration);
+                var dur = TimeSpan.FromSeconds(settings.OnScreenTime);
                 var init_time = keys[1].KeyTime.TimeSpan; // Use second key as init time
                 var fade = keys[2].KeyTime.TimeSpan.Subtract(init_time); // Use third key as fade in/out time
                 d_anim.Duration = init_time + fade + dur + fade + init_time;
@@ -97,12 +97,11 @@ namespace OBSNotifier.Modules.Event.Default
 
         void UpdateParams(DefaultCustomNotifBlockSettings settings, NotificationType type, string title, string desc)
         {
-            r_notif.Fill = new SolidColorBrush(settings.BackgroundColor);
-            r_notif.Stroke = new SolidColorBrush(settings.OutlineColor);
-            r_notif.RadiusX = settings.Radius;
-            r_notif.RadiusY = settings.Radius;
-            l_title.Foreground = new SolidColorBrush(settings.TextColor);
-            l_desc.Foreground = new SolidColorBrush(settings.TextColor);
+            b_background.Background = new SolidColorBrush(settings.BackgroundColor);
+            b_background.BorderBrush = new SolidColorBrush(settings.OutlineColor);
+            b_background.CornerRadius = new CornerRadius(settings.BorderRadius);
+            b_background.BorderThickness = new Thickness(settings.BorderThickness);
+            l_title.Foreground = l_desc.Foreground = new SolidColorBrush(settings.TextColor);
             mainBox.Margin = settings.Margin;
             Width = settings.Width;
             Height = settings.Height;
@@ -112,16 +111,7 @@ namespace OBSNotifier.Modules.Event.Default
             fileOpenOverlay.IsPreview = isPreview;
             if (type != NotificationType.None && NotificationType.WithFilePaths.HasFlag(type))
             {
-                if (settings.ShowQuickActions)
-                {
-                    fileOpenOverlay.FilePath = desc;
-                    fileOpenOverlay.Clip = new RectangleGeometry(new Rect(0, 0, Width, Height), r_notif.RadiusX, r_notif.RadiusY);
-                }
-                else
-                {
-                    fileOpenOverlay.FilePath = null;
-                }
-
+                fileOpenOverlay.FilePath = settings.ShowQuickActions ? desc : null;
                 l_desc.Text = Utils.GetShortPath(desc, settings.MaxPathChars);
             }
             else
@@ -136,7 +126,7 @@ namespace OBSNotifier.Modules.Event.Default
             prevShowQuickActions = settings.ShowQuickActions;
         }
 
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!isPreview)
             {
@@ -149,7 +139,7 @@ namespace OBSNotifier.Modules.Event.Default
             }
         }
 
-        private void Animation_Completed(object sender, EventArgs e)
+        private void Animation_Completed(object? sender, EventArgs e)
         {
             HideNotif();
             Finished?.Invoke(this, EventArgs.Empty);

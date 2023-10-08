@@ -1,41 +1,42 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
+using Forms = System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Runtime.CompilerServices;
 
 namespace OBSNotifier
 {
     public static partial class Utils
     {
+        readonly static int EncryptedMagic = 0x4f4e4544; // ONED - OBS Notifier Encrypted Data
+
         /// <summary>
         /// Get the translated string by ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static string Tr(string id, ResourceDictionary specificResDict = null)
+        public static string Tr(string id, ResourceDictionary? specificResDict = null)
         {
             if (string.IsNullOrWhiteSpace(id)) throw new ArgumentException($"{nameof(id)} must not be null or an empty string");
 
             var is_spec_dict = specificResDict != null;
-            ResourceDictionary dict = is_spec_dict ? specificResDict : Application.Current.Resources;
+            ResourceDictionary dict = specificResDict ?? Application.Current.Resources;
 
             if (dict.Contains(id))
             {
                 var obj = dict[id];
                 if (obj.GetType() != typeof(string))
                 {
-                    App.Log($"Resource with ID \"{id}\" is not a string." + (is_spec_dict ? " Using a specific dictionary" : ""));
+                    App.LogError($"Resource with ID \"{id}\" is not a string." + (is_spec_dict ? " Using a specific dictionary" : ""));
                     return $"[{id}]";
                 }
 
                 return (string)obj;
             }
 
-            App.Log($"Resource ID ({id}) not found." + (is_spec_dict ? " Using a specific dictionary" : ""));
+            App.LogError($"Resource ID ({id}) not found." + (is_spec_dict ? " Using a specific dictionary" : ""));
             return $"[{id}]";
         }
 
@@ -56,7 +57,7 @@ namespace OBSNotifier
             }
             catch (Exception ex)
             {
-                App.Log($"The localized string ({id}) cannot be formatted for {Thread.CurrentThread.CurrentUICulture}");
+                App.LogError($"The localized string ({id}) cannot be formatted for {Thread.CurrentThread.CurrentUICulture}");
                 App.Log(ex);
             }
 
@@ -83,20 +84,68 @@ namespace OBSNotifier
             return disp.Dispatcher.BeginInvoke(act);
         }
 
-        public static string EncryptString(string plainText)
+        /// <summary>
+        /// Encrypt a string with AES
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string EncryptString(string plainText, string key)
         {
-            if (plainText == null) throw new ArgumentNullException("plainText");
-            if (plainText == string.Empty) return "";
-            var data = Encoding.Unicode.GetBytes(plainText);
-            return Convert.ToBase64String(data);
+            var iv = new byte[16];
+            Random.Shared.NextBytes(iv);
+
+            var textUtf8 = Encoding.UTF8.GetBytes(plainText);
+            using var mem = new MemoryStream();
+            using var bw = new BinaryWriter(mem);
+            bw.Write(EncryptedMagic);
+            bw.Write(MD5.HashData(textUtf8));
+            bw.Write(iv);
+
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = iv;
+            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+            byte[] encryptedBytes = encryptor.TransformFinalBlock(textUtf8, 0, textUtf8.Length);
+
+            bw.Write(encryptedBytes.Length);
+            bw.Write(encryptedBytes);
+
+            return Convert.ToBase64String(mem.ToArray());
         }
 
-        public static string DecryptString(string encrypted)
+        /// <summary>
+        /// Decrypt a string with AES
+        /// </summary>
+        /// <param name="encrypted">Encrypted base64 string</param>
+        /// <param name="key"></param>
+        /// <returns><see cref="null"/> on error</returns>
+        public static string? DecryptString(string encrypted, string key)
         {
-            if (encrypted == null) throw new ArgumentNullException("encrypted");
-            if (encrypted == string.Empty) return "";
-            byte[] data = Convert.FromBase64String(encrypted);
-            return Encoding.Unicode.GetString(data);
+            var encryptedBytes = Convert.FromBase64String(encrypted);
+            using var mem = new MemoryStream(encryptedBytes);
+            using var br = new BinaryReader(mem);
+
+            if (br.ReadInt32() != EncryptedMagic)
+                return null;
+
+            var md5 = br.ReadBytes(16);
+            var iv = br.ReadBytes(16);
+
+            using Aes aesAlg = Aes.Create();
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = iv;
+
+            var len = br.ReadInt32();
+            var cipherText = br.ReadBytes(len);
+
+            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+            byte[] decryptedBytes = decryptor.TransformFinalBlock(cipherText, 0, len);
+
+            if (!MD5.HashData(decryptedBytes).SequenceEqual(md5))
+                return null;
+
+            return Encoding.UTF8.GetString(decryptedBytes);
         }
 
         /// <summary>
@@ -141,11 +190,11 @@ namespace OBSNotifier
         /// Returns the current <see cref="WPFScreens"/> selected in the application settings
         /// </summary>
         /// <returns></returns>
-        public static WPFScreens GetCurrentNotificationScreen()
+        public static WPFScreens GetCurrentNotificationScreen(string displayID)
         {
             foreach (var s in WPFScreens.AllScreens())
             {
-                if (s.DeviceName == Settings.Instance.DisplayID)
+                if (s.DeviceName == displayID)
                     return s;
             }
             return WPFScreens.Primary;
@@ -155,9 +204,9 @@ namespace OBSNotifier
         /// Returns the bounds of the <see cref="WPFScreens"/> based on the selected settings
         /// </summary>
         /// <returns></returns>
-        public static Rect GetCurrentDisplayBounds(WPFScreens screen)
+        public static Rect GetCurrentDisplayBounds(WPFScreens screen, bool useSafeArea)
         {
-            return Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea ? screen.WorkingArea : screen.DeviceBounds;
+            return useSafeArea ? screen.WorkingArea : screen.DeviceBounds;
         }
 
         /// <summary>
@@ -167,10 +216,11 @@ namespace OBSNotifier
         /// <param name="anchor"></param>
         /// <param name="size"></param>
         /// <param name="offset"></param>
+        /// <param name="useSafeArea"></param>
         /// <returns></returns>
-        public static Point GetWindowPosition(AnchorPoint anchor, Size size, Point offset)
+        public static Point GetWindowPosition(string displayID, AnchorPoint anchor, Size size, Point offset, bool useSafeArea)
         {
-            return GetWindowPosition(GetCurrentNotificationScreen(), anchor, size, offset);
+            return GetWindowPosition(GetCurrentNotificationScreen(displayID), anchor, size, offset, useSafeArea);
         }
 
         /// <summary>
@@ -181,33 +231,29 @@ namespace OBSNotifier
         /// <param name="anchor"></param>
         /// <param name="size"></param>
         /// <param name="offset"></param>
+        /// <param name="useSafeArea"></param>
         /// <returns></returns>
-        public static Point GetWindowPosition(WPFScreens screen, AnchorPoint anchor, Size size, Point offset)
+        public static Point GetWindowPosition(WPFScreens screen, AnchorPoint anchor, Size size, Point offset, bool useSafeArea)
         {
             if (screen == null)
                 return new Point();
 
-            var rect = GetCurrentDisplayBounds(screen);
+            var rect = GetCurrentDisplayBounds(screen, useSafeArea);
 
             var boundsPos = rect.TopLeft;
             var boundsPosEnd = new Point(rect.BottomRight.X - size.Width, rect.BottomRight.Y - size.Height);
             var offsetX = (rect.Width - size.Width) * offset.X;
             var offsetY = (rect.Height - size.Height) * offset.Y;
 
-            switch (anchor)
+            return anchor switch
             {
-                case AnchorPoint.TopLeft:
-                    return new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY);
-                case AnchorPoint.TopRight:
-                    return new Point(boundsPosEnd.X - offsetX, boundsPos.Y + offsetY);
-                case AnchorPoint.BottomRight:
-                    return new Point(boundsPosEnd.X - offsetX, boundsPosEnd.Y - offsetY);
-                case AnchorPoint.BottomLeft:
-                    return new Point(boundsPos.X + offsetX, boundsPosEnd.Y - offsetY);
-                case AnchorPoint.Center:
-                    return new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY);
-            }
-            return new Point();
+                AnchorPoint.TopLeft => new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY),
+                AnchorPoint.TopRight => new Point(boundsPosEnd.X - offsetX, boundsPos.Y + offsetY),
+                AnchorPoint.BottomRight => new Point(boundsPosEnd.X - offsetX, boundsPosEnd.Y - offsetY),
+                AnchorPoint.BottomLeft => new Point(boundsPos.X + offsetX, boundsPosEnd.Y - offsetY),
+                AnchorPoint.Center => new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY),
+                _ => new Point(),
+            };
         }
 
         /// <summary>
@@ -224,7 +270,7 @@ namespace OBSNotifier
             string short_name;
             if (path.Length > chars)
             {
-                short_name = path.Substring(path.Length - (int)chars);
+                short_name = path[^((int)chars)..];
                 var slash_pos = short_name.IndexOf(Path.DirectorySeparatorChar);
                 if (slash_pos == -1)
                     slash_pos = short_name.IndexOf(Path.AltDirectorySeparatorChar);
@@ -242,24 +288,50 @@ namespace OBSNotifier
         }
 
         /// <summary>
+        /// Get the calling file and line
+        /// </summary>
+        /// <param name="callingFilePath"></param>
+        /// <param name="callingFileLineNumber"></param>
+        /// <returns></returns>
+        public static string GetCallerFileLine([CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
+        {
+            return $"{Path.GetFileName(callingFilePath)}:{callingFileLineNumber}";
+        }
+
+        /// <summary>
         /// Load WPF Image from resources or file path
         /// </summary>
         /// <param name="path">Image path</param>
         /// <param name="assembly">Assembly to perform search in relative path</param>
         /// <returns>Loaded image</returns>
-        public static BitmapImage GetBitmapImage(string path, System.Reflection.Assembly assembly = null)
+        public static BitmapImage GetBitmapImage(string path, Assembly? assembly = null)
         {
-            BitmapImage img = new BitmapImage();
+            BitmapImage img = new();
             img.BeginInit();
 
             if (assembly != null)
-                img.UriSource = new Uri(Path.Combine(Path.GetDirectoryName(assembly.Location), path));
+                img.UriSource = new Uri(Path.Combine(Path.GetDirectoryName(assembly.Location) ?? string.Empty, path));
             else
                 img.UriSource = new Uri(path);
 
             img.EndInit();
 
             return img;
+        }
+
+        public static void UpdateContextItemStyle(Forms.ToolStripItem item, System.Drawing.FontStyle style)
+        {
+            item.Font = new System.Drawing.Font(item.Font, style);
+        }
+
+        public static double Clamp(double value, double min, double max)
+        {
+            return Math.Max(Math.Min(value, max), min);
+        }
+
+        public static void ProcessStartShell(string path)
+        {
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
         }
     }
 }

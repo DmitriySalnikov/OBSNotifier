@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace OBSNotifier.Modules.Event.NvidiaLike
 {
-    public partial class NvidiaNotificationWindow : Window
+    internal partial class NvidiaNotificationWindow : Window
     {
         const string default_icon_path = "pack://application:,,,/Modules/Event/Nvidia-like/obs.png";
         const double default_window_width = 300;
         const double default_window_height = 90;
 
         NvidiaNotification owner = null;
-        int addDataHash = -1;
 
-        NvidiaCustomAnimationConfig currentParams;
         NvidiaCustomAnimationConfig previousParams;
         readonly NvidiaCustomAnimationConfig defaultParams = new NvidiaCustomAnimationConfig();
 
-        bool IsPositionedOnTop { get => (NvidiaNotification.Positions)owner.ModuleSettings.Option == NvidiaNotification.Positions.TopRight; }
-        DeferredAction hide_delay;
-        BeginStoryboard anim_nv;
-        BeginStoryboard anim_f;
+        bool IsPositionedOnTop { get => owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight; }
+        DeferredActionWPF hide_delay;
+        readonly BeginStoryboard anim_nv;
+        readonly BeginStoryboard anim_f;
 
-        bool[] animation_finished = new bool[] { true, true };
+        readonly bool[] animation_finished = [true, true];
 
         public NvidiaNotificationWindow(NvidiaNotification module)
         {
@@ -30,9 +29,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
             anim_nv = (Resources["nvidia_anim"] as BeginStoryboard);
             anim_f = (Resources["fileOpen_anim"] as BeginStoryboard);
-            currentParams = new NvidiaCustomAnimationConfig();
 
-            hide_delay = new DeferredAction(() => Hide(), 200, this);
+            hide_delay = new DeferredActionWPF(() => Hide(), 200, this);
             owner = module;
             i_icon.SizeChanged += I_icon_SizeChanged;
         }
@@ -84,40 +82,39 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         void UpdateParameters()
         {
             // Additional Params
-            if (owner.ModuleSettings.AdditionalData != null && owner.ModuleSettings.AdditionalData.GetHashCode() != addDataHash)
+            // if (owner.ModuleSettings.AdditionalData != null && owner.ModuleSettings.AdditionalData.GetHashCode() != addDataHash)
             {
-                addDataHash = owner.ModuleSettings.AdditionalData.GetHashCode();
+                //    addDataHash = owner.ModuleSettings.AdditionalData.GetHashCode();
 
                 // Recreate but remember preview state
-                bool prev = currentParams.IsPreviewNotif;
-                currentParams = new NvidiaCustomAnimationConfig()
+                bool prev = owner.SettingsTyped.IsPreviewNotif;
+                //owner.SettingsTyped = new NvidiaCustomAnimationConfig()
                 {
-                    IsPreviewNotif = prev,
+                    // IsPreviewNotif = prev,
                 };
-                Utils.ConfigParseString(owner.ModuleSettings.AdditionalData, ref currentParams);
+                // TODO remove?
+                //Utils.ConfigParseString(owner.ModuleSettings.AdditionalData, ref owner.SettingsTyped);
             }
 
-            // TODO add limit to scale
-
             // General params
-            currentParams.Duration = owner.ModuleSettings.OnScreenTime;
-            currentParams.IsOnRightSide = (NvidiaNotification.Positions)owner.ModuleSettings.Option == NvidiaNotification.Positions.TopRight;
+            owner.SettingsTyped.OnScreenTime = owner.SettingsTyped.OnScreenTime;
+            owner.SettingsTyped.IsOnRightSide = owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight;
 
-            UtilsWinApi.SetWindowIgnoreMouse(this.GetHandle(), currentParams.ClickThrough && !currentParams.ShowQuickActions);
+            UtilsWinApi.SetWindowIgnoreMouse(this.GetHandle(), owner.SettingsTyped.ClickThrough && !owner.SettingsTyped.ShowQuickActions);
 
-            fileOpenOverlay.IsPreview = currentParams.IsPreviewNotif;
-            fileOpenOverlay.HorizontalAlignment = currentParams.IsOnRightSide ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-            fileOpen_colored_line.Visibility = currentParams.ShowQuickActionsColoredLine ? Visibility.Visible : Visibility.Hidden;
+            fileOpenOverlay.IsPreview = owner.SettingsTyped.IsPreviewNotif;
+            fileOpenOverlay.HorizontalAlignment = owner.SettingsTyped.IsOnRightSide ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+            fileOpen_colored_line.Visibility = owner.SettingsTyped.ShowQuickActionsColoredLine ? Visibility.Visible : Visibility.Hidden;
 
             // Preview max path
-            if (currentParams.IsPreviewNotif)
+            if (owner.SettingsTyped.IsPreviewNotif)
             {
                 var path = @"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv";
 
-                if (currentParams.ShowQuickActions)
+                if (owner.SettingsTyped.ShowQuickActions)
                 {
                     g_fileOpen.Visibility = Visibility.Visible;
-                    l_desc.Text = Utils.GetShortPath(path, currentParams.MaxPathChars);
+                    l_desc.Text = Utils.GetShortPath(path, owner.SettingsTyped.MaxPathChars);
                     fileOpenOverlay.FilePath = path;
                 }
                 else
@@ -129,25 +126,25 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             }
 
             // Colors
-            g_back.Background = currentParams.BackgroundColor;
-            g_front.Background = currentParams.ForegroundColor;
-            l_title.Foreground = currentParams.TextColor;
-            l_desc.Foreground = currentParams.TextColor;
+            g_back.Background = new SolidColorBrush(owner.SettingsTyped.BackgroundColor);
+            g_front.Background = new SolidColorBrush(owner.SettingsTyped.ForegroundColor);
+            l_title.Foreground = new SolidColorBrush(owner.SettingsTyped.TextColor);
+            l_desc.Foreground = new SolidColorBrush(owner.SettingsTyped.TextColor);
 
             // Sizes
-            fileOpen_viewbox.Width = Math.Ceiling(fileOpenOverlay.Width * currentParams.Scale);
-            fileOpen_viewbox.Height = Math.Ceiling(fileOpenOverlay.Height * currentParams.Scale);
-            fileOpen_sep.Height = Math.Ceiling(Math.Round(currentParams.QuickActionsOffset * currentParams.Scale));
+            fileOpen_viewbox.Width = Math.Ceiling(fileOpenOverlay.Width * owner.SettingsTyped.Scale);
+            fileOpen_viewbox.Height = Math.Ceiling(fileOpenOverlay.Height * owner.SettingsTyped.Scale);
+            fileOpen_sep.Height = Math.Ceiling(Math.Round(owner.SettingsTyped.QuickActionsOffset * owner.SettingsTyped.Scale));
 
-            Width = Math.Ceiling(default_window_width * currentParams.Scale);
-            Height = Math.Ceiling(default_window_height * currentParams.Scale) + (currentParams.ShowQuickActions ? Math.Ceiling(fileOpen_viewbox.Height + fileOpen_sep.Height) : 0);
-            g_front.Width = Math.Max(1, default_window_width - currentParams.LineWidth);
+            Width = Math.Ceiling(default_window_width * owner.SettingsTyped.Scale);
+            Height = Math.Ceiling(default_window_height * owner.SettingsTyped.Scale) + (owner.SettingsTyped.ShowQuickActions ? Math.Ceiling(fileOpen_viewbox.Height + fileOpen_sep.Height) : 0);
+            g_front.Width = Math.Max(1, default_window_width - owner.SettingsTyped.LineWidth);
 
             // Icon
             try
             {
-                if (currentParams.IconPath != defaultParams.IconPath)
-                    i_icon.Source = Utils.GetBitmapImage(currentParams.IconPath, GetType().Assembly);
+                if (owner.SettingsTyped.IconPath != defaultParams.IconPath)
+                    i_icon.Source = Utils.GetBitmapImage(owner.SettingsTyped.IconPath, GetType().Assembly);
                 else
                     i_icon.Source = Utils.GetBitmapImage(default_icon_path);
             }
@@ -156,9 +153,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 i_icon.Source = Utils.GetBitmapImage(default_icon_path);
             }
 
-            i_icon.Height = currentParams.IconHeight;
-            i_icon.HorizontalAlignment = currentParams.IsOnRightSide ? HorizontalAlignment.Left : HorizontalAlignment.Right;
-            if (currentParams.IconHeight == 0)
+            i_icon.Height = owner.SettingsTyped.IconHeight;
+            i_icon.HorizontalAlignment = owner.SettingsTyped.IsOnRightSide ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+            if (owner.SettingsTyped.IconHeight == 0)
             {
                 i_icon.Visibility = Visibility.Collapsed;
                 i_icon.Margin = new Thickness(0);
@@ -166,30 +163,30 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             else
             {
                 i_icon.Visibility = Visibility.Visible;
-                i_icon.Margin = new Thickness(currentParams.IsOnRightSide ? 8 : 0, 0, currentParams.IsOnRightSide ? 0 : 8, 0);
+                i_icon.Margin = new Thickness(owner.SettingsTyped.IsOnRightSide ? 8 : 0, 0, owner.SettingsTyped.IsOnRightSide ? 0 : 8, 0);
             }
             I_icon_SizeChanged(null, null);
 
             // Position
-            var pe = (NvidiaNotification.Positions)owner.ModuleSettings.Option;
+            var pe = owner.SettingsTyped.Option;
             var anchor = (Utils.AnchorPoint)Enum.Parse(typeof(Utils.AnchorPoint), pe.ToString());
-            Point pos = Utils.GetWindowPosition(anchor, new Size(Width, Height), owner.ModuleSettings.Offset);
+            Point pos = Utils.GetWindowPosition(owner.SettingsTyped.DisplayID, anchor, new Size(Width, Height), owner.SettingsTyped.Offset, owner.SettingsTyped.UseSafeDisplayArea);
 
             Left = pos.X;
             Top = pos.Y;
         }
 
-        private void I_icon_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void I_icon_SizeChanged(object? sender, SizeChangedEventArgs e)
         {
-            if (currentParams.IconHeight == 0)
+            if (owner.SettingsTyped.IconHeight == 0)
                 sp_text.Margin = new Thickness(6, 0, 6, 0);
             else
-                sp_text.Margin = new Thickness(currentParams.IsOnRightSide ? i_icon.ActualWidth + 14 : 6, 0, currentParams.IsOnRightSide ? 6 : i_icon.ActualWidth + 14, 0);
+                sp_text.Margin = new Thickness(owner.SettingsTyped.IsOnRightSide ? i_icon.ActualWidth + 14 : 6, 0, owner.SettingsTyped.IsOnRightSide ? 6 : i_icon.ActualWidth + 14, 0);
         }
 
         bool UpdateAnimationParameters()
         {
-            if (currentParams.IsAnimParamsEqual(previousParams))
+            if (owner.SettingsTyped.IsAnimParamsEqual(previousParams))
                 return false;
 
             var timeline = (anim_nv.Storyboard.Children[0] as ParallelTimeline);
@@ -202,14 +199,14 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             var anim_file = (timeline_file.Children[0] as ThicknessAnimationUsingKeyFrames);
             var keys_file = anim_file.KeyFrames;
 
-            var dur = TimeSpan.FromMilliseconds(currentParams.Duration);
+            var dur = TimeSpan.FromSeconds(owner.SettingsTyped.OnScreenTime);
             var end_time = TimeSpan.FromMilliseconds(100);
-            var slide = TimeSpan.FromMilliseconds(currentParams.SlideDuration);
-            var offset = TimeSpan.FromMilliseconds(currentParams.SlideOffset);
+            var slide = TimeSpan.FromSeconds(owner.SettingsTyped.SlideDuration);
+            var offset = TimeSpan.FromSeconds(owner.SettingsTyped.SlideOffset);
 
             var visible = new Thickness(0, 0, 0, 0);
-            var visible_front = new Thickness(currentParams.IsOnRightSide ? currentParams.LineWidth : 0, 0, currentParams.IsOnRightSide ? 0 : currentParams.LineWidth, 0);
-            var hidden = new Thickness(currentParams.IsOnRightSide ? g_back.Width : -g_back.Width, 0, currentParams.IsOnRightSide ? -g_back.Width : g_back.Width, 0);
+            var visible_front = new Thickness(owner.SettingsTyped.IsOnRightSide ? owner.SettingsTyped.LineWidth : 0, 0, owner.SettingsTyped.IsOnRightSide ? 0 : owner.SettingsTyped.LineWidth, 0);
+            var hidden = new Thickness(owner.SettingsTyped.IsOnRightSide ? g_back.Width : -g_back.Width, 0, owner.SettingsTyped.IsOnRightSide ? -g_back.Width : g_back.Width, 0);
 
             // Colored Background
             anim_back.Duration = slide + dur + offset + slide + end_time;
@@ -263,7 +260,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             timeline_file.Duration = anim_file.Duration;
 
             // If preview mode is enabled, then at the end of the animation the window should be shown again.
-            if (currentParams.IsPreviewNotif)
+            if (owner.SettingsTyped.IsPreviewNotif)
             {
                 keys_back[5].Value = visible;
                 keys_front[6].Value = visible_front;
@@ -295,10 +292,10 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         public void ShowNotif(NotificationType type, string title, string desc)
         {
-            if (currentParams.IsPreviewNotif)
+            if (owner.SettingsTyped.IsPreviewNotif)
                 return;
 
-            previousParams = currentParams.Duplicate();
+            previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
             UpdateParameters();
 
             l_title.Text = title;
@@ -306,10 +303,10 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             var need_to_run_file_group = false;
             if (NotificationType.WithFilePaths.HasFlag(type))
             {
-                l_desc.Text = Utils.GetShortPath(desc, currentParams.MaxPathChars);
+                l_desc.Text = Utils.GetShortPath(desc, owner.SettingsTyped.MaxPathChars);
 
                 g_fileOpen.Visibility = Visibility.Visible;
-                fileOpenOverlay.FilePath = currentParams.ShowQuickActions ? desc : null;
+                fileOpenOverlay.FilePath = owner.SettingsTyped.ShowQuickActions ? desc : null;
                 need_to_run_file_group = true;
             }
             else
@@ -339,8 +336,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         public void ShowPreview()
         {
-            previousParams = currentParams.Duplicate();
-            currentParams.IsPreviewNotif = true;
+            previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
+            owner.SettingsTyped.IsPreviewNotif = true;
             UpdateParameters();
 
             l_title.Text = Utils.Tr("notification_events_preview");
@@ -358,10 +355,10 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         public void HidePreview()
         {
-            if (currentParams.IsPreviewNotif)
+            if (owner.SettingsTyped.IsPreviewNotif)
             {
-                previousParams = currentParams.Duplicate();
-                currentParams.IsPreviewNotif = false;
+                previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
+                owner.SettingsTyped.IsPreviewNotif = false;
 
                 // update animation and force it to change values
                 UpdateAnimationParameters();
@@ -373,18 +370,18 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             }
         }
 
-        private void AnimationNV_Finished(object sender, EventArgs e)
+        private void AnimationNV_Finished(object? sender, EventArgs e)
         {
             animation_finished[0] = true;
             CheckForAllAnimationsToFinish();
         }
 
-        private void AnimationFile_Finished(object sender, EventArgs e)
+        private void AnimationFile_Finished(object? sender, EventArgs e)
         {
             animation_finished[1] = true;
             CheckForAllAnimationsToFinish();
 
-            if (!currentParams.IsPreviewNotif)
+            if (!owner.SettingsTyped.IsPreviewNotif)
             {
                 g_fileOpen.Visibility = Visibility.Collapsed;
                 fileOpenOverlay.FilePath = null;
@@ -393,7 +390,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         private void CheckForAllAnimationsToFinish()
         {
-            if (!currentParams.IsPreviewNotif)
+            if (!owner.SettingsTyped.IsPreviewNotif)
             {
                 if (animation_finished[0] &&
                     animation_finished[1])
@@ -403,9 +400,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             }
         }
 
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseDown(object? sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (!currentParams.IsPreviewNotif)
+            if (!owner.SettingsTyped.IsPreviewNotif)
             {
                 anim_nv.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);
                 anim_f.Storyboard.Seek(this, TimeSpan.Zero, TimeSeekOrigin.Duration);

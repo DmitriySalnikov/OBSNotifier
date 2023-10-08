@@ -18,12 +18,12 @@ namespace OBSNotifier
             this.textBoxDescription.Text = AssemblyDescription;
 
             link_source_code.Text = Utils.Tr("about_window_view_source_code");
-            RightToLeft = Thread.CurrentThread.CurrentUICulture.TextInfo.IsRightToLeft? RightToLeft.Yes : RightToLeft.No;
+            RightToLeft = Thread.CurrentThread.CurrentUICulture.TextInfo.IsRightToLeft ? RightToLeft.Yes : RightToLeft.No;
         }
 
         #region Assembly Attribute Accessors
 
-        public string AssemblyTitle
+        public static string AssemblyTitle
         {
             get
             {
@@ -36,19 +36,19 @@ namespace OBSNotifier
                         return titleAttribute.Title;
                     }
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+                return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location);
             }
         }
 
-        public string AssemblyVersion
+        public static string AssemblyVersion
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "-1.-1.-1";
             }
         }
 
-        public string AssemblyDescription
+        public static string AssemblyDescription
         {
             get
             {
@@ -56,7 +56,7 @@ namespace OBSNotifier
             }
         }
 
-        public string AssemblyProduct
+        public static string AssemblyProduct
         {
             get
             {
@@ -69,7 +69,7 @@ namespace OBSNotifier
             }
         }
 
-        public string AssemblyCopyright
+        public static string AssemblyCopyright
         {
             get
             {
@@ -82,7 +82,7 @@ namespace OBSNotifier
             }
         }
 
-        public string AssemblyCompany
+        public static string AssemblyCompany
         {
             get
             {
@@ -96,9 +96,9 @@ namespace OBSNotifier
         }
         #endregion
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabel1_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/DmitriySalnikov/OBSNotifier");
+            Utils.ProcessStartShell("https://github.com/DmitriySalnikov/OBSNotifier");
         }
     }
 }

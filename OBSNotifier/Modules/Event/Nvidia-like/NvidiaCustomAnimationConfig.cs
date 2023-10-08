@@ -1,67 +1,101 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.NvidiaLike
 {
-    class NvidiaCustomAnimationConfig
+    internal class NvidiaCustomAnimationConfig : OBSModuleSettings
     {
-        uint duration;
-        double iconHeight;
-        double scale;
-        double lineWidth;
-        double openFileOffset;
+        double onScreenTime = 2.5f;
+        double iconHeight = 64;
+        double scale = 1.0;
+        double lineWidth = 6;
+        double openFileOffset = 8.0;
+        double slideDuration = 0.4f;
+        double slideOffset = 0.18f;
+        uint maxPathChars = 32;
 
         [ConfigIgnore]
-        public uint Duration { get { return duration; } set { duration = Math.Max(0, value); } }
+        [SettingsItemIgnore]
+        public bool IsOnRightSide { get; set; } = false;
         [ConfigIgnore]
-        public bool IsOnRightSide;
-        [ConfigIgnore]
-        public bool IsPreviewNotif;
+        [SettingsItemIgnore]
+        public bool IsPreviewNotif { get; set; } = false;
 
-        public SolidColorBrush BackgroundColor { get; set; }
-        public SolidColorBrush ForegroundColor { get; set; }
-        public SolidColorBrush TextColor { get; set; }
-
-        public uint SlideDuration { get; set; }
-        public uint SlideOffset { get; set; }
-
-        public double LineWidth { get => lineWidth; set => lineWidth = Math.Max(0, value); }
-        public double Scale { get => scale; set => scale = Math.Max(0.001, value); }
-
-        public uint MaxPathChars { get; set; }
-        public bool ClickThrough { get; set; }
-        public bool ShowQuickActions { get; set; }
-        public bool ShowQuickActionsColoredLine { get; set; }
-        public double QuickActionsOffset { get => openFileOffset; set => openFileOffset = Math.Max(0, value); }
-
-        public double IconHeight { get => iconHeight; set => iconHeight = Math.Max(0, value); }
-        public string IconPath { get; set; }
-
-        public NvidiaCustomAnimationConfig()
+        [SettingsItemStringDisplayID]
+        public string DisplayID { get; set; } = string.Empty;
+        public bool UseSafeDisplayArea { get; set; }
+        // TODO test loading with greater values
+        [SettingsItemNumberRange(0, 30, 0.1)]
+        public double OnScreenTime
         {
-            Duration = 2500;
-            IsOnRightSide = false;
-            IsPreviewNotif = false;
-
-            BackgroundColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2E48BD"));
-            ForegroundColor = new SolidColorBrush(Colors.Black);
-            TextColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E4E4E4"));
-
-            SlideDuration = 400;
-            SlideOffset = 180;
-
-            LineWidth = 6;
-            Scale = 1.0;
-
-            MaxPathChars = 32;
-            ClickThrough = false;
-            ShowQuickActions = true;
-            ShowQuickActionsColoredLine = true;
-            QuickActionsOffset = 8.0;
-
-            IconHeight = 64;
-            IconPath = "INVALID_PATH";
+            get => onScreenTime;
+            set => onScreenTime = Utils.Clamp(value, 0, 30);
         }
+        public NvidiaNotification.Positions Option { get; set; }
+
+        [SettingsItemNumberRange(0, 1, 0.01)]
+        public Point Offset { get; set; }
+
+        [SettingsItemCategory("Colors")]
+        public Color BackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#2E48BD");
+        public Color ForegroundColor { get; set; } = Colors.Black;
+        public Color TextColor { get; set; } = (Color)ColorConverter.ConvertFromString("#E4E4E4");
+
+        [SettingsItemCategory("Animation")]
+        [SettingsItemNumberRange(0, 15, 0.1)]
+        public double SlideDuration
+        {
+            get => slideDuration;
+            set => slideDuration = Utils.Clamp(value, 0, 15);
+        }
+        [SettingsItemNumberRange(0, 5, 0.1)]
+        public double SlideOffset
+        {
+            get => slideOffset;
+            set => slideOffset = Utils.Clamp(value, 0, 5);
+        }
+
+        // TODO broken
+        [SettingsItemNumberRange(0, 100)]
+        public double LineWidth
+        {
+            get => lineWidth;
+            set => lineWidth = Utils.Clamp(value, 0, 100);
+        }
+        [SettingsItemNumberRange(0.001, 5, 0.1)]
+        public double Scale
+        {
+            get => scale;
+            set => scale = Utils.Clamp(value, 0.001, 5);
+        }
+
+        [SettingsItemCategory("Quick Actions")]
+        [SettingsItemNumberRange(0, 256)]
+        public uint MaxPathChars
+        {
+            get => maxPathChars;
+            set => maxPathChars = (uint)Utils.Clamp(value, 0, 256);
+        }
+        public bool ClickThrough { get; set; } = false;
+        public bool ShowQuickActions { get; set; } = true;
+        public bool ShowQuickActionsColoredLine { get; set; } = true;
+        [SettingsItemNumberRange(0, 2048)]
+        public double QuickActionsOffset
+        {
+            get => openFileOffset;
+            set => openFileOffset = Utils.Clamp(value, 0, 2048);
+        }
+
+        [SettingsItemCategory("Icon")]
+        [SettingsItemNumberRange(0, 192)]
+        public double IconHeight
+        {
+            get => iconHeight;
+            set => iconHeight = Utils.Clamp(value, 0, 192);
+        }
+        [SettingsItemStringPath(DefaultExt = ".png", FileFilter = "Images|*.png; *.jpg; *.jpeg; *.bmp; *.tif; *.gif; *.ico|All Files|*.*", IsFile = true)]
+        public string IconPath { get; set; } = "INVALID_PATH";
 
         public bool IsAnimParamsEqual(NvidiaCustomAnimationConfig b)
         {
@@ -69,39 +103,39 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 return false;
 
             return IsPreviewNotif.Equals(b.IsPreviewNotif) &&
-                Duration.Equals(b.Duration) &&
+                OnScreenTime.Equals(b.OnScreenTime) &&
                 SlideDuration.Equals(b.SlideDuration) &&
                 SlideOffset.Equals(b.SlideOffset) &&
                 IsOnRightSide.Equals(b.IsOnRightSide) &&
                 LineWidth.Equals(b.LineWidth);
         }
 
-        public NvidiaCustomAnimationConfig Duplicate()
+        public override OBSModuleSettings Clone()
         {
             return new NvidiaCustomAnimationConfig()
             {
-                Duration = this.Duration,
-                IsOnRightSide = this.IsOnRightSide,
-                IsPreviewNotif = this.IsPreviewNotif,
+                OnScreenTime = OnScreenTime,
+                IsOnRightSide = IsOnRightSide,
+                IsPreviewNotif = IsPreviewNotif,
 
-                BackgroundColor = this.BackgroundColor,
-                ForegroundColor = this.ForegroundColor,
-                TextColor = this.TextColor,
+                BackgroundColor = BackgroundColor,
+                ForegroundColor = ForegroundColor,
+                TextColor = TextColor,
 
-                SlideDuration = this.SlideDuration,
-                SlideOffset = this.SlideOffset,
+                SlideDuration = SlideDuration,
+                SlideOffset = SlideOffset,
 
-                LineWidth = this.LineWidth,
-                Scale = this.Scale,
+                LineWidth = LineWidth,
+                Scale = Scale,
 
-                MaxPathChars = this.MaxPathChars,
-                ClickThrough = this.ClickThrough,
-                ShowQuickActions = this.ShowQuickActions,
-                ShowQuickActionsColoredLine = this.ShowQuickActionsColoredLine,
-                QuickActionsOffset = this.QuickActionsOffset,
+                MaxPathChars = MaxPathChars,
+                ClickThrough = ClickThrough,
+                ShowQuickActions = ShowQuickActions,
+                ShowQuickActionsColoredLine = ShowQuickActionsColoredLine,
+                QuickActionsOffset = QuickActionsOffset,
 
-                IconHeight = this.IconHeight,
-                IconPath = this.IconPath,
+                IconHeight = IconHeight,
+                IconPath = IconPath,
             };
         }
     }

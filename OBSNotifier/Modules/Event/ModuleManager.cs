@@ -9,28 +9,23 @@ namespace OBSNotifier.Modules.Event
 {
     internal class ModuleManager : IDisposable
     {
-        enum None
-        {
-            None
-        }
-
         public struct ModuleData
         {
             public IOBSNotifierModule instance;
-            public OBSNotifierModuleSettings defaultSettings;
+            public OBSModuleSettings defaultSettings;
 
             public ModuleData(IOBSNotifierModule module) : this()
             {
                 this.instance = module;
-                this.defaultSettings = module.ModuleSettings;
+                this.defaultSettings = module.Settings.Clone();
             }
         }
 
         Logger logger = new Logger("logs/module_manager_log.txt");
 
+        // TODO add support for persistent modules
         public List<ModuleData> LoadedModules { get; } = new List<ModuleData>();
         public ModuleData CurrentModule { get; private set; }
-
 
         public ModuleManager()
         {
@@ -87,45 +82,51 @@ namespace OBSNotifier.Modules.Event
         {
             var moduleSetting = Settings.Instance.CurrentModuleSettings;
 
+            if (CurrentModule.instance.Settings != null)
+                moduleSetting.Data = CurrentModule.instance.Settings.Clone();
+
             // Validate current module option
-            Enum module_option;
-            try
-            {
-                module_option = (Enum)Enum.Parse(CurrentModule.instance.EnumOptionsType, moduleSetting.SelectedOption);
-            }
-            catch
-            {
-                module_option = CurrentModule.defaultSettings.Option;
-            }
+            //    Enum module_option;
+            //    try
+            //    {
+            //        module_option = (Enum)Enum.Parse(CurrentModule.instance.EnumOptionsType, moduleSetting.SelectedOption);
+            //    }
+            //    catch
+            //    {
+            //        module_option = CurrentModule.defaultSettings.Option;
+            //    }
 
             // Set notification types to default
             if (moduleSetting.ActiveNotificationTypes == null)
             {
                 moduleSetting.ActiveNotificationTypes = CurrentModule.instance.DefaultActiveNotifications;
-                Settings.Instance.Save();
             }
 
             // Save defaults
-            if (moduleSetting.FirstLoad)
-            {
-                moduleSetting.FirstLoad = false;
-                moduleSetting.UseSafeDisplayArea = CurrentModule.defaultSettings.UseSafeDisplayArea;
-                moduleSetting.AdditionalData = CurrentModule.defaultSettings.AdditionalData;
-                moduleSetting.CustomSettings = CurrentModule.defaultSettings.CustomSettings;
-                moduleSetting.Offset = CurrentModule.defaultSettings.Offset;
-                moduleSetting.OnScreenTime = CurrentModule.defaultSettings.OnScreenTime;
-                moduleSetting.SelectedOption = module_option.ToString();
-            }
+            //  if (moduleSetting.FirstLoad)
+            //  {
+            //      moduleSetting.FirstLoad = false;
+            //      moduleSetting.UseSafeDisplayArea = CurrentModule.defaultSettings.UseSafeDisplayArea;
+            //      moduleSetting.AdditionalData = CurrentModule.defaultSettings.AdditionalData;
+            //      moduleSetting.CustomSettings = CurrentModule.defaultSettings.CustomSettings;
+            //      moduleSetting.Offset = CurrentModule.defaultSettings.Offset;
+            //      moduleSetting.OnScreenTime = CurrentModule.defaultSettings.OnScreenTime;
+            //      moduleSetting.SelectedOption = module_option.ToString();
+            //      moduleSetting.Data = CurrentModule.defaultSettings.Settings.Clone();
+            //  }
 
-            CurrentModule.instance.ModuleSettings = new OBSNotifierModuleSettings()
+            // TODO load?
+            // CurrentModule.instance.ModuleSettings = new OBSNotifierModuleSettings()
             {
-                UseSafeDisplayArea = moduleSetting.UseSafeDisplayArea,
-                AdditionalData = moduleSetting.AdditionalData,
-                CustomSettings = moduleSetting.CustomSettings,
-                Offset = new Point(moduleSetting.Offset.X, moduleSetting.Offset.Y),
-                OnScreenTime = Math.Min(moduleSetting.OnScreenTime, 30000),
-                Option = module_option,
+                //        UseSafeDisplayArea = moduleSetting.UseSafeDisplayArea,
+                //        AdditionalData = moduleSetting.AdditionalData,
+                //        CustomSettings = moduleSetting.CustomSettings,
+                //        Offset = new Point(moduleSetting.Offset.X, moduleSetting.Offset.Y),
+                //        OnScreenTime = Math.Min(moduleSetting.OnScreenTime, 30000),
+                //        Option = module_option,
+                //    Settings = CurrentModule.instance.ModuleSettings.Settings, // TODO not copy?
             };
+            Settings.Instance.Save();
         }
 
         void WriteLog(string txt)

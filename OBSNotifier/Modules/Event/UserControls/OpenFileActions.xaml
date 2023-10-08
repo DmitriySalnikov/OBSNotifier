@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OBSNotifier.Modules.Event.UserControls"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d" 
              d:DesignHeight="256" d:DesignWidth="600"
              x:Name="main" x:ClassModifier="public">
@@ -16,7 +17,7 @@
                         <Grid>
                             <Border x:Name="tmp_border" Background="{TemplateBinding Background}" BorderThickness="0">
                                 <Border.BorderBrush>
-                                    <SolidColorBrush Color="{Binding ForegroundElementsColor, RelativeSource={RelativeSource AncestorType=local:OpenFileActions}, Mode=OneWay, Converter={StaticResource BrushToColorConverter}}" Opacity="0.5"/>
+                                    <SolidColorBrush Color="{Binding ForegroundElementsColor, Mode=OneWay, Converter={StaticResource BrushToColorConverter}}" Opacity="0.5"/>
                                 </Border.BorderBrush>
                             </Border>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -31,7 +32,7 @@
             </Setter>
 
             <Setter Property="Background" Value="#01000000"/>
-            <Setter Property="Foreground" Value="{Binding ForegroundElementsColor, RelativeSource={RelativeSource AncestorType=local:OpenFileActions}}"/>
+            <Setter Property="Foreground" Value="{Binding ForegroundElementsColor}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#9444"/>

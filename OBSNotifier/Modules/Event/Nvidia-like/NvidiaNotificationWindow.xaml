@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:OBSNotifier.Modules.Event.UserControls"
-        mc:Ignorable="d"
+        mc:Ignorable="d" x:ClassModifier="internal"
         Title="Nvidia Notification"
         WindowStyle="None" AllowsTransparency="True" Topmost="True"
         ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
@@ -91,7 +91,7 @@
         <Viewbox StretchDirection="Both">
             <Grid x:Name="g_back" Background="#76b900" Margin="0,0,0,0" Height="90" Width="300">
                 <Grid x:Name="g_front" Margin="6,0,0,0" Background="Black" Height="90" Width="294">
-                    <Image x:Name="i_icon" HorizontalAlignment="Left" Margin="6,0,0,0" Height="64" Source="/Modules/Nvidia-like/obs.png"/>
+                    <Image x:Name="i_icon" HorizontalAlignment="Left" Margin="6,0,0,0" Height="64" Source="/Modules/Event/Nvidia-like/obs.png"/>
                     <StackPanel Margin="76,0,6,0" x:Name="sp_text" VerticalAlignment="Center">
                         <Viewbox StretchDirection="DownOnly">
                             <TextBlock x:Name="l_title" Text="Something happened" Foreground="#e4e4e4" FontSize="18" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
@@ -107,6 +107,7 @@
             <Separator x:Name="fileOpen_sep" Height="8" Style="{StaticResource emptySeparator}" Margin="0"/>
             <Viewbox x:Name="fileOpen_viewbox" Stretch="UniformToFill" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay}">
                 <Grid>
+                    <!-- TODO background is just a line -->
                     <Grid x:Name="fileOpen_bg" Width="{Binding Width, ElementName=fileOpenOverlay}">
                         <Rectangle Fill="{Binding Background, ElementName=g_front}"/>
                         <Rectangle x:Name="fileOpen_colored_line" Fill="{Binding Background, ElementName=g_back}" Width="4" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay, Converter={StaticResource InverseAlignmentConverter}}"/>

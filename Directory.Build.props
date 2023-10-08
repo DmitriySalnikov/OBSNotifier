@@ -1,0 +1,16 @@
+<Project>
+	<PropertyGroup>
+		<Nullable>enable</Nullable>
+		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+		<BaseOutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(PlatformShortName)</BaseOutputPath>
+		<BaseIntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\$(PlatformShortName)</BaseIntermediateOutputPath>
+	</PropertyGroup>
+
+	<!--workaround for strange wpftmp folders https://github.com/dotnet/wpf/issues/2930-->
+	<Target Name="RemoveWpfTemp" AfterTargets="Build">
+		<ItemGroup>
+			<WpfTempDirectories Include="$([System.IO.Directory]::GetDirectories(&quot;$(BaseOutputPath)\\..&quot;,&quot;$(MSBuildProjectName)_*_wpftmp&quot;))"/>
+		</ItemGroup>
+		<RemoveDir Directories="@(WpfTempDirectories)" />
+	</Target>
+</Project>

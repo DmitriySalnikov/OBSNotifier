@@ -1,0 +1,13 @@
+﻿<local:SettingsItemModuleData x:Class="OBSNotifier.Modules.UserControls.SettingsItems.SettingsItemNotImplemented"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
+             mc:Ignorable="d"
+             d:DesignHeight="32" d:DesignWidth="400">
+    
+    <StackPanel VerticalAlignment="Center">
+        <TextBlock x:Name="tb_message" Text="Not Implemented!" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Foreground="Red"/>
+    </StackPanel>
+</local:SettingsItemModuleData>

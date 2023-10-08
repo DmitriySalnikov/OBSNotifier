@@ -1,22 +1,17 @@
-﻿using System;
-using System.Threading;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 
 namespace OBSNotifier
 {
-    public class DeferredAction : IDisposable
+    public sealed class DeferredActionWPF : IDisposable
     {
-        Timer close_timer = null;
-        DispatcherObject dsp_object = null;
-        Action action = null;
-        int delay = 1000;
+        System.Threading.Timer? close_timer = null;
+        DispatcherObject? dsp_object = null;
+        readonly Action action;
+        readonly int delay = 1000;
 
-        public DeferredAction(Action action, int delay = 1000, DispatcherObject dispatcherToInvokeOnIt = null)
+        public DeferredActionWPF(Action action, int delay = 1000, DispatcherObject? dispatcherToInvokeOnIt = null)
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
-
-            this.action = action;
+            this.action = action ?? throw new ArgumentNullException(nameof(action));
             this.delay = delay;
             dsp_object = dispatcherToInvokeOnIt;
         }
@@ -35,14 +30,13 @@ namespace OBSNotifier
         public void CallDeferred()
         {
             close_timer?.Dispose();
-            close_timer = new Timer(CallAction, null, delay, Timeout.Infinite);
+            close_timer = new(CallAction, null, delay, Timeout.Infinite);
         }
 
-        void CallAction(object obj)
+        void CallAction(object? obj)
         {
             close_timer?.Dispose();
             close_timer = null;
-
             if (action != null)
             {
                 if (dsp_object != null)
@@ -52,7 +46,7 @@ namespace OBSNotifier
             }
         }
 
-        ~DeferredAction()
+        ~DeferredActionWPF()
         {
             Dispose();
         }
@@ -61,7 +55,6 @@ namespace OBSNotifier
         {
             close_timer?.Dispose();
             close_timer = null;
-            action = null;
             dsp_object = null;
         }
     }

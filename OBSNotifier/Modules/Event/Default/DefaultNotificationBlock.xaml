@@ -25,19 +25,23 @@
             </BeginStoryboard>
         </Grid.Resources>
 
-        <Rectangle x:Name="r_notif" Stroke="#59000000" RadiusX="4" RadiusY="4" Fill="White"/>
+        <Border x:Name="b_background" CornerRadius="4" BorderThickness="1" BorderBrush="Transparent" Background="White">
+            <Viewbox x:Name="mainBox" Margin="4,4,4,4">
+                <StackPanel x:Name="stackPanel" VerticalAlignment="Center">
+                    <Viewbox StretchDirection="DownOnly">
+                        <TextBlock x:Name="l_title" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
+                    </Viewbox>
+                    <Viewbox StretchDirection="DownOnly">
+                        <TextBlock x:Name="l_desc" Text="Description" FontSize="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+                    </Viewbox>
+                </StackPanel>
+            </Viewbox>
+        </Border>
 
-        <Viewbox x:Name="mainBox" Margin="4,4,4,4">
-            <StackPanel x:Name="stackPanel" VerticalAlignment="Center">
-                <Viewbox StretchDirection="DownOnly">
-                    <TextBlock x:Name="l_title" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
-                </Viewbox>
-                <Viewbox StretchDirection="DownOnly">
-                    <TextBlock x:Name="l_desc" Text="Description" FontSize="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
-                </Viewbox>
-            </StackPanel>
-        </Viewbox>
-
-        <uc:OpenFileOverlayActions x:Name="fileOpenOverlay"/>
+        <uc:OpenFileOverlayActions x:Name="fileOpenOverlay">
+            <uc:OpenFileOverlayActions.OpacityMask>
+                <VisualBrush Visual="{Binding ElementName=b_backgroud}" Stretch="None"/>
+            </uc:OpenFileOverlayActions.OpacityMask>
+        </uc:OpenFileOverlayActions>
     </Grid>
 </UserControl>

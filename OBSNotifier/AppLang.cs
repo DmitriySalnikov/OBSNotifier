@@ -1,12 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 
 namespace OBSNotifier
 {
@@ -16,39 +8,39 @@ namespace OBSNotifier
     internal partial class App : Application
     {
         // based on https://github.com/Epsil0neR/WPF-Localization/blob/master/WPFLocalizationCSharp/App.xaml.cs
-        public static CultureInfo DefaultLanguage = new CultureInfo("en");
+        public static CultureInfo DefaultLanguage = new("en");
 
-        private static List<CultureInfo> m_Languages = new List<CultureInfo>() {
-            new CultureInfo("en"),
-            new CultureInfo("af"),
-            new CultureInfo("ar"),
-            new CultureInfo("ca"),
-            new CultureInfo("cs"),
-            new CultureInfo("da"),
-            new CultureInfo("de"),
-            new CultureInfo("el"),
-            new CultureInfo("es-ES"),
-            new CultureInfo("fi"),
-            new CultureInfo("fr"),
-            new CultureInfo("he"),
-            new CultureInfo("hu"),
-            new CultureInfo("it"),
-            new CultureInfo("ja"),
-            new CultureInfo("ko"),
-            new CultureInfo("nl"),
-            new CultureInfo("no"),
-            new CultureInfo("pl"),
-            new CultureInfo("pt-BR"),
-            new CultureInfo("pt-PT"),
-            new CultureInfo("ro"),
-            new CultureInfo("ru"),
-            new CultureInfo("sr"),
-            new CultureInfo("sv-SE"),
-            new CultureInfo("tr"),
-            new CultureInfo("vi"),
-            new CultureInfo("zh-CN"),
-            new CultureInfo("zh-TW"),
-        };
+        private static List<CultureInfo> m_Languages = [
+            new("en"),
+            new("af"),
+            new("ar"),
+            new("ca"),
+            new("cs"),
+            new("da"),
+            new("de"),
+            new("el"),
+            new("es-ES"),
+            new("fi"),
+            new("fr"),
+            new("he"),
+            new("hu"),
+            new("it"),
+            new("ja"),
+            new("ko"),
+            new("nl"),
+            new("no"),
+            new("pl"),
+            new("pt-BR"),
+            new("pt-PT"),
+            new("ro"),
+            new("ru"),
+            new("sr"),
+            new("sv-SE"),
+            new("tr"),
+            new("vi"),
+            new("zh-CN"),
+            new("zh-TW"),
+        ];
 
         public static List<CultureInfo> Languages
         {
@@ -58,7 +50,7 @@ namespace OBSNotifier
             }
         }
 
-        public static event EventHandler LanguageChanged;
+        public static event EventHandler? LanguageChanged;
         static bool is_localization_initialized = false;
 
         public static CultureInfo Language
@@ -69,11 +61,11 @@ namespace OBSNotifier
             }
             set
             {
-                if (value == null) throw new ArgumentNullException("value");
+                ArgumentNullException.ThrowIfNull(value);
                 if (value.Equals(Thread.CurrentThread.CurrentUICulture) && is_localization_initialized) return;
                 if (!Languages.Contains(value))
                 {
-                    Log($"'{value}' language is not found in this assembly!");
+                    LogError($"'{value}' language is not found in this assembly!");
                     return;
                 }
 
@@ -90,10 +82,12 @@ namespace OBSNotifier
         private static void ChangeLanguageResourceDictionaries(CultureInfo lang, string baseResourcePathNoExt)
         {
             // The default language should always exist
-            ResourceDictionary dictDef = new ResourceDictionary();
-            dictDef.Source = new Uri($"{baseResourcePathNoExt}.xaml", UriKind.Relative);
+            ResourceDictionary dictDef = new()
+            {
+                Source = new Uri($"{baseResourcePathNoExt}.xaml", UriKind.Relative)
+            };
 
-            ResourceDictionary dict = new ResourceDictionary();
+            ResourceDictionary dict = [];
             if (!lang.Equals(DefaultLanguage))
             {
                 // Load localized
@@ -119,7 +113,7 @@ namespace OBSNotifier
             var old_dict = Current.Resources.MergedDictionaries.Where((i) => i.Source != null && i.Source.OriginalString.StartsWith($"{baseResourcePathNoExt}.")).ToArray();
 
             // Remove if there are 2 of them
-            if (old_dict.Count() == 2)
+            if (old_dict.Length == 2)
             {
                 // Remove the old localized language
                 int idx = Current.Resources.MergedDictionaries.IndexOf(old_dict.Last());
@@ -146,7 +140,7 @@ namespace OBSNotifier
             }
         }
 
-        private void App_LanguageChanged(object sender, EventArgs e)
+        private void App_LanguageChanged(object? sender, EventArgs e)
         {
             Settings.Instance.Language = Language;
             Settings.Instance.Save();
@@ -154,7 +148,7 @@ namespace OBSNotifier
             ReconstructTrayMenu();
         }
 
-        Dictionary<string, Size> translationProgress;
+        Dictionary<string, Size>? translationProgress;
         Dictionary<string, Size> TranslationProgress
         {
             get
@@ -162,28 +156,28 @@ namespace OBSNotifier
                 if (translationProgress != null)
                     return translationProgress;
 
-                string text = OBSNotifier.Properties.Resources.localization_status;
+                string text = AppResources.localization_status;
                 text = text.Replace("\r\n", "\n").Replace("\n\r", "\n").Replace("%", "");
                 var lines = text.Split('\n').Select((l) => l.Trim());
 
-                Dictionary<string, Size> status = new Dictionary<string, Size>();
+                Dictionary<string, Size> status = [];
 
                 var is_approved = false;
                 foreach (string line in lines)
                 {
-                    if (line.ToLower().StartsWith("translated"))
+                    if (line.StartsWith("translated", StringComparison.CurrentCultureIgnoreCase))
                     {
                         is_approved = false;
                         continue;
                     }
-                    else if (line.ToLower().StartsWith("approved"))
+                    else if (line.StartsWith("approved", StringComparison.CurrentCultureIgnoreCase))
                     {
                         is_approved = true;
                         continue;
                     }
-                    else if (line.StartsWith("-"))
+                    else if (line.StartsWith('-'))
                     {
-                        var lang_split = line.Substring(1).Split(':');
+                        var lang_split = line[1..].Split(':');
                         if (lang_split.Length == 2)
                         {
                             var lang = lang_split[0].Trim();

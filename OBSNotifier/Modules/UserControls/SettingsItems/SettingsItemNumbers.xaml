@@ -1,0 +1,14 @@
+﻿<local:SettingsItemModuleData x:Class="OBSNotifier.Modules.UserControls.SettingsItems.SettingsItemNumbers"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
+             xmlns:ucp="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Parts"
+             mc:Ignorable="d" 
+             d:DesignHeight="96" d:DesignWidth="400">
+
+    <StackPanel x:Name="control_container" Orientation="Vertical" VerticalAlignment="Center">
+        <TextBlock x:Name="tb_text" TextWrapping="Wrap" Text="Nothing" VerticalAlignment="Center"/>
+    </StackPanel>
+</local:SettingsItemModuleData>

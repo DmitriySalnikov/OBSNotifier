@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Ninja.WebSocketClient</RootNamespace>
+		<Description>Lightweight, user-friendly WebSocket APIs for .NET 6 C#</Description>
+		<Authors>Cristi Pufu</Authors>
+		<AssemblyName>Ninja.WebSocketClient</AssemblyName>
+		<PackageId>Ninja.WebSocketClient</PackageId>
+		<PackageTags>websocket;websocket-client;keepalive;autoreconnect;net6</PackageTags>
+		<PackageProjectUrl>https://github.com/ninjastacktech/ninja-websocket-net</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/ninjastacktech/ninja-websocket-net</RepositoryUrl>
+		<Version>1.0.5</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
+	</ItemGroup>
+
+</Project>

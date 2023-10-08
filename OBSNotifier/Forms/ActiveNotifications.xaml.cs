@@ -53,27 +53,27 @@ namespace OBSNotifier
             return res;
         }
 
-        private void btn_reset_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_Click(object? sender, RoutedEventArgs e)
         {
             UpdateValues(App.modules.CurrentModule.instance.DefaultActiveNotifications);
         }
 
-        private void btn_reset_to_current_Click(object sender, RoutedEventArgs e)
+        private void btn_reset_to_current_Click(object? sender, RoutedEventArgs e)
         {
             UpdateValues(currentNotifications);
         }
 
-        private void btn_save_Click(object sender, RoutedEventArgs e)
+        private void btn_save_Click(object? sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
 
-        private void btn_select_all_Click(object sender, RoutedEventArgs e)
+        private void btn_select_all_Click(object? sender, RoutedEventArgs e)
         {
             UpdateValues(NotificationType.All);
         }
 
-        private void btn_select_none_Click(object sender, RoutedEventArgs e)
+        private void btn_select_none_Click(object? sender, RoutedEventArgs e)
         {
             UpdateValues(NotificationType.None);
         }

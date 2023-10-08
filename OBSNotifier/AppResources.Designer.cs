@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OBSNotifier.Properties {
+namespace OBSNotifier {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace OBSNotifier.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class AppResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal AppResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace OBSNotifier.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OBSNotifier.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OBSNotifier.AppResources", typeof(AppResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,45 +61,35 @@ namespace OBSNotifier.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon icon {
-            get {
-                object obj = ResourceManager.GetObject("icon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [OK] Fetching project info
+        ///   Looks up a localized string similar to ✔️  Fetching project info
         ///Translated:
         ///	- af: 0%
-        ///	- ar: 78%
+        ///	- ar: 82%
         ///	- ca: 0%
-        ///	- cs: 98%
-        ///	- da: 98%
-        ///	- de: 98%
-        ///	- el: 79%
-        ///	- es-ES: 86%
-        ///	- fi: 98%
-        ///	- fr: 86%
+        ///	- cs: 100%
+        ///	- da: 100%
+        ///	- de: 100%
+        ///	- el: 82%
+        ///	- es-ES: 89%
+        ///	- fi: 100%
+        ///	- fr: 89%
         ///	- he: 0%
         ///	- hu: 0%
-        ///	- it: 98%
-        ///	- ja: 84%
+        ///	- it: 100%
+        ///	- ja: 81%
         ///	- ko: 0%
-        ///	- nl: 86%
-        ///	- no: 86%
-        ///	- pl: 86%
-        ///	- pt-BR: 93%
-        ///	- pt-PT: 93%
-        ///	- ro: 98%
-        ///	- ru: 99%
+        ///	- nl: 89%
+        ///	- no: 88%
+        ///	- pl: 89%
+        ///	- pt-BR: 95%
+        ///	- pt-PT: 95%
+        ///	- ro: 100%
+        ///	- ru: 100%
         ///	- sr: 0%
-        ///	- sv-SE: 98%
+        ///	- sv-SE: 100%
         ///	- tr: 0%
         ///	- vi: 0%
-        ///	- zh-CN: 75%
+        ///	- zh-CN: 93%
         ///	- zh-TW: 0%
         ///Approved:
         ///	- af: 0%
@@ -111,32 +101,11 @@ namespace OBSNotifier.Properties {
         ///	- el: 0%
         ///	- es-ES: 0%
         ///	- fi: 0%
-        ///	- fr: 0%
-        ///	- [rest of string was truncated]&quot;;.
+        ///	- fr: [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string localization_status {
             get {
                 return ResourceManager.GetString("localization_status", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap obs_notifier {
-            get {
-                object obj = ResourceManager.GetObject("obs_notifier", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon obs_notifier_64px {
-            get {
-                object obj = ResourceManager.GetObject("obs_notifier_64px", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
             }
         }
         
@@ -161,26 +130,6 @@ namespace OBSNotifier.Properties {
         internal static string obs_notifier_autostart {
             get {
                 return ResourceManager.GetString("obs_notifier_autostart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon obs_notifier_connected_64px {
-            get {
-                object obj = ResourceManager.GetObject("obs_notifier_connected_64px", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon obs_notifier_reconnect_64px {
-            get {
-                object obj = ResourceManager.GetObject("obs_notifier_reconnect_64px", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
             }
         }
     }

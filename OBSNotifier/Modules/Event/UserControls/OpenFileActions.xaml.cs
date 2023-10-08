@@ -41,16 +41,18 @@ namespace OBSNotifier.Modules.Event.UserControls
 
         public OpenFileActions()
         {
+            ForegroundElementsColor = new SolidColorBrush(Colors.White);
+
             InitializeComponent();
         }
 
-        private void btn_open_folder_Click(object sender, RoutedEventArgs e)
+        private void btn_open_folder_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
-                    Process.Start(Path.GetFullPath(Path.GetDirectoryName(FilePath)));
+                    Utils.ProcessStartShell(Path.GetFullPath(Path.GetDirectoryName(FilePath) ?? "C:/"));
                 }
                 catch (Exception ex)
                 {
@@ -59,13 +61,13 @@ namespace OBSNotifier.Modules.Event.UserControls
             }
         }
 
-        private void btn_open_file_Click(object sender, RoutedEventArgs e)
+        private void btn_open_file_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
-                    Process.Start(Path.GetFullPath(FilePath));
+                    Utils.ProcessStartShell(Path.GetFullPath(FilePath));
                 }
                 catch (Exception ex)
                 {

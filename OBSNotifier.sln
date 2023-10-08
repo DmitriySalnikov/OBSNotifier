@@ -3,7 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OBSNotifier", "OBSNotifier\OBSNotifier.csproj", "{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OBSNotifier", "OBSNotifier\OBSNotifier.csproj", "{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OBSWebsocketSharp", "OBSWebsocket\OBSWebsocketSharp\OBSWebsocketSharp.csproj", "{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtocolGenerator", "OBSWebsocket\ProtocolGenerator\ProtocolGenerator.csproj", "{380AA73C-1A51-46FD-93C6-D5816FAE4743}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ninja.WebSocketClient", "Thirdparty\Ninja.WebSocketClient\Ninja.WebSocketClient.csproj", "{90690018-CAFD-4692-AA00-20B2932B7D2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OBSWebsocket", "OBSWebsocket", "{7AFF070E-C63B-4D57-984A-5EAD3393432A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Thirdparty", "Thirdparty", "{339BBD4E-0799-40D9-90DF-852C563106FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5D67D618-E30D-4E21-85F9-0CD2F215F129}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +30,26 @@ Global
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F623CC2-FA0D-49B8-83FC-2CE77EB58739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{380AA73C-1A51-46FD-93C6-D5816FAE4743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{380AA73C-1A51-46FD-93C6-D5816FAE4743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{380AA73C-1A51-46FD-93C6-D5816FAE4743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{380AA73C-1A51-46FD-93C6-D5816FAE4743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90690018-CAFD-4692-AA00-20B2932B7D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90690018-CAFD-4692-AA00-20B2932B7D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90690018-CAFD-4692-AA00-20B2932B7D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90690018-CAFD-4692-AA00-20B2932B7D2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A8E15377-7BB1-45FD-B658-9A0EEDDB8EA1} = {7AFF070E-C63B-4D57-984A-5EAD3393432A}
+		{380AA73C-1A51-46FD-93C6-D5816FAE4743} = {7AFF070E-C63B-4D57-984A-5EAD3393432A}
+		{90690018-CAFD-4692-AA00-20B2932B7D2B} = {339BBD4E-0799-40D9-90DF-852C563106FD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D881A926-84F2-4209-86ED-C82C5DE88436}

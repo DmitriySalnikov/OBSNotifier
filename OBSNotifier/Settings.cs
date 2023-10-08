@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using OBSNotifier.Modules.Event;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 
 namespace OBSNotifier
 {
@@ -13,12 +9,9 @@ namespace OBSNotifier
         public class ModuleSettings
         {
             public bool FirstLoad = true;
-            public bool UseSafeDisplayArea { get; set; } = true;
-            public uint OnScreenTime { get; set; } = 2000;
-            public string SelectedOption { get; set; } = string.Empty;
-            public System.Windows.Point Offset { get; set; } = new System.Windows.Point(0, 0);
-            public string AdditionalData { get; set; } = string.Empty;
-            public string CustomSettings { get; set; } = string.Empty;
+            [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
+            public OBSModuleSettings Data { get; set; } = null;
+            // TODO move to settingsItem
             public NotificationType? ActiveNotificationTypes { get; set; } = null;
         }
 
@@ -31,11 +24,9 @@ namespace OBSNotifier
         static string SaveFile = Path.Combine(App.AppDataFolder, SAVE_FILE_NAME);
         [JsonIgnore]
         static string SaveFileBackup = SaveFile + ".backup";
-        [JsonIgnore]
-        static string OldSaveFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), SAVE_FILE_NAME);
 
         [JsonIgnore]
-        DeferredAction saveSettings = new DeferredAction(() => Instance.SaveInternal(), 1000);
+        DeferredActionWPF saveSettings = new(() => Instance.SaveInternal(), 1000, App.Current);
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
@@ -51,19 +42,15 @@ namespace OBSNotifier
         public bool IsManuallyConnected { get; set; } = false;
         public string NotificationModule { get; set; } = string.Empty;
 
-        [JsonProperty("PerModuleSettings", Order = 100)]
-        private Dictionary<string, ModuleSettings> perModuleSettings = new Dictionary<string, ModuleSettings>();
+        [JsonProperty(nameof(PerModuleSettings), Order = 100)]
+        private Dictionary<string, ModuleSettings> perModuleSettings = [];
         [JsonIgnore]
         public Dictionary<string, ModuleSettings> PerModuleSettings { get => perModuleSettings; }
 
         #region Temp Update Flags
 
-        [JsonProperty(Order = 128)]
-        public bool IsScreenshotSavedJustAdded { get; set; } = true;
-        [JsonProperty(Order = 129)]
-        public string NotificationStyle { get; set; } = null;
-        [JsonProperty(Order = 130)]
-        public Dictionary<string, ModuleSettings> PerPluginSettings { get; set; } = null;
+        //[JsonProperty(Order = 129)]
+        //public string NotificationStyle { get; set; } = null;
 
         #endregion
 
@@ -83,8 +70,7 @@ namespace OBSNotifier
 
         Settings()
         {
-            if (Instance == null)
-                Instance = this;
+            Instance ??= this;
         }
 
         ~Settings()
@@ -93,12 +79,11 @@ namespace OBSNotifier
                 SaveInternal();
 
             saveSettings.Dispose();
-            saveSettings = null;
         }
 
         public bool ClearUnusedModuleSettings()
         {
-            List<string> to_delete = new List<string>();
+            List<string> to_delete = [];
             foreach (var p in PerModuleSettings)
             {
                 if (App.modules.LoadedModules.FindIndex((i) => i.instance.ModuleID == p.Key) == -1)
@@ -127,7 +112,8 @@ namespace OBSNotifier
         {
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(SaveFile));
+                if (!Directory.Exists(Path.GetDirectoryName(SaveFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(SaveFile) ?? string.Empty);
 
                 try
                 {
@@ -156,9 +142,10 @@ namespace OBSNotifier
             }
         }
 
+        // TODO load modules data
         static public void Load()
         {
-            Func<string, bool> tryLoad = (file) =>
+            static bool tryLoad(string file)
             {
                 if (File.Exists(file))
                 {
@@ -169,14 +156,11 @@ namespace OBSNotifier
                         throw new FileLoadException($"Save file (\"{file}\") is empty");
                     }
 
-                    Instance = JsonConvert.DeserializeObject<Settings>(fileText);
-                    if (Instance == null)
-                        Instance = new Settings();
-
+                    Instance = JsonConvert.DeserializeObject<Settings>(fileText) ?? new Settings();
                     return true;
                 }
                 return false;
-            };
+            }
 
             var is_tried_to_load_backup = false;
             try
@@ -218,25 +202,6 @@ namespace OBSNotifier
                 }
             }
 
-            // The logic of updating from locally saved settings in the application folder to AppData
-            try
-            {
-                if (File.Exists(OldSaveFile))
-                {
-                    // Load old settings
-                    Instance = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(OldSaveFile));
-                    // Save to old file with new comments
-                    File.WriteAllText(OldSaveFile, "// This file will no longer be used to store settings.\n// The current settings file is located in %Appdata%/OBSNotifier/\n\n" + JsonConvert.SerializeObject(Instance, Formatting.Indented));
-                    // Create new file in appdata
-                    Instance.SaveInternal();
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Log(ex);
-            }
-
             Instance = new Settings();
         }
 
@@ -247,6 +212,7 @@ namespace OBSNotifier
         /// </summary>
         public void PatchSavedSettings()
         {
+            /*
             if (IsScreenshotSavedJustAdded)
             {
                 IsScreenshotSavedJustAdded = false;
@@ -265,18 +231,15 @@ namespace OBSNotifier
 
                 Instance.Save();
             }
+            */
 
+            /*
             if (!string.IsNullOrEmpty(NotificationStyle))
             {
                 NotificationModule = NotificationStyle;
                 NotificationStyle = null;
             }
-
-            if (PerPluginSettings != null)
-            {
-                perModuleSettings = PerPluginSettings;
-                PerPluginSettings = null;
-            }
+            */
         }
     }
 }

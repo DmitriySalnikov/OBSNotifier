@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 
 namespace OBSNotifier.Modules.Event.Default
 {
@@ -22,21 +21,16 @@ namespace OBSNotifier.Modules.Event.Default
 
         public string ModuleDescription => Utils.Tr("default_module_desc");
 
-        public EventModuleAvailableSettings DefaultAvailableSettings => EventModuleAvailableSettings.AllNoCustomSettings;
-
-        OBSNotifierModuleSettings _moduleSettings = new OBSNotifierModuleSettings()
+        public DefaultCustomNotifBlockSettings SettingsTyped { get; set; } = new DefaultCustomNotifBlockSettings();
+        public OBSModuleSettings Settings
         {
-            UseSafeDisplayArea = true,
-            AdditionalData = "BackgroundColor = #FF4C4C4C\nOutlineColor = #59000000\nTextColor = #FFD8D8D8\nBlocks = 3\nRadius = 4.0\nWidth = 180.0\nHeight = 52.0\nMargin = 4, 4, 4, 4\nMaxPathChars = 32\nClickThrough = False\nShowQuickActions = True",
-            Option = Positions.BottomRight,
-            Offset = new Point(0, 0),
-            OnScreenTime = 3000,
-        };
-
-        public OBSNotifierModuleSettings ModuleSettings
-        {
-            get => _moduleSettings;
-            set => _moduleSettings = value;
+            get => SettingsTyped;
+            set
+            {
+                if (value.GetType() != typeof(DefaultCustomNotifBlockSettings))
+                    throw new ArgumentException($"'value' is not a {typeof(DefaultCustomNotifBlockSettings)}");
+                SettingsTyped = (DefaultCustomNotifBlockSettings)value;
+            }
         }
 
         public Type EnumOptionsType => typeof(Positions);
@@ -55,7 +49,7 @@ namespace OBSNotifier.Modules.Event.Default
             window = null;
         }
 
-        public bool ShowNotification(NotificationType type, string title, string description = null, object[] originalData = null)
+        public bool ShowNotification(NotificationType type, string title, string? description = null, object[]? originalData = null)
         {
             if (window == null)
             {
@@ -93,16 +87,7 @@ namespace OBSNotifier.Modules.Event.Default
             window = null;
         }
 
-        public void OpenCustomSettings() { }
-
-        public string GetCustomSettingsDataToSave() => null;
-
-        public string GetFixedAdditionalData()
-        {
-            return Utils.ConfigFixString<DefaultCustomNotifBlockSettings>(_moduleSettings.AdditionalData);
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             (sender as DefaultNotificationWindow).Closing -= Window_Closing;
 
