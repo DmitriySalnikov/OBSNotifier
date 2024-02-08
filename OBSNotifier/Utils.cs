@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace OBSNotifier
 {
-    public static partial class Utils
+    public static class Utils
     {
         readonly static int EncryptedMagic = 0x4f4e4544; // ONED - OBS Notifier Encrypted Data
 
@@ -285,6 +285,11 @@ namespace OBSNotifier
                 short_name = path;
             }
             return short_name;
+        }
+
+        public static bool ApproxEqual(double a, double b, double epsilon = 0.0001)
+        {
+            return Math.Abs(a - b) < epsilon;
         }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace OBSNotifier.Modules.Event.Default
 {
     internal class DefaultCustomNotifBlockSettings : OBSModuleSettings
     {
-        double onScreenDuration = 2;
+        double onScreenDuration = 4.0;
         uint blocks = 3;
         double borderRadius = 4;
         double borderThickness = 1;

@@ -10,5 +10,5 @@
         <ResourceDictionary Source="../../../Resources.xaml"/>
     </UserControl.Resources>
 
-    <Separator Style="{StaticResource emptySeparator}" Height="4"/>
+    <Separator x:Name="invisible_separator" Style="{StaticResource emptySeparator}" Height="4"/>
 </UserControl>

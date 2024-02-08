@@ -15,6 +15,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
         readonly Type valueType;
         readonly double min;
         readonly double max;
+        readonly uint precision = 0;
 
         double number = 0;
 
@@ -74,6 +75,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
             {
                 nud_value.Precision = 0;
             }
+            precision = nud_value.Precision;
 
             is_changed_by_code = false;
         }
@@ -96,6 +98,9 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
             if (is_changed_by_code)
                 return;
 
+            if (Utils.ApproxEqual(number, slider_value.Value, Math.Pow(0.1, precision)))
+                return;
+
             number = slider_value.Value;
 
             is_changed_by_code = true;
@@ -107,6 +112,9 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
         private void nud_value_ValueChanged(object? sender, double e)
         {
             if (is_changed_by_code)
+                return;
+
+            if (Utils.ApproxEqual(number, nud_value.Value, Math.Pow(0.1, precision)))
                 return;
 
             number = nud_value.Value;

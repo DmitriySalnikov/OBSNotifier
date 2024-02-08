@@ -1,24 +1,21 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     internal class NvidiaCustomAnimationConfig : OBSModuleSettings
     {
-        double onScreenTime = 2.5f;
+        double onScreenTime = 5.0;
         double iconHeight = 64;
         double scale = 1.0;
         double lineWidth = 6;
         double openFileOffset = 8.0;
-        double slideDuration = 0.4f;
-        double slideOffset = 0.18f;
+        double slideDuration = 0.4;
+        double slideOffset = 0.18;
         uint maxPathChars = 32;
 
-        [ConfigIgnore]
         [SettingsItemIgnore]
         public bool IsOnRightSide { get; set; } = false;
-        [ConfigIgnore]
         [SettingsItemIgnore]
         public bool IsPreviewNotif { get; set; } = false;
 

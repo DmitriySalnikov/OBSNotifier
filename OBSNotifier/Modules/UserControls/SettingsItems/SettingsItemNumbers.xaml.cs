@@ -5,9 +5,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
 {
     public partial class SettingsItemNumbers : SettingsItemModuleData
     {
-        SettingsItemNumberRangeAttribute rangeAttribute;
-
-        double number = 0;
+        readonly SettingsItemNumberRangeAttribute rangeAttribute;
         readonly List<SettingsItemNumbersRow> numbersRows = [];
 
         public SettingsItemNumbers() : base() { rangeAttribute = new(0, 0); InitializeComponent(); }
@@ -70,7 +68,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     typeof(double),
                     true);
 
-                control_container.Children.Add(new SettingsItemSeparator());
+                control_container.Children.Add(new SettingsItemSeparator(true));
 
                 addRow(
                     v => Value = (Point)Value! with { Y = v },
@@ -86,7 +84,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     typeof(double),
                     true);
 
-                control_container.Children.Add(new SettingsItemSeparator());
+                control_container.Children.Add(new SettingsItemSeparator(true));
 
                 addRow(
                     v => Value = (Thickness)Value! with { Top = v },
@@ -94,7 +92,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     typeof(double),
                     false);
 
-                control_container.Children.Add(new SettingsItemSeparator());
+                control_container.Children.Add(new SettingsItemSeparator(true));
 
                 addRow(
                     v => Value = (Thickness)Value! with { Right = v },
@@ -102,7 +100,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     typeof(double),
                     false);
 
-                control_container.Children.Add(new SettingsItemSeparator());
+                control_container.Children.Add(new SettingsItemSeparator(true));
 
                 addRow(
                     v => Value = (Thickness)Value! with { Bottom = v },

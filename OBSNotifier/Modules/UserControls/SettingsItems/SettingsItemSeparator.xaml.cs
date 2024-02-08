@@ -4,8 +4,19 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
 {
     public partial class SettingsItemSeparator : UserControl
     {
-        public SettingsItemSeparator() { 
+        public SettingsItemSeparator()
+        {
             InitializeComponent();
+        }
+
+        public SettingsItemSeparator(bool isSubItem = false)
+        {
+            InitializeComponent();
+
+            if (isSubItem)
+            {
+                invisible_separator.Height *= 0.5;
+            }
         }
     }
 }

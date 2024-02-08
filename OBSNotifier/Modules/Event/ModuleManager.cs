@@ -67,7 +67,7 @@ namespace OBSNotifier.Modules.Event
                     return true;
 
                 CurrentModule.instance?.ForceCloseAllRelativeToModule();
-                (Application.Current as App).gc_collect.CallDeferred();
+                ((App)Application.Current).gc_collect.CallDeferred();
 
                 CurrentModule = moduleData;
                 UpdateCurrentModuleSettings();
@@ -131,12 +131,12 @@ namespace OBSNotifier.Modules.Event
 
         void WriteLog(string txt)
         {
-            logger?.Write(txt);
+            logger.Write(txt);
         }
 
         void WriteLog(Exception ex)
         {
-            logger?.Write(ex);
+            logger.Write(ex);
         }
 
         public void Dispose()
@@ -154,8 +154,7 @@ namespace OBSNotifier.Modules.Event
             }
 
             LoadedModules.Clear();
-            logger?.Dispose();
-            logger = null;
+            logger.Dispose();
         }
     }
 }
