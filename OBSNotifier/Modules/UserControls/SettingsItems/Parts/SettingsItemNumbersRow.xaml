@@ -17,6 +17,6 @@
 
         <Slider x:Name="slider_value" Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center" Minimum="0" Maximum="1" ValueChanged="slider_value_ValueChanged"/>
         <uc:NumericUpDown x:Name="nud_value" Grid.Column="1" MinWidth="96" UpDownWidth="22" Value="5" Precision="3" Minimum="0" Maximum="10" ValueChanged="nud_value_ValueChanged"/>
-        <uc:RevertButton x:Name="btn_revert" Grid.Column="2" Margin="8,0,0,0"/>
+        <uc:ValueQuickActionButton x:Name="btn_quick_action" Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </UserControl>

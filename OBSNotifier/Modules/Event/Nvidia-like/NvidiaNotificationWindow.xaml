@@ -1,17 +1,21 @@
-﻿<Window x:Class="OBSNotifier.Modules.Event.NvidiaLike.NvidiaNotificationWindow"
+﻿<uc:ModuleWindow x:Class="OBSNotifier.Modules.Event.NvidiaLike.NvidiaNotificationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:uc="clr-namespace:OBSNotifier.Modules.Event.UserControls"
+        xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+        xmlns:euc="clr-namespace:OBSNotifier.Modules.Event.UserControls"
         mc:Ignorable="d" x:ClassModifier="internal"
         Title="Nvidia Notification"
         WindowStyle="None" AllowsTransparency="True" Topmost="True"
         ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
         ResizeMode="NoResize" ShowInTaskbar="False"
-        Opacity="1.0" SnapsToDevicePixels="True"
+        Opacity="1.0"
         Background="{x:Null}"
-        MouseDown="Window_MouseDown">
+        MouseDown="Window_MouseDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.ClearTypeHint="Enabled">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -112,9 +116,9 @@
                         <Rectangle Fill="{Binding Background, ElementName=g_front}"/>
                         <Rectangle x:Name="fileOpen_colored_line" Fill="{Binding Background, ElementName=g_back}" Width="4" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay, Converter={StaticResource InverseAlignmentConverter}}"/>
                     </Grid>
-                    <uc:OpenFileActions x:Name="fileOpenOverlay" Height="42" Width="200" HorizontalAlignment="Right" ForegroundElementsColor="{Binding Foreground, ElementName=l_title}"/>
+                    <euc:OpenFileActions x:Name="fileOpenOverlay" Height="42" Width="200" HorizontalAlignment="Right" ForegroundElementsColor="{Binding Foreground, ElementName=l_title}"/>
                 </Grid>
             </Viewbox>
         </StackPanel>
     </StackPanel>
-</Window>
+</uc:ModuleWindow>

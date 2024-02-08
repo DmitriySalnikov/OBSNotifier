@@ -54,6 +54,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         }
 
         // TODO broken
+        // does not update visuals correctly. Can be fixed with updating the animation and seeking to the end
         [SettingsItemNumberRange(0, 100)]
         public double LineWidth
         {
@@ -94,7 +95,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemStringPath(DefaultExt = ".png", FileFilter = "Images|*.png; *.jpg; *.jpeg; *.bmp; *.tif; *.gif; *.ico|All Files|*.*", IsFile = true)]
         public string IconPath { get; set; } = "INVALID_PATH";
 
-        public bool IsAnimParamsEqual(NvidiaCustomAnimationConfig b)
+        public bool IsAnimParamsEqual(NvidiaCustomAnimationConfig? b)
         {
             if (b == null)
                 return false;

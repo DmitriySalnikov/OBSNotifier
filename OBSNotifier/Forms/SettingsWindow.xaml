@@ -11,7 +11,10 @@
         MinHeight="264" MinWidth="357"
         IsVisibleChanged="Window_IsVisibleChanged"
         StateChanged="Window_StateChanged"
-        SnapsToDevicePixels="True">
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.ClearTypeHint="Enabled">
+
     <Window.Resources>
         <ResourceDictionary Source="../Resources.xaml"/>
     </Window.Resources>

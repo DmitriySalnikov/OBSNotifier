@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using System.Windows.Media.Media3D;
 
 namespace OBSNotifier
 {
@@ -18,11 +17,17 @@ namespace OBSNotifier
             }
         }
 
+        public static Size GetMaxSize()
+        {
+            var s = AllScreens();
+            return new Size(s.Max(s => s.DeviceBounds.Width), s.Max(s => s.DeviceBounds.Height));
+        }
+
         public static WPFScreens GetScreenFrom(Window window)
         {
-            WindowInteropHelper windowInteropHelper = new WindowInteropHelper(window);
+            var windowInteropHelper = new WindowInteropHelper(window);
             Screen screen = Screen.FromHandle(windowInteropHelper.Handle);
-            WPFScreens wpfScreen = new WPFScreens(screen);
+            var wpfScreen = new WPFScreens(screen);
             return wpfScreen;
         }
 
@@ -32,9 +37,9 @@ namespace OBSNotifier
             int y = (int)Math.Round(point.Y);
 
             // are x,y device-independent-pixels ??
-            System.Drawing.Point drawingPoint = new System.Drawing.Point(x, y);
+            var drawingPoint = new System.Drawing.Point(x, y);
             Screen screen = Screen.FromPoint(drawingPoint);
-            WPFScreens wpfScreen = new WPFScreens(screen);
+            var wpfScreen = new WPFScreens(screen);
 
             return wpfScreen;
         }
@@ -61,7 +66,7 @@ namespace OBSNotifier
             get { return GetRect(screen.WorkingArea); }
         }
 
-        private Rect GetRect(System.Drawing.Rectangle value)
+        private static Rect GetRect(System.Drawing.Rectangle value)
         {
             return new Rect
             {

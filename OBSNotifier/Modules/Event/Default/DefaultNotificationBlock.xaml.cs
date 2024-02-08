@@ -103,8 +103,8 @@ namespace OBSNotifier.Modules.Event.Default
             b_background.BorderThickness = new Thickness(settings.BorderThickness);
             l_title.Foreground = l_desc.Foreground = new SolidColorBrush(settings.TextColor);
             mainBox.Margin = settings.Margin;
-            Width = settings.Width;
-            Height = settings.Height;
+            Width = settings.BlockSize.Width;
+            Height = settings.BlockSize.Height;
 
             l_title.Text = title;
 

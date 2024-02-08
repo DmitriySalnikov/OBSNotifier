@@ -1,8 +1,5 @@
 ﻿using OBSNotifier.Modules.Event.Default;
 using OBSNotifier.Modules.Event.NvidiaLike;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 
 namespace OBSNotifier.Modules.Event
@@ -21,7 +18,7 @@ namespace OBSNotifier.Modules.Event
             }
         }
 
-        Logger logger = new Logger("logs/module_manager_log.txt");
+        readonly Logger logger = new("logs/module_manager_log.txt");
 
         // TODO add support for persistent modules
         public List<ModuleData> LoadedModules { get; } = new List<ModuleData>();

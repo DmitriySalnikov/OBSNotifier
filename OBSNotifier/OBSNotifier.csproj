@@ -17,6 +17,9 @@ In order for this program to work, you need to install OBS version 28+ with the 
 		<RepositoryUrl>https://github.com/DmitriySalnikov/OBSNotifier</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<NeutralLanguage>en</NeutralLanguage>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<NoWarn>$(NoWarn);WFAC010</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -133,7 +133,6 @@ namespace ProtocolGenerator
             {
                 var innerType = JsonTypeToCS(type[arrPrefix.Length..^1], isInput);
 
-                // TODO test with array type
                 if (innerType == "JsonElement" || innerType == "JsonObject")
                     return innerType;
                 else
@@ -527,7 +526,6 @@ namespace ProtocolGenerator
                             }
 
                             // Return
-                            // TODO fix getting root of jsonDoc
                             if (isHasReturn)
                             {
                                 Line(sb, "var response = await Request(data);");

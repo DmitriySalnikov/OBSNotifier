@@ -17,6 +17,6 @@
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="tb_name" Grid.Column="0" TextWrapping="Wrap"/>
         <uc:CustomColorPickerButton x:Name="cp_value" Grid.Column="1" ColorChanged="cp_value_ColorChanged"/>
-        <uc:RevertButton Grid.Column="2" Margin="8,0,0,0"/>
+        <uc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </local:SettingsItemModuleData>

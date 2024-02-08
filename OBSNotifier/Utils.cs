@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
+using OBSNotifier.Modules.UserControls;
 
 namespace OBSNotifier
 {
@@ -187,14 +188,25 @@ namespace OBSNotifier
         }
 
         /// <summary>
-        /// Returns the current <see cref="WPFScreens"/> selected in the application settings
+        /// Returns the <see cref="WPFScreens"/> by the display ID
         /// </summary>
         /// <returns></returns>
-        public static WPFScreens GetCurrentNotificationScreen(string displayID)
+        public static WPFScreens GetScreenById(string displayID)
         {
             foreach (var s in WPFScreens.AllScreens())
             {
                 if (s.DeviceName == displayID)
+                    return s;
+            }
+            return WPFScreens.Primary;
+        }
+
+        public static WPFScreens GetWindowScreen(Window window)
+        {
+            var center = new Point(window.Left + window.Width * 0.5, window.Top + window.Height * 0.5);
+            foreach (var s in WPFScreens.AllScreens())
+            {
+                if (s.DeviceBounds.Contains(center))
                     return s;
             }
             return WPFScreens.Primary;
@@ -220,7 +232,7 @@ namespace OBSNotifier
         /// <returns></returns>
         public static Point GetWindowPosition(string displayID, AnchorPoint anchor, Size size, Point offset, bool useSafeArea)
         {
-            return GetWindowPosition(GetCurrentNotificationScreen(displayID), anchor, size, offset, useSafeArea);
+            return GetWindowPosition(GetScreenById(displayID), anchor, size, offset, useSafeArea);
         }
 
         /// <summary>
@@ -245,15 +257,31 @@ namespace OBSNotifier
             var offsetX = (rect.Width - size.Width) * offset.X;
             var offsetY = (rect.Height - size.Height) * offset.Y;
 
-            return anchor switch
+            switch (anchor)
             {
-                AnchorPoint.TopLeft => new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY),
-                AnchorPoint.TopRight => new Point(boundsPosEnd.X - offsetX, boundsPos.Y + offsetY),
-                AnchorPoint.BottomRight => new Point(boundsPosEnd.X - offsetX, boundsPosEnd.Y - offsetY),
-                AnchorPoint.BottomLeft => new Point(boundsPos.X + offsetX, boundsPosEnd.Y - offsetY),
-                AnchorPoint.Center => new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY),
-                _ => new Point(),
+                case AnchorPoint.TopLeft:
+                    return new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY);
+                case AnchorPoint.TopRight:
+                    return new Point(boundsPosEnd.X - offsetX, boundsPos.Y + offsetY);
+                case AnchorPoint.BottomRight:
+                    return new Point(boundsPosEnd.X - offsetX, boundsPosEnd.Y - offsetY);
+                case AnchorPoint.BottomLeft:
+                    return new Point(boundsPos.X + offsetX, boundsPosEnd.Y - offsetY);
+                case AnchorPoint.Center:
+                    return new Point(boundsPos.X + offsetX, boundsPos.Y + offsetY);
             };
+
+            return new Point();
+        }
+
+        public static Point GetModuleWindowPosition(ModuleWindow window, string displayID, AnchorPoint anchor, Size size, Point offset, bool useSafeArea)
+        {
+            return GetModuleWindowPosition(window, GetScreenById(displayID), anchor, size, offset, useSafeArea);
+        }
+
+        public static Point GetModuleWindowPosition(ModuleWindow window, WPFScreens screen, AnchorPoint anchor, Size size, Point offset, bool useSafeArea)
+        {
+            return GetWindowPosition(screen, anchor, new Size(size.Width * window.DpiData.CurrentDpiScale.Width, size.Height * window.DpiData.CurrentDpiScale.Height), offset, useSafeArea);
         }
 
         /// <summary>

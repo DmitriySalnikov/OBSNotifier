@@ -8,7 +8,7 @@
              mc:Ignorable="d" x:ClassModifier="internal"
              Height="52" Width="180" IsHitTestVisible="True" Background="Transparent" MouseDown="Window_MouseDown">
 
-    <Grid x:Name="g_notif" SnapsToDevicePixels="True">
+    <Grid x:Name="g_notif">
         <Grid.Resources>
             <BeginStoryboard x:Key="FadeAnimBoard" HandoffBehavior="SnapshotAndReplace">
                 <Storyboard Completed="Animation_Completed">

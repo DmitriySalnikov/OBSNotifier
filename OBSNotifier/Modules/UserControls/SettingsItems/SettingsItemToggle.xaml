@@ -17,6 +17,6 @@
 
         <TextBlock x:Name="cb_text" Grid.Column="0" TextWrapping="Wrap" Text="Nothing"/>
         <CheckBox x:Name="cb_value" Grid.Column="1" VerticalAlignment="Center" Checked="cb_value_Toggled" Unchecked="cb_value_Toggled"/>
-        <uc:RevertButton Grid.Column="2" Margin="8,0,0,0"/>
+        <uc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </local:SettingsItemModuleData>

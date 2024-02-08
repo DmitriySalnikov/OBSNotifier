@@ -1,8 +1,9 @@
-﻿<Window x:Class="OBSNotifier.Modules.Event.Default.DefaultNotificationWindow"
+﻿<uc:ModuleWindow x:Class="OBSNotifier.Modules.Event.Default.DefaultNotificationWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
         xmlns:local="clr-namespace:OBSNotifier.Modules.Event.Default"
         mc:Ignorable="d" x:ClassModifier="internal"
         Title="Default Notification"
@@ -10,10 +11,13 @@
         ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
         Opacity="1.0"
         Width="180" Height="104"
-        Background="{x:Null}">
+        Background="{x:Null}"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.ClearTypeHint="Enabled">
 
     <StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">
         <local:DefaultNotificationBlock/>
         <local:DefaultNotificationBlock/>
     </StackPanel>
-</Window>
+</uc:ModuleWindow>

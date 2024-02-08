@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -19,8 +16,8 @@ namespace OBSNotifier.Modules.Event.UserControls
             set => SetValue(ForegroundElementsColorProperty, value);
         }
 
-        string filePath = null;
-        public string FilePath
+        string? filePath = null;
+        public string? FilePath
         {
             get => filePath;
             set

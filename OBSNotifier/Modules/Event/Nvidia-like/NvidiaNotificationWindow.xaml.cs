@@ -1,20 +1,20 @@
-﻿using System;
+﻿using OBSNotifier.Modules.UserControls;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace OBSNotifier.Modules.Event.NvidiaLike
 {
-    internal partial class NvidiaNotificationWindow : Window
+    internal partial class NvidiaNotificationWindow : ModuleWindow
     {
         const string default_icon_path = "pack://application:,,,/Modules/Event/Nvidia-like/obs.png";
         const double default_window_width = 300;
         const double default_window_height = 90;
 
-        NvidiaNotification owner = null;
+        readonly NvidiaNotification owner;
 
-        NvidiaCustomAnimationConfig previousParams;
-        readonly NvidiaCustomAnimationConfig defaultParams = new NvidiaCustomAnimationConfig();
+        NvidiaCustomAnimationConfig? previousParams;
+        readonly NvidiaCustomAnimationConfig defaultParams = new();
 
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight; }
         DeferredActionWPF hide_delay;
@@ -23,16 +23,21 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         readonly bool[] animation_finished = [true, true];
 
-        public NvidiaNotificationWindow(NvidiaNotification module)
+        public NvidiaNotificationWindow(NvidiaNotification module) : base()
         {
             InitializeComponent();
 
-            anim_nv = (Resources["nvidia_anim"] as BeginStoryboard);
-            anim_f = (Resources["fileOpen_anim"] as BeginStoryboard);
+            anim_nv = (BeginStoryboard)Resources["nvidia_anim"];
+            anim_f = (BeginStoryboard)Resources["fileOpen_anim"];
 
             hide_delay = new DeferredActionWPF(() => Hide(), 200, this);
             owner = module;
             i_icon.SizeChanged += I_icon_SizeChanged;
+        }
+
+        protected override void OnModuleDpiChanged()
+        {
+            UpdateParameters();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -46,11 +51,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         protected override void OnClosed(EventArgs e)
         {
-            owner = null;
             StopAnimNV();
             StopAnimFile();
             hide_delay.Dispose();
-            hide_delay = null;
 
             base.OnClosed(e);
         }
@@ -136,8 +139,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             fileOpen_viewbox.Height = Math.Ceiling(fileOpenOverlay.Height * owner.SettingsTyped.Scale);
             fileOpen_sep.Height = Math.Ceiling(Math.Round(owner.SettingsTyped.QuickActionsOffset * owner.SettingsTyped.Scale));
 
-            Width = Math.Ceiling(default_window_width * owner.SettingsTyped.Scale);
-            Height = Math.Ceiling(default_window_height * owner.SettingsTyped.Scale) + (owner.SettingsTyped.ShowQuickActions ? Math.Ceiling(fileOpen_viewbox.Height + fileOpen_sep.Height) : 0);
+            var newSize = new Size(
+                Math.Ceiling(default_window_width * owner.SettingsTyped.Scale),
+                Math.Ceiling(default_window_height * owner.SettingsTyped.Scale) + (owner.SettingsTyped.ShowQuickActions ? Math.Ceiling(fileOpen_viewbox.Height + fileOpen_sep.Height) : 0));
             g_front.Width = Math.Max(1, default_window_width - owner.SettingsTyped.LineWidth);
 
             // Icon
@@ -170,13 +174,18 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             // Position
             var pe = owner.SettingsTyped.Option;
             var anchor = (Utils.AnchorPoint)Enum.Parse(typeof(Utils.AnchorPoint), pe.ToString());
-            Point pos = Utils.GetWindowPosition(owner.SettingsTyped.DisplayID, anchor, new Size(Width, Height), owner.SettingsTyped.Offset, owner.SettingsTyped.UseSafeDisplayArea);
+            Point pos = Utils.GetModuleWindowPosition(this, owner.SettingsTyped.DisplayID, anchor, new Size(newSize.Width, newSize.Height), owner.SettingsTyped.Offset, owner.SettingsTyped.UseSafeDisplayArea);
 
-            Left = pos.X;
-            Top = pos.Y;
+            if (!this.MoveModuleWindow(owner.SettingsTyped.DisplayID, pos.X, pos.Y, newSize.Width, newSize.Height, true))
+            {
+                Left = pos.X;
+                Top = pos.Y;
+                Width = newSize.Width;
+                Height = newSize.Height;
+            }
         }
 
-        private void I_icon_SizeChanged(object? sender, SizeChangedEventArgs e)
+        private void I_icon_SizeChanged(object? sender, SizeChangedEventArgs? e)
         {
             if (owner.SettingsTyped.IconHeight == 0)
                 sp_text.Margin = new Thickness(6, 0, 6, 0);
@@ -189,14 +198,14 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             if (owner.SettingsTyped.IsAnimParamsEqual(previousParams))
                 return false;
 
-            var timeline = (anim_nv.Storyboard.Children[0] as ParallelTimeline);
-            var anim_front = (timeline.Children[0] as ThicknessAnimationUsingKeyFrames);
-            var anim_back = (timeline.Children[1] as ThicknessAnimationUsingKeyFrames);
+            var timeline = (ParallelTimeline)anim_nv.Storyboard.Children[0];
+            var anim_front = (ThicknessAnimationUsingKeyFrames)timeline.Children[0];
+            var anim_back = (ThicknessAnimationUsingKeyFrames)timeline.Children[1];
             var keys_front = anim_front.KeyFrames;
             var keys_back = anim_back.KeyFrames;
 
-            var timeline_file = (anim_f.Storyboard.Children[0] as ParallelTimeline);
-            var anim_file = (timeline_file.Children[0] as ThicknessAnimationUsingKeyFrames);
+            var timeline_file = (ParallelTimeline)anim_f.Storyboard.Children[0];
+            var anim_file = (ThicknessAnimationUsingKeyFrames)timeline_file.Children[0];
             var keys_file = anim_file.KeyFrames;
 
             var dur = TimeSpan.FromSeconds(owner.SettingsTyped.OnScreenTime);

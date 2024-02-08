@@ -26,7 +26,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
 
         public SettingsItemNumbersRow() { valueType = typeof(double); set = _ => { }; get = () => 0; InitializeComponent(); }
 
-        public SettingsItemNumbersRow(Action<double> set, Func<double> get, Type valType, double min, double max, double step, bool hasRevert)
+        public SettingsItemNumbersRow(Action<double> set, Func<double> get, Type valType, double min, double max, double step, RowRightActionButtonType buttonType)
         {
             this.set = set;
             this.get = get;
@@ -36,7 +36,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
 
             InitializeComponent();
 
-            btn_revert.Visibility = hasRevert ? Visibility.Visible : Visibility.Hidden;
+            btn_quick_action.ButtonType = buttonType;
 
             if (IsUsingRange)
             {

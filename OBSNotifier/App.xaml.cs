@@ -510,6 +510,7 @@ namespace OBSNotifier
 
                 try
                 {
+                    // TODO freeze the UI while reconnect failed
                     await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password, EncryptionKey) ?? "");
                 }
                 catch (Exception ex)

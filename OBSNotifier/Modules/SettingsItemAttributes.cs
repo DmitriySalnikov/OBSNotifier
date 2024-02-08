@@ -37,4 +37,7 @@ namespace OBSNotifier.Modules
         public double Max = max;
         public double Step = step;
     }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    internal class SettingsItemNumberRangeMaxDisplayAttribute : Attribute { }
 }

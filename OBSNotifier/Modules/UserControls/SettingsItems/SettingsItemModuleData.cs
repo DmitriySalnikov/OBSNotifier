@@ -44,5 +44,14 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
             // TODO localization
             return string.IsNullOrWhiteSpace(SettingName) ? "[WIP] " + ValuePropertyInfo.Name : SettingName;
         }
+
+        public void ResetToDefault()
+        {
+            Value = DefaultValue;
+        }
+
+        public virtual void SetCenterValue() { }
+        public virtual void SetMinValue() { }
+        public virtual void SetMaxValue() { }
     }
 }

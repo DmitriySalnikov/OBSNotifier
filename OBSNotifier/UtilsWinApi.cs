@@ -11,6 +11,21 @@ namespace OBSNotifier
             return new WindowInteropHelper(window).Handle;
         }
 
+        public static bool MoveWindow(this System.Windows.Window window, double X, double Y, double Width, double Height, bool Repaint)
+        {
+            return WA_MoveWindow(window.GetHandle(), (int)X, (int)Y, (int)Width, (int)Height, Repaint);
+        }
+
+        public static bool MoveModuleWindow(this Modules.UserControls.ModuleWindow window, string displayID, double X, double Y, double Width, double Height, bool Repaint)
+        {
+            var bounds = Utils.GetCurrentDisplayBounds(Utils.GetScreenById(displayID), false);
+            var width = (int)Utils.Clamp(Width * window.DpiData.CurrentDpiScale.Width, 0, bounds.Width);
+            var height = (int)Utils.Clamp(Height * window.DpiData.CurrentDpiScale.Height, 0, bounds.Height);
+            var x = (int)Utils.Clamp(X, bounds.Left, bounds.Left + bounds.Width - width);
+            var y = (int)Utils.Clamp(Y, bounds.Top, bounds.Top + bounds.Height - height);
+            return WA_MoveWindow(window.GetHandle(), x, y, width, height, Repaint);
+        }
+
         #region WinAPI
 
         const int WS_EX_TOOLWINDOW = 0x00000080;
@@ -27,11 +42,17 @@ namespace OBSNotifier
         [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
         static extern bool WA_SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [DllImport("user32.dll", EntryPoint = "MoveWindow")]
+        static extern bool WA_MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
+
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
         static extern int WA_SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         static extern int WA_GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", EntryPoint = "GetDpiForWindow")]
+        static extern uint WA_GetDpiForWindow(IntPtr hWnd);
 
         #region Console
 
@@ -105,6 +126,11 @@ namespace OBSNotifier
         {
             IntPtr hwndIdx = fAlwaysTop ? HWND_TOPMOST : HWND_NOTOPMOST;
             WA_SetWindowPos(hwnd, hwndIdx, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+
+        public static uint GetDpiForWindow(IntPtr hwnd)
+        {
+            return WA_GetDpiForWindow(hwnd);
         }
 
         public static void CreateUnicodeConsole()

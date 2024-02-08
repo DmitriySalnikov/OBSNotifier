@@ -1,9 +1,9 @@
-﻿using System;
+﻿using OBSNotifier.Modules.UserControls;
 using System.Windows;
 
 namespace OBSNotifier.Modules.Event.Default
 {
-    internal partial class DefaultNotificationWindow : Window
+    internal partial class DefaultNotificationWindow : ModuleWindow
     {
         DefaultNotification owner = null;
         bool isPreviewNotif = false;
@@ -12,13 +12,18 @@ namespace OBSNotifier.Modules.Event.Default
 
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == DefaultNotification.Positions.TopLeft || owner.SettingsTyped.Option == DefaultNotification.Positions.TopRight; }
 
-        public DefaultNotificationWindow(DefaultNotification module)
+        public DefaultNotificationWindow(DefaultNotification module) : base()
         {
             InitializeComponent();
 
             owner = module;
             hide_delay = new DeferredActionWPF(() => Hide(), 200, this);
             sp_main_panel.Children.Clear();
+        }
+
+        protected override void OnModuleDpiChanged()
+        {
+            UpdateParameters();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -32,8 +37,6 @@ namespace OBSNotifier.Modules.Event.Default
 
         protected override void OnClosed(EventArgs e)
         {
-            RemoveUnusedBlocks();
-            owner = null;
             hide_delay.Dispose();
 
             base.OnClosed(e);
@@ -41,32 +44,31 @@ namespace OBSNotifier.Modules.Event.Default
 
         void UpdateParameters()
         {
-            // Additional Params
-            //  if (owner.ModuleSettings.AdditionalData != null && owner.ModuleSettings.AdditionalData.GetHashCode() != addDataHash)
-            {
-                //  addDataHash = owner.ModuleSettings.AdditionalData.GetHashCode();
-
-                //  owner.SettingsTyped = defaultNotifBlockSettings;
-                //  Utils.ConfigParseString(owner.ModuleSettings.AdditionalData, ref owner.SettingsTyped);
-
-                //  RemoveUnusedBlocks();
-            }
-
             UtilsWinApi.SetWindowIgnoreMouse(this.GetHandle(), owner.SettingsTyped.ClickThrough && !owner.SettingsTyped.ShowQuickActions);
 
+            var maxSize = WPFScreens.GetScreenFrom(this).DeviceBounds;
+            var newSize = new Size(
+               Utils.Clamp(owner.SettingsTyped.BlockSize.Width, 1, maxSize.Width),
+               Utils.Clamp(owner.SettingsTyped.BlockSize.Height * owner.SettingsTyped.Blocks, 1, maxSize.Height));
             owner.SettingsTyped.OnScreenTime = owner.SettingsTyped.OnScreenTime;
-            Height = owner.SettingsTyped.Height * owner.SettingsTyped.Blocks;
-            Width = owner.SettingsTyped.Width;
 
             // Position
             var pe = owner.SettingsTyped.Option;
             var anchor = (Utils.AnchorPoint)Enum.Parse(typeof(Utils.AnchorPoint), pe.ToString());
-            Point pos = Utils.GetWindowPosition(owner.SettingsTyped.DisplayID, anchor, new Size(Width, Height), owner.SettingsTyped.Offset, owner.SettingsTyped.UseSafeDisplayArea);
+            Point pos = Utils.GetModuleWindowPosition(this, owner.SettingsTyped.DisplayID, anchor, new Size(newSize.Width, newSize.Height), owner.SettingsTyped.Offset, owner.SettingsTyped.UseSafeDisplayArea);
 
             sp_main_panel.VerticalAlignment = IsPositionedOnTop ? VerticalAlignment.Stretch : VerticalAlignment.Bottom;
 
-            Left = pos.X;
-            Top = pos.Y;
+            sp_main_panel.Width = newSize.Width;
+            sp_main_panel.Height = newSize.Height;
+
+            if (!this.MoveModuleWindow(owner.SettingsTyped.DisplayID, pos.X, pos.Y, newSize.Width, newSize.Height, true))
+            {
+                Left = pos.X;
+                Top = pos.Y;
+                Width = newSize.Width;
+                Height = newSize.Height;
+            }
         }
 
         public void ShowNotif(NotificationType type, string title, string desc)
@@ -106,7 +108,7 @@ namespace OBSNotifier.Modules.Event.Default
         {
             isPreviewNotif = true;
             UpdateParameters();
-            CreateMissingBlocks();
+            UpdatePreviewBlocksCount();
 
             if (IsPositionedOnTop)
                 for (int i = 0; i < sp_main_panel.Children.Count; i++)
@@ -125,7 +127,11 @@ namespace OBSNotifier.Modules.Event.Default
                 isPreviewNotif = false;
 
                 foreach (DefaultNotificationBlock c in sp_main_panel.Children)
-                    c.HidePreview();
+                {
+                    c.Dispose();
+                }
+                sp_main_panel.Children.Clear();
+
                 hide_delay.CallDeferred();
             }
         }
@@ -142,8 +148,15 @@ namespace OBSNotifier.Modules.Event.Default
             }
         }
 
-        void RemoveUnusedBlocks()
+        void UpdatePreviewBlocksCount()
         {
+            while (sp_main_panel.Children.Count < owner.SettingsTyped.Blocks)
+            {
+                var nnb = new DefaultNotificationBlock();
+                nnb.Finished += NotificationBlock_Animation_Finished;
+                sp_main_panel.Children.Add(nnb);
+            }
+
             while (sp_main_panel.Children.Count > owner.SettingsTyped.Blocks)
             {
                 DefaultNotificationBlock nb;
@@ -155,16 +168,6 @@ namespace OBSNotifier.Modules.Event.Default
                 sp_main_panel.Children.Remove(nb);
                 nb.Finished -= NotificationBlock_Animation_Finished;
                 nb.Dispose();
-            }
-        }
-
-        void CreateMissingBlocks()
-        {
-            while (sp_main_panel.Children.Count < owner.SettingsTyped.Blocks)
-            {
-                var nnb = new DefaultNotificationBlock();
-                nnb.Finished += NotificationBlock_Animation_Finished;
-                sp_main_panel.Children.Add(nnb);
             }
         }
 

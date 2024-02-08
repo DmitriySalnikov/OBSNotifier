@@ -53,7 +53,9 @@
     <v:String x:Key="settings_window_use_safe_zone">Use safe display area&#10;(without the taskbar and other panels)</v:String>
     <v:String x:Key="settings_window_style_options_label">Style Options:</v:String>
     <v:String x:Key="settings_window_reset_hint">Reset</v:String>
-    <v:String x:Key="settings_window_reset_center_hint">Reset to the center</v:String>
+    <v:String x:Key="settings_window_reset_min_hint">Reset to the minimum value</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Reset to the center value</v:String>
+    <v:String x:Key="settings_window_reset_max_hint">Reset to the maximum value</v:String>
     <v:String x:Key="settings_window_position_offset_label">Position Offset:</v:String>
     <v:String x:Key="settings_window_fade_delay_label">Fade Delay (Seconds):</v:String>
     <v:String x:Key="settings_window_fade_delay_hint">Delay before hiding notification</v:String>

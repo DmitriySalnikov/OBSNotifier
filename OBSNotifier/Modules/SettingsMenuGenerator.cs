@@ -24,6 +24,7 @@ namespace OBSNotifier.Modules
 
         public static readonly Type[] NumericStructTypes = [
             typeof(Point),
+            typeof(Size),
             typeof(Thickness),
         ];
 

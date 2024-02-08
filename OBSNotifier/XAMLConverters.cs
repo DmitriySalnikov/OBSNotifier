@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -30,7 +27,7 @@ namespace OBSNotifier
 
     public class ColorToBrushConverter : IValueConverter
     {
-        static string[] StringToTrueBool = new string[] { "true", "+", "yes", "y" };
+        static readonly string[] StringToTrueBool = ["true", "+", "yes", "y"];
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -81,28 +78,22 @@ namespace OBSNotifier
             if (targetType == typeof(HorizontalAlignment))
             {
                 var hor = (HorizontalAlignment)value;
-                switch (hor)
+                return hor switch
                 {
-                    case HorizontalAlignment.Left:
-                        return HorizontalAlignment.Right;
-                    case HorizontalAlignment.Right:
-                        return HorizontalAlignment.Left;
-                    default:
-                        return hor;
-                }
+                    HorizontalAlignment.Left => HorizontalAlignment.Right,
+                    HorizontalAlignment.Right => HorizontalAlignment.Left,
+                    _ => (object)hor,
+                };
             }
             if (targetType == typeof(VerticalAlignment))
             {
                 var ver = (VerticalAlignment)value;
-                switch (ver)
+                return ver switch
                 {
-                    case VerticalAlignment.Top:
-                        return VerticalAlignment.Bottom;
-                    case VerticalAlignment.Bottom:
-                        return VerticalAlignment.Top;
-                    default:
-                        return ver;
-                }
+                    VerticalAlignment.Top => VerticalAlignment.Bottom,
+                    VerticalAlignment.Bottom => VerticalAlignment.Top,
+                    _ => (object)ver,
+                };
             }
 
             throw new InvalidOperationException("The target must be a *Alignment");

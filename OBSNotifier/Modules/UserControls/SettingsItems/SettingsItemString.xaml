@@ -16,7 +16,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox x:Name="tb_value" Grid.Column="0" VerticalAlignment="Center" TextChanged="tb_value_TextChanged"/>
-            <uc:RevertButton Grid.Column="1" Margin="8,0,0,0"/>
+            <uc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
         </Grid>
     </StackPanel>
 </local:SettingsItemModuleData>

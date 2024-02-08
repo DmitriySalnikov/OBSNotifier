@@ -10,8 +10,7 @@ namespace OBSNotifier.Modules.Event.Default
         uint blocks = 3;
         double borderRadius = 4;
         double borderThickness = 1;
-        uint width = 180;
-        uint height = 52;
+        Size blockSize = new(180, 52);
 
         [SettingsItemStringDisplayID]
         public string DisplayID { get; set; } = string.Empty;
@@ -38,17 +37,11 @@ namespace OBSNotifier.Modules.Event.Default
             set => blocks = (uint)Utils.Clamp(value, 1, 24);
         }
 
-        [SettingsItemNumberRange(1, 2048)]
-        public uint Width
+        [SettingsItemNumberRangeMaxDisplay]
+        public Size BlockSize
         {
-            get => width;
-            set => width = (uint)Utils.Clamp(value, 1, 2048);
-        }
-        [SettingsItemNumberRange(1, 2048)]
-        public uint Height
-        {
-            get => height;
-            set => height = (uint)Utils.Clamp(value, 1, 2048);
+            get => blockSize;
+            set => blockSize = new(Utils.Clamp(value.Width, 1, 1024 * 16), Utils.Clamp(value.Height, 1, 1024 * 16));
         }
 
         [SettingsItemNumberRange(0, 500)]
@@ -89,8 +82,7 @@ namespace OBSNotifier.Modules.Event.Default
 
                 Blocks = Blocks,
                 BorderRadius = BorderRadius,
-                Width = Width,
-                Height = Height,
+                BlockSize = BlockSize,
                 Margin = Margin,
 
                 ClickThrough = ClickThrough,

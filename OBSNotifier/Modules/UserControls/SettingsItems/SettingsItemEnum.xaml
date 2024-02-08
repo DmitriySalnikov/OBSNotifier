@@ -16,7 +16,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <ComboBox x:Name="cb_value" Grid.Column="0" VerticalAlignment="Center" SelectionChanged="cb_value_SelectionChanged"/>
-            <uc:RevertButton Grid.Column="1" Margin="8,0,0,0"/>
+            <uc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
         </Grid>
     </StackPanel>
 </local:SettingsItemModuleData>
