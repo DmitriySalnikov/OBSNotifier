@@ -5,10 +5,10 @@ namespace OBSNotifier.Modules.Event.Default
 {
     internal partial class DefaultNotificationWindow : ModuleWindow
     {
-        DefaultNotification owner = null;
+        readonly DefaultNotification owner;
         bool isPreviewNotif = false;
 
-        DeferredActionWPF hide_delay;
+        readonly DeferredActionWPF hide_delay;
 
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == DefaultNotification.Positions.TopLeft || owner.SettingsTyped.Option == DefaultNotification.Positions.TopRight; }
 
@@ -89,9 +89,9 @@ namespace OBSNotifier.Modules.Event.Default
 
             DefaultNotificationBlock nb;
             if (IsPositionedOnTop)
-                nb = sp_main_panel.Children[sp_main_panel.Children.Count - 1] as DefaultNotificationBlock;
+                nb = (DefaultNotificationBlock)sp_main_panel.Children[^1];
             else
-                nb = sp_main_panel.Children[0] as DefaultNotificationBlock;
+                nb = (DefaultNotificationBlock)sp_main_panel.Children[0];
 
             sp_main_panel.Children.Remove(nb);
             if (IsPositionedOnTop)
@@ -112,10 +112,10 @@ namespace OBSNotifier.Modules.Event.Default
 
             if (IsPositionedOnTop)
                 for (int i = 0; i < sp_main_panel.Children.Count; i++)
-                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(owner.SettingsTyped, (sp_main_panel.Children.Count - (double)i) / sp_main_panel.Children.Count);
+                    ((DefaultNotificationBlock)sp_main_panel.Children[i]).ShowPreview(owner.SettingsTyped, (sp_main_panel.Children.Count - (double)i) / sp_main_panel.Children.Count);
             else
                 for (int i = sp_main_panel.Children.Count - 1; i >= 0; i--)
-                    (sp_main_panel.Children[i] as DefaultNotificationBlock).ShowPreview(owner.SettingsTyped, ((double)i + 1) / sp_main_panel.Children.Count);
+                    ((DefaultNotificationBlock)sp_main_panel.Children[i]).ShowPreview(owner.SettingsTyped, ((double)i + 1) / sp_main_panel.Children.Count);
 
             ShowWithLocationFix();
         }
@@ -161,9 +161,9 @@ namespace OBSNotifier.Modules.Event.Default
             {
                 DefaultNotificationBlock nb;
                 if (IsPositionedOnTop)
-                    nb = sp_main_panel.Children[sp_main_panel.Children.Count - 1] as DefaultNotificationBlock;
+                    nb = (DefaultNotificationBlock)sp_main_panel.Children[^1];
                 else
-                    nb = sp_main_panel.Children[0] as DefaultNotificationBlock;
+                    nb = (DefaultNotificationBlock)sp_main_panel.Children[0];
 
                 sp_main_panel.Children.Remove(nb);
                 nb.Finished -= NotificationBlock_Animation_Finished;

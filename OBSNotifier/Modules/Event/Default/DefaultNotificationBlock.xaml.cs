@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -17,14 +16,14 @@ namespace OBSNotifier.Modules.Event.Default
         bool? prevShowQuickActions = null;
 
         public delegate void VoidHandler(object? sender, EventArgs e);
-        public event VoidHandler Finished;
+        public event VoidHandler? Finished;
         double prevDuration = 0;
 
         public DefaultNotificationBlock()
         {
             InitializeComponent();
 
-            notifFade = g_notif.Resources["FadeAnimBoard"] as BeginStoryboard;
+            notifFade = (BeginStoryboard)g_notif.Resources["FadeAnimBoard"];
         }
 
         public void Dispose()
@@ -32,7 +31,6 @@ namespace OBSNotifier.Modules.Event.Default
             notifFade.Storyboard.Stop(g_notif);
             notifFade.Storyboard.Completed -= Animation_Completed;
             MouseDown -= Window_MouseDown;
-            notifFade = null;
             Finished = null;
         }
 
@@ -82,7 +80,7 @@ namespace OBSNotifier.Modules.Event.Default
             {
                 prevDuration = settings.OnScreenTime;
 
-                var d_anim = (notifFade.Storyboard.Children[0] as DoubleAnimationUsingKeyFrames);
+                var d_anim = (DoubleAnimationUsingKeyFrames)notifFade.Storyboard.Children[0];
                 var keys = d_anim.KeyFrames;
                 var dur = TimeSpan.FromSeconds(settings.OnScreenTime);
                 var init_time = keys[1].KeyTime.TimeSpan; // Use second key as init time

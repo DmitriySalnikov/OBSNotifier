@@ -1,8 +1,4 @@
-﻿using OBSNotifier.Modules.Event.Default;
-using System;
-using System.Windows;
-
-namespace OBSNotifier.Modules.Event.NvidiaLike
+﻿namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     internal partial class NvidiaNotification : IOBSNotifierModule
     {
@@ -11,8 +7,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             TopLeft, TopRight,
         }
 
-        Action<string> logWriter = null;
-        NvidiaNotificationWindow window = null;
+        Action<string>? logWriter;
+        NvidiaNotificationWindow? window = null;
 
         public string ModuleID => "Nvidia-Like";
         public string ModuleName => Utils.Tr("nvidia_like_module_name");
@@ -59,7 +55,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 window.Closing += Window_Closing;
             }
 
-            window.ShowNotif(type, title, description);
+            window.ShowNotif(type, title, description ?? "");
 
             return true;
         }
@@ -77,7 +73,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            (sender as NvidiaNotificationWindow).Closing -= Window_Closing;
+            var s = sender as NvidiaNotificationWindow;
+            if (s != null)
+                s.Closing -= Window_Closing;
 
             if (window == sender)
                 window = null;
@@ -100,7 +98,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         public void Log(string txt)
         {
-            logWriter.Invoke(txt);
+            logWriter?.Invoke(txt);
         }
 
         public void Log(Exception ex)

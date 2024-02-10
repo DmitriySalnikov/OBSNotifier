@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OBSNotifier.Modules.Event.Default
+﻿namespace OBSNotifier.Modules.Event.Default
 {
     internal partial class DefaultNotification : IOBSNotifierModule
     {
@@ -11,8 +9,8 @@ namespace OBSNotifier.Modules.Event.Default
             Center
         }
 
-        Action<string> logWriter = null;
-        DefaultNotificationWindow window = null;
+        Action<string>? logWriter;
+        DefaultNotificationWindow? window = null;
 
         public string ModuleID => "Default";
         public string ModuleName => Utils.Tr("default_module_name");
@@ -57,7 +55,7 @@ namespace OBSNotifier.Modules.Event.Default
                 window.Closing += Window_Closing;
             }
 
-            window.ShowNotif(type, title, description);
+            window.ShowNotif(type, title, description ?? "");
             return true;
         }
 
@@ -89,7 +87,9 @@ namespace OBSNotifier.Modules.Event.Default
 
         private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            (sender as DefaultNotificationWindow).Closing -= Window_Closing;
+            var s = sender as DefaultNotificationWindow;
+            if (s != null)
+                s.Closing -= Window_Closing;
 
             if (window == sender)
                 window = null;
@@ -97,7 +97,7 @@ namespace OBSNotifier.Modules.Event.Default
 
         public void Log(string txt)
         {
-            logWriter.Invoke(txt);
+            logWriter?.Invoke(txt);
         }
 
         public void Log(Exception ex)

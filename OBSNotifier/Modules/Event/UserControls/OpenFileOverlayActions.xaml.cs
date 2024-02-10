@@ -11,8 +11,8 @@ namespace OBSNotifier.Modules.Event.UserControls
     /// </summary>
     public partial class OpenFileOverlayActions : UserControl
     {
-        string filePath = string.Empty;
-        public string FilePath
+        string? filePath = string.Empty;
+        public string? FilePath
         {
             get => filePath;
             set

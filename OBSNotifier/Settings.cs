@@ -10,13 +10,13 @@ namespace OBSNotifier
         {
             public bool FirstLoad = true;
             [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-            public OBSModuleSettings Data { get; set; } = null;
+            public OBSModuleSettings? Data { get; set; } = null;
             // TODO move to settingsItem
             public NotificationType? ActiveNotificationTypes { get; set; } = null;
         }
 
         [JsonIgnore]
-        static public Settings Instance { get; private set; } = null;
+        static public Settings Instance { get; private set; } = null!;
 
         [JsonIgnore]
         const string SAVE_FILE_NAME = "settings.json";
@@ -30,7 +30,7 @@ namespace OBSNotifier
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
-        public CultureInfo Language { get; set; } = null;
+        public CultureInfo? Language { get; set; } = null;
         public bool FirstRun { get; set; } = true;
         public string SkipVersion { get; set; } = "";
 
