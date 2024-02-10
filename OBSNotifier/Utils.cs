@@ -69,6 +69,11 @@ namespace OBSNotifier
             return string.Format(loc_str, args);
         }
 
+        public static string TrErrorTitle()
+        {
+            return $"{App.AppNameSpaced}: {Tr("message_box_error_title")}";
+        }
+
         public enum AnchorPoint
         {
             TopLeft = 0, TopRight = 1, BottomRight = 2, BottomLeft = 3,
@@ -306,7 +311,7 @@ namespace OBSNotifier
                 if (slash_pos == -1)
                     short_name = "..." + short_name;
                 else
-                    short_name = "..." + short_name.Substring(slash_pos);
+                    short_name = "..." + short_name[slash_pos..];
             }
             else
             {

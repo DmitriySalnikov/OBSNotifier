@@ -17,7 +17,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         readonly NvidiaCustomAnimationConfig defaultParams = new();
 
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight; }
-        DeferredActionWPF hide_delay;
+        readonly DeferredActionWPF hide_delay;
         readonly BeginStoryboard anim_nv;
         readonly BeginStoryboard anim_f;
 
@@ -84,21 +84,6 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         void UpdateParameters()
         {
-            // Additional Params
-            // if (owner.ModuleSettings.AdditionalData != null && owner.ModuleSettings.AdditionalData.GetHashCode() != addDataHash)
-            {
-                //    addDataHash = owner.ModuleSettings.AdditionalData.GetHashCode();
-
-                // Recreate but remember preview state
-                bool prev = owner.SettingsTyped.IsPreviewNotif;
-                //owner.SettingsTyped = new NvidiaCustomAnimationConfig()
-                {
-                    // IsPreviewNotif = prev,
-                };
-                // TODO remove?
-                //Utils.ConfigParseString(owner.ModuleSettings.AdditionalData, ref owner.SettingsTyped);
-            }
-
             // General params
             owner.SettingsTyped.OnScreenTime = owner.SettingsTyped.OnScreenTime;
             owner.SettingsTyped.IsOnRightSide = owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight;

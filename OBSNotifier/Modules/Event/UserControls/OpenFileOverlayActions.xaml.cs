@@ -36,7 +36,7 @@ namespace OBSNotifier.Modules.Event.UserControls
             InitializeComponent();
         }
 
-        private void btn_open_folder_Click(object? sender, RoutedEventArgs e)
+        private void Btn_open_folder_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
@@ -51,7 +51,7 @@ namespace OBSNotifier.Modules.Event.UserControls
             }
         }
 
-        private void btn_open_file_Click(object? sender, RoutedEventArgs e)
+        private void Btn_open_file_Click(object? sender, RoutedEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {

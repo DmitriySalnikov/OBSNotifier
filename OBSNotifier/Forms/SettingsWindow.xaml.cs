@@ -58,9 +58,9 @@ namespace OBSNotifier
                 module_id_to_text_block_map.Add(p.instance.ModuleID, tb);
             }
 
-            if (module_id_to_text_block_map.ContainsKey(Settings.Instance.NotificationModule))
+            if (module_id_to_text_block_map.TryGetValue(Settings.Instance.NotificationModule, out TextBlock? value))
             {
-                cb_notification_modules.SelectedItem = module_id_to_text_block_map[Settings.Instance.NotificationModule];
+                cb_notification_modules.SelectedItem = value;
             }
             else
             {
@@ -327,7 +327,7 @@ namespace OBSNotifier
 
         private async void btn_connect_Click(object? sender, RoutedEventArgs e)
         {
-            if (!App.obs.IsConnected)
+            if (!App.obs.IsAuthorized)
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
                 {

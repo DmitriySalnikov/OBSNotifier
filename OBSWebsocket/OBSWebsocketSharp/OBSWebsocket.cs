@@ -1,5 +1,8 @@
-﻿using Ninja.WebSocketClient;
+﻿// #define DEV_PRINT
+
+using Ninja.WebSocketClient;
 using System.Buffers;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -11,9 +14,9 @@ namespace OBSWebsocketSharp
     {
         NinjaWebSocket? ws = null;
         string? authString = null;
-        int rpcVersion = 1;
+        const int RpcVersion = 1;
         Version obsWebsocketVersion = new Version(0, 0, 0);
-        Action<Action>? eventInvoke;
+        readonly Action<Action>? eventInvoke;
         AuthData authData = new(null, null);
 
         public event EventHandler? Connected;
@@ -46,8 +49,7 @@ namespace OBSWebsocketSharp
             authData = new AuthData(password, subscriptions);
 
             ws = new NinjaWebSocket(url)
-                .SetKeepAlive(intervalMilliseconds: 5000)
-                .SetAutomaticReconnect(intervalMilliseconds: 5000);
+                .SetKeepAlive(intervalMilliseconds: 5000);
 
             ws.OnConnected += OnConnected;
             ws.OnReceived += OnReceived;
@@ -56,11 +58,10 @@ namespace OBSWebsocketSharp
             ws.OnClosed += OnClosed;
 
             // Connect to the ws and start listening
-            await ws.StartAsync();
-            return true;
+            return await ws.StartAsync();
         }
 
-        public async Task OnConnected()
+        async Task OnConnected()
         {
             Connected?.Invoke(this, EventArgs.Empty);
             IsConnected = true;
@@ -68,12 +69,14 @@ namespace OBSWebsocketSharp
             await Task.CompletedTask;
         }
 
-        public async Task OnReceived(ReadOnlySequence<byte>? data)
+        async Task OnReceived(ReadOnlySequence<byte>? data)
         {
             if (data != null)
             {
                 string json_txt = Encoding.UTF8.GetString(data.Value.ToArray());
+#if DEV_PRINT
                 Console.WriteLine(json_txt);
+#endif
 
                 if (ReadMessage(JsonDocument.Parse(json_txt), out var op, out var d))
                 {
@@ -86,20 +89,17 @@ namespace OBSWebsocketSharp
                                     return;
                                 }
 
-                                var hello = JsonSerializer.Deserialize<ObsHello>(d.Value);
-                                if (hello == null)
-                                {
-                                    if (ws != null)
-                                        await ws.StopAsync();
-                                    return;
-                                }
-
+                                var hello = JsonSerializer.Deserialize<ObsHello>(d.Value) ?? throw new WebSocketClosedException($"Invalid data received.", (WebSocketCloseStatus)WebSocketCloseCode.AuthenticationFailed);
                                 obsWebsocketVersion = Version.Parse(hello.obsWebSocketVersion);
-                                rpcVersion = hello.rpcVersion;
+
+                                if (hello.rpcVersion != RpcVersion)
+                                {
+                                    throw new WebSocketClosedException($"OBS uses an unsupported 'rpcVersion'.", (WebSocketCloseStatus)WebSocketCloseCode.AuthenticationFailed);
+                                }
 
                                 var identify = new JsonObject()
                                         {
-                                            { "rpcVersion", hello.rpcVersion},
+                                            { "rpcVersion", RpcVersion},
                                             { "eventSubscriptions", (long)(authData.subscriptions ?? EventSubscription.All) },
                                         };
 
@@ -125,7 +125,9 @@ namespace OBSWebsocketSharp
                             }
                         case WebSocketOpCode.Identified:
                             {
+#if DEV_PRINT
                                 Console.WriteLine("Identified!");
+#endif
 
                                 IsAuthorized = true;
                                 Authorized?.Invoke(this, EventArgs.Empty);
@@ -140,13 +142,9 @@ namespace OBSWebsocketSharp
                                 }
 
                                 if (eventInvoke != null)
-                                {
                                     eventInvoke.Invoke(() => Events.ProcessEventData(d.Value));
-                                }
                                 else
-                                {
                                     _ = Task.Run(() => Events.ProcessEventData(d.Value));
-                                }
                                 break;
                             }
                         case WebSocketOpCode.RequestResponse:
@@ -166,35 +164,43 @@ namespace OBSWebsocketSharp
             }
             else
             {
+#if DEV_PRINT
                 Console.WriteLine("Empty data received!");
+#endif
             }
 
             return;
         }
 
-        public async Task OnPing()
+        async Task OnPing()
         {
+#if DEV_PRINT
             Console.WriteLine("Ping.");
+#endif
 
             await Task.CompletedTask;
         }
 
-        public async Task OnReconnecting(Exception? ex)
+        async Task OnReconnecting(Exception? ex)
         {
-            // Notify users the connection was lost and the client is reconnecting.
+#if DEV_PRINT
             Console.WriteLine($"Reconnecting: {ex?.Message}");
-            Reconnecting?.Invoke(this, new OBSReconnectInfo(ex));
+#endif
+            // Notify users the connection was lost and the client is reconnecting.
+            if (eventInvoke != null)
+                eventInvoke.Invoke(() => Reconnecting?.Invoke(this, new OBSReconnectInfo(ex)));
+            else
+                Reconnecting?.Invoke(this, new OBSReconnectInfo(ex));
 
             await Task.CompletedTask;
         }
 
-        public async Task OnClosed(Exception? ex)
+        async Task OnClosed(Exception? ex)
         {
             IsConnected = false;
             IsAuthorized = false;
 
             authString = null;
-            rpcVersion = -1;
             obsWebsocketVersion = new Version(0, 0, 0);
 
             if (ws != null)
@@ -203,9 +209,14 @@ namespace OBSWebsocketSharp
                 ws = null;
             }
 
-            // Notify users the connection has been closed.
+#if DEV_PRINT
             Console.WriteLine($"Closed: {ex?.Message}");
-            Disconnected?.Invoke(this, new OBSDisconnectInfo(ex));
+#endif
+            // Notify users the connection has been closed.
+            if (eventInvoke != null)
+                eventInvoke.Invoke(() => Disconnected?.Invoke(this, new OBSDisconnectInfo(ex)));
+            else
+                Disconnected?.Invoke(this, new OBSDisconnectInfo(ex));
         }
 
         public async Task Disconnect()
@@ -213,8 +224,23 @@ namespace OBSWebsocketSharp
             if (ws != null && ws.ConnectionState != ConnectionState.Disconnected)
             {
                 await ws.StopAsync();
-                ws = null;
             }
+            ws = null;
+        }
+
+        public async Task ChangeSubscriptions(EventSubscription subscriptions)
+        {
+            if (authString == null)
+                return;
+
+            var data = new JsonObject()
+            {
+                {"rpcVersion", 1},
+                {"authentication", authString},
+                {"eventSubscriptions", (long)subscriptions},
+            };
+
+            await SendMessageAsync(BuildMessage(WebSocketOpCode.Reidentify, data));
         }
 
         static string Hash256Base64(string str)
@@ -248,7 +274,9 @@ namespace OBSWebsocketSharp
             if (ws == null)
                 return;
 
-            Console.WriteLine(JsonSerializer.Serialize(data));
+#if DEV_PRINT
+            Console.WriteLine($"Sending: {JsonSerializer.Serialize(data)}");
+#endif
             await ws.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(data)));
         }
 
@@ -259,21 +287,6 @@ namespace OBSWebsocketSharp
                 { "op", (int)code },
                 { "d", data },
             };
-        }
-
-        public async Task ChangeSubscriptions(EventSubscription subscriptions)
-        {
-            if (authString == null)
-                return;
-
-            var data = new JsonObject()
-            {
-                {"rpcVersion", 1},
-                {"authentication", authString},
-                {"eventSubscriptions", (long)subscriptions},
-            };
-
-            await SendMessageAsync(BuildMessage(WebSocketOpCode.Reidentify, data));
         }
 
         class AuthData(string? password, EventSubscription? subscriptions)

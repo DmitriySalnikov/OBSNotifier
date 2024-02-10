@@ -87,8 +87,7 @@
 
         private void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            var s = sender as DefaultNotificationWindow;
-            if (s != null)
+            if (sender is DefaultNotificationWindow s)
                 s.Closing -= Window_Closing;
 
             if (window == sender)

@@ -183,12 +183,13 @@ namespace OBSNotifier
                             var lang = lang_split[0].Trim();
                             var lang_percent = int.Parse(lang_split[1].Trim());
 
-                            if (!status.ContainsKey(lang))
+                            if (!status.TryGetValue(lang, out Size value))
                             {
-                                status.Add(lang, new Size(0, 0));
+                                value = new Size(0, 0);
+                                status.Add(lang, value);
                             }
 
-                            var sz = status[lang];
+                            var sz = value;
 
                             if (is_approved)
                             {

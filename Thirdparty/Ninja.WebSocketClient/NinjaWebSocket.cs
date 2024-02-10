@@ -30,7 +30,7 @@ namespace Ninja.WebSocketClient
             _webSocketPipe = new WebSocketDuplexPipe();
         }
 
-        public async Task StartAsync(CancellationToken ct = default)
+        public async Task<bool> StartAsync(CancellationToken ct = default)
         {
             try
             {
@@ -41,6 +41,7 @@ namespace Ninja.WebSocketClient
                 ReceiveTask = ReceiveLoop();
 
                 await (OnConnected?.Invoke() ?? Task.CompletedTask);
+                return true;
             }
             catch (Exception ex)
             {
@@ -51,6 +52,7 @@ namespace Ninja.WebSocketClient
                     _ = OnReconnecting?.Invoke(ConnectException);
                 }
             }
+            return false;
         }
 
         public async Task SendAsync(ArraySegment<byte> data, CancellationToken ct = default)

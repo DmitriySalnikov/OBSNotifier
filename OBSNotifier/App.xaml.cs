@@ -100,7 +100,7 @@ namespace OBSNotifier
             CurrentConnectionState = ConnectionState.Disconnected;
 
             obs = new(OBSEventInvoke);
-            obs.Connected += Obs_Connected;
+            obs.Authorized += Obs_Connected;
             obs.Disconnected += Obs_Disconnected;
             obs.Events.ExitStarted += Obs_ExitStarted;
 
@@ -145,7 +145,7 @@ namespace OBSNotifier
             else
             {
                 // Connect to obs if previously connected
-                if (Settings.Instance.IsManuallyConnected && !obs.IsConnected)
+                if (Settings.Instance.IsManuallyConnected && !obs.IsAuthorized)
                 {
                     IsNeedToSkipNextConnectionNotifications = true;
                     ChangeConnectionState(ConnectionState.TryingToReconnect);
@@ -254,22 +254,22 @@ namespace OBSNotifier
                     break;
                 case VersionCheckerGitHub.MSGType.InfoUsingLatestVersion:
                     text = Utils.TrFormat("message_box_version_check_latest_version", customData["current_version"]);
-                    caption = Utils.Tr("message_box_error_title");
+                    caption = Utils.TrErrorTitle();
                     icon = MessageBoxImage.Information;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToRequestInfo:
                     text = $"{Utils.Tr("message_box_version_check_failed_request")}\n\n{ex?.Message ?? string.Empty}";
-                    caption = Utils.Tr("message_box_error_title");
+                    caption = Utils.TrErrorTitle();
                     icon = MessageBoxImage.Error;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToGetInfo:
                     text = $"{Utils.Tr("message_box_version_check_failed_parse_info")}\n\n{ex?.Message ?? string.Empty}";
-                    caption = Utils.Tr("message_box_error_title");
+                    caption = Utils.TrErrorTitle();
                     icon = MessageBoxImage.Error;
                     break;
                 case VersionCheckerGitHub.MSGType.FailedToProcessData:
                     text = $"{Utils.Tr("message_box_version_check_failed_to_check")}\n\n{ex?.Message ?? string.Empty}";
-                    caption = Utils.Tr("message_box_error_title");
+                    caption = Utils.TrErrorTitle();
                     icon = MessageBoxImage.Error;
                     break;
             }
@@ -499,42 +499,51 @@ namespace OBSNotifier
             isNeedToSkipDisconnectErrorPrinting = false;
             Log("Reconnection Thread started.");
 
-            while (true)
+            try
             {
-                attempts++;
-                if (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested)
-                {
-                    isNeedToSkipDisconnectErrorPrinting = false;
-                    return;
-                }
 
-                try
+                while (true)
                 {
-                    // TODO freeze the UI while reconnect failed
-                    await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password, EncryptionKey) ?? "");
-                }
-                catch (Exception ex)
-                {
-                    if (attempts < 5)
+                    attempts++;
+                    if (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested)
                     {
-                        Log(ex?.Message ?? string.Empty);
-                    }
-                    else if (attempts == 5)
-                    {
-                        Log(ex?.Message ?? string.Empty);
-                        Log("5 Connection errors are printed. The next errors will not be displayed.");
-                        isNeedToSkipDisconnectErrorPrinting = true;
+                        isNeedToSkipDisconnectErrorPrinting = false;
+                        return;
                     }
 
-                }
+                    try
+                    {
+                        var res = await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password, EncryptionKey) ?? "");
+                        if (!res)
+                            await (obs?.Disconnect() ?? Task.CompletedTask);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (attempts < 5)
+                        {
+                            Log(ex?.Message ?? string.Empty);
+                        }
+                        else if (attempts == 5)
+                        {
+                            Log(ex?.Message ?? string.Empty);
+                            Log("5 Connection errors are printed. The next errors will not be displayed.");
+                            isNeedToSkipDisconnectErrorPrinting = true;
+                        }
 
-                if ((obs != null && obs.IsConnected) || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
-                {
-                    isNeedToSkipDisconnectErrorPrinting = false;
-                    return;
-                }
+                    }
 
-                Thread.Sleep(4000);
+                    if ((obs != null && obs.IsAuthorized) || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
+                    {
+                        isNeedToSkipDisconnectErrorPrinting = false;
+                        return;
+                    }
+
+                    Thread.Sleep(4000);
+                }
+            }
+            finally
+            {
+                Log("Reconnection Thread stopped.");
             }
         }
 
@@ -552,7 +561,7 @@ namespace OBSNotifier
             }
         }
 
-        internal static Task ConnectToOBS(string adr, string pass)
+        internal static Task<bool> ConnectToOBS(string adr, string pass)
         {
             var adrs = adr;
             try
@@ -568,10 +577,10 @@ namespace OBSNotifier
             }
             catch (Exception ex)
             {
-                ShowMessageBox(ex?.Message ?? string.Empty, Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                ShowMessageBox(ex?.Message ?? string.Empty, Utils.TrErrorTitle(), MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
 
         internal static void DisconnectFromOBS()
@@ -606,9 +615,12 @@ namespace OBSNotifier
 
             if (e.Exception is WebSocketClosedException wse && wse.CloseCode.HasValue)
             {
-                Log($"Disconnected from OBS: {(int)wse.CloseCode}");
+                Log(wse);
+
                 if ((int)wse.CloseCode < 4000)
                 {
+                    Log($"Disconnected from OBS: {wse.CloseCode.GetType().Name}.{wse.CloseCode} ({(int)wse.CloseCode})");
+
                     switch (wse.CloseCode)
                     {
                         case System.Net.WebSockets.WebSocketCloseStatus.NormalClosure:
@@ -629,7 +641,10 @@ namespace OBSNotifier
                 else
                 {
                     var ee = (WebSocketCloseCode)wse.CloseCode;
+                    Log($"Disconnected from OBS: {ee.GetType().Name}.{ee} ({(int)ee})");
 
+                    var stop_reconnection = false;
+                    string message = string.Empty;
                     switch (ee)
                     {
                         case WebSocketCloseCode.UnknownReason:
@@ -641,23 +656,35 @@ namespace OBSNotifier
                         case WebSocketCloseCode.NotIdentified:
                         case WebSocketCloseCode.AlreadyIdentified:
                         case WebSocketCloseCode.UnsupportedRpcVersion:
-                        case WebSocketCloseCode.SessionInvalidated:
                         case WebSocketCloseCode.UnsupportedFeature:
                             // reconnect
                             break;
-                        case WebSocketCloseCode.AuthenticationFailed:
-                            ShowMessageBox(Utils.Tr("message_box_app_auth_failed"), Utils.Tr("message_box_error_title"), MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            StopReconnection();
-
-                            Settings.Instance.IsManuallyConnected = false;
-                            DisconnectFromOBS();
+                        case WebSocketCloseCode.SessionInvalidated:
+                            message = Utils.Tr("message_box_app_kicked_failed") + $"\n\n{wse.Message}";
+                            stop_reconnection = true;
                             break;
+                        case WebSocketCloseCode.AuthenticationFailed:
+                            message = Utils.Tr("message_box_app_auth_failed") + $"\n\n{wse.Message}";
+                            stop_reconnection = true;
+                            break;
+                    }
+
+                    if (stop_reconnection)
+                    {
+                        StopReconnection();
+                        Settings.Instance.IsManuallyConnected = false;
+                        DisconnectFromOBS();
+
+                        ShowMessageBox(message, Utils.TrErrorTitle(), MessageBoxButton.OK, MessageBoxImage.Exclamation);
                     }
                 }
             }
             else
             {
-                // TODO wtf?
+                if (e.Exception != null)
+                    Log(e.Exception);
+                else
+                    Log("Disconnected from OBS");
             }
 
             if (Settings.Instance.IsManuallyConnected)

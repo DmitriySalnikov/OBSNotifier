@@ -1,13 +1,13 @@
 ﻿using OBSNotifier.Modules.Event;
 using OBSWebsocketSharp;
 using OBSWebsocketSharp.Extensions;
-using System.Linq;
 
 namespace OBSNotifier
 {
-    internal class NotificationDescriptionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field)]
+    internal class NotificationDescriptionAttribute(string name, string desc = "", bool translateDesc = true) : Attribute
     {
-        string name = "";
+        string name = name;
         public string Name
         {
             get
@@ -20,7 +20,7 @@ namespace OBSNotifier
             }
         }
 
-        string desc = "";
+        string desc = desc;
         public string Description
         {
             get
@@ -33,14 +33,7 @@ namespace OBSNotifier
             }
         }
 
-        bool translate_description = false;
-
-        public NotificationDescriptionAttribute(string name, string desc = "", bool translateDesc = true)
-        {
-            this.name = name;
-            this.desc = desc;
-            translate_description = translateDesc;
-        }
+        readonly bool translate_description = translateDesc;
     }
 
     [Flags]
@@ -122,8 +115,8 @@ namespace OBSNotifier
         readonly App app;
 
         // https://github.com/obsproject/obs-studio/blob/fab293a6862dbe6aca9eb1bde0b00fad2d2cd785/UI/window-basic-main.cpp#L3098
-        readonly List<string> obs_audio_types = new List<string>
-        {
+        readonly List<string> obs_audio_types =
+        [
             "wasapi_input_capture",
             "wasapi_output_capture",
             "coreaudio_input_capture",
@@ -136,9 +129,9 @@ namespace OBSNotifier
             // https://github.com/obsproject/obs-studio/blob/19ced32c584ac8788953b68d28293ae65d59f0a4/UI/importers/xsplit.cpp#L268
             "dshow_input",
             "dshow_output",
-        };
+        ];
 
-        ModuleManager.ModuleData CurrentModule { get => App.modules.CurrentModule; }
+        static ModuleManager.ModuleData CurrentModule { get => App.modules.CurrentModule; }
 
         #region NotifData
         static readonly List<NotificationType> SkipNotifTypes = [
@@ -217,12 +210,12 @@ namespace OBSNotifier
             }
         }
 
-        bool IsDisabled()
+        static bool IsDisabled()
         {
             return Settings.Instance.IsPreviewShowing || CurrentModule.instance == null;
         }
 
-        bool IsActive(NotificationType type)
+        static bool IsActive(NotificationType type)
         {
             if (CurrentModule.instance != null)
             {
@@ -232,7 +225,7 @@ namespace OBSNotifier
             return false;
         }
 
-        void ShowNotif(NotificationType type, Func<string, object[], string> formatter, params object[] origData)
+        static void ShowNotif(NotificationType type, Func<string, object[], string> formatter, params object[] origData)
         {
             try
             {
@@ -249,7 +242,7 @@ namespace OBSNotifier
             }
         }
 
-        void ShowNotif(NotificationType type)
+        static void ShowNotif(NotificationType type)
         {
             try
             {

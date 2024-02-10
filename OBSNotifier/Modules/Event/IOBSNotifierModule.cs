@@ -1,16 +1,7 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace OBSNotifier.Modules.Event
+﻿namespace OBSNotifier.Modules.Event
 {
-    public class OBSModuleSettings : INotifyPropertyChanged
+    public class OBSModuleSettings
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public virtual OBSModuleSettings Clone() => throw new NotImplementedException();
     }
 

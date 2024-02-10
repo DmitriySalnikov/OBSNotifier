@@ -10,7 +10,7 @@ namespace OBSNotifier.Modules.Event.Default
     /// </summary>
     internal partial class DefaultNotificationBlock : UserControl, IDisposable
     {
-        BeginStoryboard notifFade;
+        readonly BeginStoryboard notifFade;
         bool isPreview = false;
         int prevMaxPathChars = -1;
         bool? prevShowQuickActions = null;

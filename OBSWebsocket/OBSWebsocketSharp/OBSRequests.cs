@@ -43,7 +43,7 @@ namespace OBSWebsocketSharp
 
         async Task<JsonElement> Request(JsonObject data, [CallerMemberName] string requestType = "")
         {
-            if (!obs.IsConnected)
+            if (!obs.IsAuthorized)
                 throw new UnauthorizedAccessException();
 
             var guid = Guid.NewGuid().ToString();

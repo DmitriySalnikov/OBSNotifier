@@ -21,7 +21,7 @@ namespace OBSNotifier.Modules.Event
         readonly Logger logger = new("logs/module_manager_log.txt");
 
         // TODO add support for persistent modules
-        public List<ModuleData> LoadedModules { get; } = new List<ModuleData>();
+        public List<ModuleData> LoadedModules { get; } = [];
         public ModuleData CurrentModule { get; private set; }
 
         public ModuleManager()
@@ -94,10 +94,7 @@ namespace OBSNotifier.Modules.Event
             //    }
 
             // Set notification types to default
-            if (moduleSetting.ActiveNotificationTypes == null)
-            {
-                moduleSetting.ActiveNotificationTypes = CurrentModule.instance.DefaultActiveNotifications;
-            }
+            moduleSetting.ActiveNotificationTypes ??= CurrentModule.instance.DefaultActiveNotifications;
 
             // Save defaults
             //  if (moduleSetting.FirstLoad)

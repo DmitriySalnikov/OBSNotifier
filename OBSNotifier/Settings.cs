@@ -21,12 +21,12 @@ namespace OBSNotifier
         [JsonIgnore]
         const string SAVE_FILE_NAME = "settings.json";
         [JsonIgnore]
-        static string SaveFile = Path.Combine(App.AppDataFolder, SAVE_FILE_NAME);
+        static readonly string SaveFile = Path.Combine(App.AppDataFolder, SAVE_FILE_NAME);
         [JsonIgnore]
-        static string SaveFileBackup = SaveFile + ".backup";
+        static readonly string SaveFileBackup = SaveFile + ".backup";
 
         [JsonIgnore]
-        DeferredActionWPF saveSettings = new(() => Instance.SaveInternal(), 1000, App.Current);
+        readonly DeferredActionWPF saveSettings = new(() => Instance.SaveInternal(), 1000, App.Current);
         [JsonIgnore]
         public bool IsPreviewShowing = false;
 
@@ -43,7 +43,7 @@ namespace OBSNotifier
         public string NotificationModule { get; set; } = string.Empty;
 
         [JsonProperty(nameof(PerModuleSettings), Order = 100)]
-        private Dictionary<string, ModuleSettings> perModuleSettings = [];
+        private readonly Dictionary<string, ModuleSettings> perModuleSettings = [];
         [JsonIgnore]
         public Dictionary<string, ModuleSettings> PerModuleSettings { get => perModuleSettings; }
 
