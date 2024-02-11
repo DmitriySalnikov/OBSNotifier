@@ -36,7 +36,6 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
             if (is_changed_by_code)
                 return;
 
-            App.Log(e.ToString());
             if ((Color)(Value ?? Colors.Black) != cp_value.SelectedColor)
             {
                 is_changed_by_code = true;

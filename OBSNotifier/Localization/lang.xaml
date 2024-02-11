@@ -54,6 +54,7 @@
     <v:String x:Key="settings_window_use_safe_zone">Use safe display area&#10;(without the taskbar and other panels)</v:String>
     <v:String x:Key="settings_window_style_options_label">Style Options:</v:String>
     <v:String x:Key="settings_window_reset_hint">Reset</v:String>
+    <v:String x:Key="settings_window_reset_all_hint">Reset all module settings</v:String>
     <v:String x:Key="settings_window_reset_min_hint">Reset to the minimum value</v:String>
     <v:String x:Key="settings_window_reset_center_hint">Reset to the center value</v:String>
     <v:String x:Key="settings_window_reset_max_hint">Reset to the maximum value</v:String>

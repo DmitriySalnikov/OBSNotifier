@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
              xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
              mc:Ignorable="d"
              d:DesignHeight="72" d:DesignWidth="400">
 
@@ -16,7 +17,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBox x:Name="tb_value" Grid.Column="0" VerticalAlignment="Center" TextChanged="tb_value_TextChanged"/>
-            <uc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
+            <auc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
         </Grid>
     </StackPanel>
 </local:SettingsItemModuleData>

@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="OBSNotifier.Modules.Event.UserControls.OpenFileActionsCustomButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OBSNotifier.Modules.Event.UserControls"
+             mc:Ignorable="d" 
+             x:Name="main"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Cursor="Hand" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" IsHitTestVisible="True" Background="#01000000">
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Border x:Name="tmp_border_hover" BorderThickness="2" Visibility="Hidden" Background="Wheat" BorderBrush="Red"/>
+        <ContentPresenter Content="{Binding InnerContent, ElementName=main}"/>
+    </Grid>
+</UserControl>

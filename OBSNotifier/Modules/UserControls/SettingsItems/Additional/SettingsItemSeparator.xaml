@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OBSNotifier.Modules.UserControls.SettingsItems.SettingsItemSeparator"
+﻿<UserControl x:Class="OBSNotifier.Modules.UserControls.SettingsItems.Additional.SettingsItemSeparator"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,8 +6,9 @@
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
              mc:Ignorable="d"
              d:DesignHeight="4" d:DesignWidth="400">
+
     <UserControl.Resources>
-        <ResourceDictionary Source="../../../Resources.xaml"/>
+        <ResourceDictionary Source="/Resources.xaml"/>
     </UserControl.Resources>
 
     <Separator x:Name="invisible_separator" Style="{StaticResource emptySeparator}" Height="4"/>

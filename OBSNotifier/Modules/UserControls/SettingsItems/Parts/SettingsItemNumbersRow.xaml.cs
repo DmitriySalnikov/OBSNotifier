@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using OBSNotifier.Modules.UserControls.SettingsItems.Additional;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts

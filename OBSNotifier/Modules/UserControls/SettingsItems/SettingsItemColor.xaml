@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
              xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker"
              xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
              mc:Ignorable="d" 
              d:DesignHeight="32" d:DesignWidth="400">
 
@@ -17,6 +18,6 @@
         </Grid.ColumnDefinitions>
         <TextBlock x:Name="tb_name" Grid.Column="0" TextWrapping="Wrap"/>
         <uc:CustomColorPickerButton x:Name="cp_value" Grid.Column="1" ColorChanged="cp_value_ColorChanged"/>
-        <uc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
+        <auc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </local:SettingsItemModuleData>

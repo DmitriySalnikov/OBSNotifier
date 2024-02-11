@@ -20,7 +20,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../../Resources.xaml"/>
+                <ResourceDictionary Source="/Resources.xaml"/>
                 <ResourceDictionary>
                     <BeginStoryboard x:Key="nvidia_anim">
                         <Storyboard Completed="AnimationNV_Finished">
@@ -116,7 +116,7 @@
                         <Rectangle Fill="{Binding Background, ElementName=g_front}"/>
                         <Rectangle x:Name="fileOpen_colored_line" Fill="{Binding Background, ElementName=g_back}" Width="4" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay, Converter={StaticResource InverseAlignmentConverter}}"/>
                     </Grid>
-                    <euc:OpenFileActions x:Name="fileOpenOverlay" Height="42" Width="200" HorizontalAlignment="Right" ForegroundElementsColor="{Binding Foreground, ElementName=l_title}"/>
+                    <euc:OpenFileActions x:Name="fileOpenOverlay" Height="42" Width="200" HorizontalAlignment="Right" ForegroundElementsColorBrush="{Binding Foreground, Mode=OneWay, ElementName=l_title}"/>
                 </Grid>
             </Viewbox>
         </StackPanel>

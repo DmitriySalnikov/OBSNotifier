@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace OBSNotifier.Modules.UserControls.SettingsItems
+namespace OBSNotifier.Modules.UserControls.SettingsItems.Additional
 {
     public partial class SettingsItemSeparatorGroup : UserControl
     {

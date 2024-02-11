@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Parts"
              xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
              mc:Ignorable="d" 
              d:DesignHeight="23" d:DesignWidth="400">
 
@@ -17,6 +18,6 @@
 
         <Slider x:Name="slider_value" Grid.Column="0" Margin="0,0,4,0" VerticalAlignment="Center" Minimum="0" Maximum="1" ValueChanged="slider_value_ValueChanged"/>
         <uc:NumericUpDown x:Name="nud_value" Grid.Column="1" MinWidth="96" UpDownWidth="22" Value="5" Precision="3" Minimum="0" Maximum="10" ValueChanged="nud_value_ValueChanged"/>
-        <uc:ValueQuickActionButton x:Name="btn_quick_action" Grid.Column="2" Margin="8,0,0,0"/>
+        <auc:ValueQuickActionButton x:Name="btn_quick_action" Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </UserControl>

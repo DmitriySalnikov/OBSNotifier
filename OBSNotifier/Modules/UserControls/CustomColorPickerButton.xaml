@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="48" d:DesignWidth="48"
-            DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+             DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
     <UserControl.Resources>
-        <ResourceDictionary Source="../../Resources.xaml"/>
+        <ResourceDictionary Source="/Resources.xaml"/>
     </UserControl.Resources>
 
     <Grid MinHeight="16" MinWidth="16" VerticalAlignment="Center">

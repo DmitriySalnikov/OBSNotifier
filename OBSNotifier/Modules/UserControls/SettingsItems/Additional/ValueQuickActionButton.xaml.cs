@@ -1,9 +1,8 @@
-﻿using OBSNotifier.Modules.UserControls.SettingsItems;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace OBSNotifier.Modules.UserControls
+namespace OBSNotifier.Modules.UserControls.SettingsItems.Additional
 {
     public enum RowRightActionButtonType
     {

@@ -4,18 +4,21 @@ using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.UserControls
 {
+    public class ControlWithAdditionalForegroundColor : UserControl
+    {
+        public static readonly DependencyProperty ForegroundElementsColorBrushProperty = DependencyProperty.Register("ForegroundElementsColorBrush", typeof(Brush), typeof(ControlWithAdditionalForegroundColor), new PropertyMetadata(new SolidColorBrush(Colors.White)));
+        public Brush ForegroundElementsColorBrush
+        {
+            get => (Brush)GetValue(ForegroundElementsColorBrushProperty);
+            set => SetValue(ForegroundElementsColorBrushProperty, value);
+        }
+    }
+
     /// <summary>
     /// Interaction logic for OpenFileOverlayActions.xaml
     /// </summary>
-    public partial class OpenFileActions : UserControl
+    public partial class OpenFileActions : ControlWithAdditionalForegroundColor
     {
-        public static readonly DependencyProperty ForegroundElementsColorProperty = DependencyProperty.Register("ForegroundElementsColor", typeof(Brush), typeof(OpenFileActions), new FrameworkPropertyMetadata(new SolidColorBrush(Colors.White), FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.SubPropertiesDoNotAffectRender));
-        public Brush ForegroundElementsColor
-        {
-            get => (Brush)GetValue(ForegroundElementsColorProperty);
-            set => SetValue(ForegroundElementsColorProperty, value);
-        }
-
         string? filePath = null;
         public string? FilePath
         {
@@ -36,10 +39,8 @@ namespace OBSNotifier.Modules.Event.UserControls
 
         public bool IsPreview { get; set; } = false;
 
-        public OpenFileActions()
+        public OpenFileActions() : base()
         {
-            ForegroundElementsColor = new SolidColorBrush(Colors.White);
-
             InitializeComponent();
         }
 

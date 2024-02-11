@@ -1,4 +1,5 @@
 ﻿using OBSNotifier.Modules.UserControls.SettingsItems;
+using OBSNotifier.Modules.UserControls.SettingsItems.Additional;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -45,20 +46,20 @@ namespace OBSNotifier.Modules
             var res = new ModuleSettingsContainer();
             var members = settingObject.GetType().GetMembers();
 
+            res.AddResetAllButton();
+
             foreach (var mem in members)
             {
                 if (mem.MemberType == MemberTypes.Property && mem is PropertyInfo propInfo)
                 {
                     if (typeof(DispatcherObject).IsAssignableFrom(propInfo.PropertyType))
-                    {
                         App.LogError($"{propInfo.PropertyType.Name} {propInfo.Name} is a '{nameof(DispatcherObject)}' that cannot be obtained from another thread in which settings are usually saved.");
-                    }
 
                     if (mem.GetCustomAttribute<SettingsItemIgnoreAttribute>() is SettingsItemIgnoreAttribute attr_ignore)
                         continue;
 
                     if (mem.GetCustomAttribute<SettingsItemCategoryAttribute>() is SettingsItemCategoryAttribute attr_category)
-                        res.Children.Add(new SettingsItemSeparatorGroup(attr_category.CategoryName));
+                        res.AddItem(new SettingsItemSeparatorGroup(attr_category.CategoryName));
 
                     var item = CreateItem(settingObject, propInfo, propInfo.GetValue(defaultSettings) ?? throw new NullReferenceException($"{defaultSettings} cannot have a null value."));
                     res.AddSettingItem(item);

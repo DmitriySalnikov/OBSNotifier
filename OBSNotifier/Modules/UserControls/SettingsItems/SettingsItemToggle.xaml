@@ -2,10 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
              xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
-             mc:Ignorable="d" 
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
+             mc:Ignorable="d"
              d:DesignHeight="72" d:DesignWidth="400">
 
     <Grid VerticalAlignment="Center">
@@ -17,6 +18,6 @@
 
         <TextBlock x:Name="cb_text" Grid.Column="0" TextWrapping="Wrap" Text="Nothing"/>
         <CheckBox x:Name="cb_value" Grid.Column="1" VerticalAlignment="Center" Checked="cb_value_Toggled" Unchecked="cb_value_Toggled"/>
-        <uc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
+        <auc:ValueQuickActionButton Grid.Column="2" Margin="8,0,0,0"/>
     </Grid>
 </local:SettingsItemModuleData>

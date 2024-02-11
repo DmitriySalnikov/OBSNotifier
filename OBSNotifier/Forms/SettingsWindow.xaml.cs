@@ -17,7 +17,6 @@ namespace OBSNotifier
         public static Popup CPP { get => Instance?.colorPicker_popup ?? throw new NullReferenceException(nameof(Instance)); }
         public static ColorPicker.StandardColorPicker CP { get => Instance?.colorPicker ?? throw new NullReferenceException(nameof(Instance)); }
 
-        // TODO add `reset all`
         public SettingsWindow()
         {
             InitializeComponent();

@@ -40,7 +40,7 @@
 
         <uc:OpenFileOverlayActions x:Name="fileOpenOverlay">
             <uc:OpenFileOverlayActions.OpacityMask>
-                <VisualBrush Visual="{Binding ElementName=b_backgroud}" Stretch="None"/>
+                <VisualBrush Visual="{Binding ElementName=b_background}" Stretch="None"/>
             </uc:OpenFileOverlayActions.OpacityMask>
         </uc:OpenFileOverlayActions>
     </Grid>
