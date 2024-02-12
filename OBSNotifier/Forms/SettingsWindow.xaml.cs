@@ -169,37 +169,21 @@ namespace OBSNotifier
                 //  cb_use_safe_area.IsChecked = moduleData.instance.ModuleSettings.UseSafeDisplayArea;
 
                 // Update options list
-                cb_notification_options.Items.Clear();
+                // cb_notification_options.Items.Clear();
 
                 if (moduleData.instance.EnumOptionsType != null)
                 {
 
                     var names = Enum.GetNames(moduleData.instance.EnumOptionsType);
 
-                    foreach (var e in names)
-                        cb_notification_options.Items.Add(e);
+                    // foreach (var e in names)
+                    // cb_notification_options.Items.Add(e);
 
                     //  if (names.Contains(Settings.Instance.CurrentModuleSettings.SelectedOption))
                     //      cb_notification_options.SelectedItem = Settings.Instance.CurrentModuleSettings.SelectedOption;
                     // else
                     //      cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
                 }
-
-                // additional data
-                //  if (Settings.Instance.CurrentModuleSettings.AdditionalData == null)
-                //     tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
-                // else
-                //     tb_additional_data.Text = moduleData.instance.ModuleSettings.AdditionalData;
-
-                // offset
-                //  sldr_position_offset_x.Value = moduleData.instance.ModuleSettings.Offset.X;
-                //  sldr_position_offset_y.Value = moduleData.instance.ModuleSettings.Offset.Y;
-
-                // fade time
-                //  sldr_fade_delay.Value = moduleData.instance.ModuleSettings.OnScreenTime;
-                //  sldr_fade_delay_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, moduleData.instance.ModuleSettings.OnScreenTime));
-
-                // Update visibility of settings groups
             }
 
             IsChangedByCode = false;
@@ -240,30 +224,6 @@ namespace OBSNotifier
                 // Server & Password
                 tb_address.Text = Settings.Instance.ServerAddress;
                 tb_password.Password = Utils.DecryptString(Settings.Instance.Password, App.EncryptionKey) ?? "";
-
-                // Update monitors list
-                {
-                    bool selected = false;
-
-                    foreach (var screen in WPFScreens.AllScreens())
-                    {
-                        cb_display_to_show.Items.Add(screen.DeviceName);
-
-                        if (screen.DeviceName == Settings.Instance.DisplayID)
-                        {
-                            cb_display_to_show.SelectedItem = screen.DeviceName;
-                            selected = true;
-                        }
-                    }
-
-                    if (!selected)
-                    {
-                        cb_display_to_show.SelectedItem = WPFScreens.Primary.DeviceName;
-
-                        Settings.Instance.DisplayID = WPFScreens.Primary.DeviceName;
-                        Settings.Instance.Save();
-                    }
-                }
 
                 // checkboxes
                 cb_close_on_closing.IsChecked = Settings.Instance.IsCloseOnOBSClosing;
@@ -367,19 +327,6 @@ namespace OBSNotifier
                 Close();
         }
 
-        private void cb_display_to_show_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-        {
-            if (IsChangedByCode) return;
-
-            if (e.AddedItems.Count > 0)
-                Settings.Instance.DisplayID = e.AddedItems[0]?.ToString() ?? string.Empty;
-            else
-                Settings.Instance.DisplayID = string.Empty;
-
-            Settings.Instance.Save();
-            UpdateNotification();
-        }
-
         private void cb_autostart_Checked(object? sender, RoutedEventArgs e)
         {
             if (IsChangedByCode) return;
@@ -452,26 +399,6 @@ namespace OBSNotifier
             Settings.Instance.Save();
         }
 
-        private void cb_use_safe_area_Unchecked(object? sender, RoutedEventArgs e)
-        {
-            if (IsChangedByCode) return;
-
-            //     Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = false;
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void cb_use_safe_area_Checked(object? sender, RoutedEventArgs e)
-        {
-            if (IsChangedByCode) return;
-
-            //       Settings.Instance.CurrentModuleSettings.UseSafeDisplayArea = true;
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
         private void cb_notification_modules_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (IsChangedByCode) return;
@@ -485,143 +412,6 @@ namespace OBSNotifier
                 cb_notification_modules.ToolTip = App.modules.CurrentModule.instance.ModuleDescription;
 
                 OnModuleChanged();
-                UpdateNotification();
-            }
-        }
-
-        // TODO Replace everything with new generator!
-        private void cb_notification_options_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-        {
-            if (IsChangedByCode) return;
-
-            //         Settings.Instance.CurrentModuleSettings.SelectedOption = (string)cb_notification_options.SelectedItem;
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void sldr_position_offset_x_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (IsChangedByCode) return;
-
-            //      Settings.Instance.CurrentModuleSettings.Offset = new Point(e.NewValue, Settings.Instance.CurrentModuleSettings.Offset.Y);
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void sldr_position_offset_y_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (IsChangedByCode) return;
-
-            //       Settings.Instance.CurrentModuleSettings.Offset = new Point(Settings.Instance.CurrentModuleSettings.Offset.X, e.NewValue);
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void sldr_fade_delay_ValueChanged(object? sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            l_delay_sec.Text = (e.NewValue / 1000.0).ToString("F1", CultureInfo.InvariantCulture);
-
-            if (IsChangedByCode) return;
-
-            //          Settings.Instance.CurrentModuleSettings.OnScreenTime = (uint)Math.Round(e.NewValue / 100) * 100;
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void TextBox_TextChanged(object? sender, TextChangedEventArgs e)
-        {
-            if (IsChangedByCode) return;
-
-            //    Settings.Instance.CurrentModuleSettings.AdditionalData = tb_additional_data.Text;
-            Settings.Instance.Save();
-
-            UpdateNotification();
-        }
-
-        private void btn_select_active_notifications_Click(object? sender, RoutedEventArgs e)
-        {
-            var notifs = Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes ?? App.modules.CurrentModule.instance.DefaultActiveNotifications;
-
-            var an = new ActiveNotifications(notifs);
-            an.Left = Left + Width / 2 - an.Width / 2;
-            an.Top = Top + Height / 2 - an.Height / 2;
-            Utils.FixWindowLocation(an, WPFScreens.GetScreenFrom(this));
-
-            if (an.ShowDialog() == true)
-            {
-                Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes = an.GetActiveNotifications();
-                Settings.Instance.Save();
-
-                UpdateNotification();
-            }
-
-            an.Close();
-        }
-
-        private void btn_reset_options_Click(object? sender, RoutedEventArgs e)
-        {
-            var moduleData = App.modules.CurrentModule;
-            //    if (moduleData.instance != null)
-            //        cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
-
-            UpdateNotification();
-        }
-
-        private void btn_reset_position_offset_Click(object? sender, RoutedEventArgs e)
-        {
-            var moduleData = App.modules.CurrentModule;
-            //    sldr_position_offset_x.Value = moduleData.defaultSettings.Offset.X;
-            //      sldr_position_offset_y.Value = moduleData.defaultSettings.Offset.Y;
-
-            UpdateNotification();
-        }
-
-        private void btn_reset_position_offset_center_Click(object? sender, RoutedEventArgs e)
-        {
-            sldr_position_offset_x.Value = 0.5;
-            sldr_position_offset_y.Value = 0.5;
-
-            UpdateNotification();
-        }
-
-        private void btn_reset_additional_data_Click(object? sender, RoutedEventArgs e)
-        {
-            var moduleData = App.modules.CurrentModule;
-            //      if (moduleData.instance != null)
-            //          tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
-
-            UpdateNotification();
-        }
-
-        private void btn_fix_additional_data_Click(object? sender, RoutedEventArgs e)
-        {
-            var moduleData = App.modules.CurrentModule;
-            if (moduleData.instance != null)
-            {
-                //        moduleData.defaultSettings.AdditionalData = moduleData.instance.GetFixedAdditionalData();
-                //       tb_additional_data.Text = moduleData.defaultSettings.AdditionalData;
-            }
-
-            UpdateNotification();
-        }
-
-        private void btn_reset_fade_delay_Click(object? sender, RoutedEventArgs e)
-        {
-            //    sldr_fade_delay.Value = App.modules.CurrentModule.defaultSettings.OnScreenTime;
-        }
-
-        private void btn_open_module_settings_Click(object? sender, RoutedEventArgs e)
-        {
-            if (App.modules.CurrentModule.instance != null)
-            {
-                //       App.modules.CurrentModule.instance?.OpenCustomSettings();
-                //       Settings.Instance.CurrentModuleSettings.CustomSettings = App.modules.CurrentModule.instance.GetCustomSettingsDataToSave();
-                Settings.Instance.Save();
-
                 UpdateNotification();
             }
         }

@@ -19,6 +19,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemIgnore]
         public bool IsPreviewNotif { get; set; } = false;
 
+        public NotificationType ActiveNotifications { get; set; } = NotificationType.All;
+
         [SettingsItemStringDisplayID]
         public string DisplayID { get; set; } = string.Empty;
         public bool UseSafeDisplayArea { get; set; }
@@ -135,6 +137,11 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 IconHeight = IconHeight,
                 IconPath = IconPath,
             };
+        }
+
+        public override NotificationType GetActiveNotifications()
+        {
+            return ActiveNotifications;
         }
     }
 }

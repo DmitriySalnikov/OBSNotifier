@@ -5,9 +5,9 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
     public partial class SettingsItemEnum : SettingsItemModuleData
     {
         bool is_changed_by_code = true;
-        bool isStringEnum = false;
-        Dictionary<string, int> enumIndexMap = [];
-        Dictionary<string, object> enumValueMap = [];
+        readonly bool isStringEnum = false;
+        readonly Dictionary<string, int> enumIndexMap = [];
+        readonly Dictionary<string, object> enumValueMap = [];
 
         public SettingsItemEnum() : base() { InitializeComponent(); }
 

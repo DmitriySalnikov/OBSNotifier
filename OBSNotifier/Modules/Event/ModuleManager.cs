@@ -94,7 +94,7 @@ namespace OBSNotifier.Modules.Event
             //    }
 
             // Set notification types to default
-            moduleSetting.ActiveNotificationTypes ??= CurrentModule.instance.DefaultActiveNotifications;
+            //moduleSetting.ActiveNotificationTypes ??= CurrentModule.instance.DefaultActiveNotifications;
 
             // Save defaults
             //  if (moduleSetting.FirstLoad)

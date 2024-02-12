@@ -11,8 +11,6 @@ namespace OBSNotifier
             public bool FirstLoad = true;
             [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
             public OBSModuleSettings? Data { get; set; } = null;
-            // TODO move to settingsItem
-            public NotificationType? ActiveNotificationTypes { get; set; } = null;
         }
 
         [JsonIgnore]

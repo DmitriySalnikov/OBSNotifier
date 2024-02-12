@@ -50,6 +50,11 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
             Value = DefaultValue;
         }
 
+        public bool IsDefaultValue()
+        {
+            return DefaultValue.Equals(Value);
+        }
+
         public virtual void SetCenterValue() { }
         public virtual void SetMinValue() { }
         public virtual void SetMaxValue() { }

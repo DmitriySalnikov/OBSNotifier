@@ -47,6 +47,7 @@ namespace OBSNotifier.Modules
             var members = settingObject.GetType().GetMembers();
 
             res.AddResetAllButton();
+            res.Children.Add(new SettingsItemSeparator());
 
             foreach (var mem in members)
             {
@@ -102,6 +103,10 @@ namespace OBSNotifier.Modules
                     return new SettingsItemEnum(name, owner, propertyInfo, defaultValue, WPFScreens.AllScreens().Select((s) => s.DeviceName).ToArray());
 
                 return new SettingsItemString(name, owner, propertyInfo, defaultValue);
+            }
+            else if (type == typeof(NotificationType))
+            {
+                return new SettingsItemNotificationTypes(name, owner, propertyInfo, defaultValue);
             }
             else if (propertyInfo.PropertyType.IsEnum)
             {

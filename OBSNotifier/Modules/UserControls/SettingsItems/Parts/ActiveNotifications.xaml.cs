@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace OBSNotifier
+namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
 {
     /// <summary>
     /// Interaction logic for ActiveNotifications.xaml
     /// </summary>
     public partial class ActiveNotifications : Window
     {
-        readonly Dictionary<NotificationType, CheckBox> activeNotifications = new Dictionary<NotificationType, CheckBox>();
+        readonly Dictionary<NotificationType, CheckBox> activeNotifications = [];
         readonly NotificationType currentNotifications;
 
         public ActiveNotifications(NotificationType currentNotifications)

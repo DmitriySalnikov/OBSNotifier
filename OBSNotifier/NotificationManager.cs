@@ -156,7 +156,14 @@ namespace OBSNotifier
                             continue;
 
                         var member = type.GetMember(e.ToString())[0];
-                        notificationsData.Add(e, (Attribute.GetCustomAttribute(member, typeof(NotificationDescriptionAttribute)) as NotificationDescriptionAttribute)!);
+                        if (Attribute.GetCustomAttribute(member, typeof(NotificationDescriptionAttribute)) is NotificationDescriptionAttribute attr)
+                        {
+                            notificationsData.Add(e, attr);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException("Each field in the 'NotificationType' must have an attribute.");
+                        }
                     }
                 }
 
@@ -219,7 +226,7 @@ namespace OBSNotifier
         {
             if (CurrentModule.instance != null)
             {
-                var notifs = Settings.Instance.CurrentModuleSettings.ActiveNotificationTypes ?? App.modules.CurrentModule.instance.DefaultActiveNotifications;
+                var notifs = CurrentModule.instance.Settings.GetActiveNotifications();
                 return notifs.HasFlag(type);
             }
             return false;
@@ -231,7 +238,7 @@ namespace OBSNotifier
             {
                 if (IsActive(type))
                 {
-                    string fmt = formatter(NotificationsData[type].Description, origData);
+                    string fmt = formatter.Invoke(NotificationsData[type].Description, origData);
                     App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
                     CurrentModule.instance.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
                 }
@@ -260,7 +267,15 @@ namespace OBSNotifier
 
         string FormatterOneArg(string format, object[] data)
         {
-            return string.Format(format, data[0]);
+            try
+            {
+                return string.Format(format, data[0]);
+            }
+            catch (Exception ex)
+            {
+                App.Log(ex);
+                return format;
+            }
         }
         #endregion
 

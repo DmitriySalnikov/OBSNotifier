@@ -1,0 +1,26 @@
+﻿<local:SettingsItemModuleData x:Class="OBSNotifier.Modules.UserControls.SettingsItems.SettingsItemNotificationTypes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
+             xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
+             mc:Ignorable="d"
+             d:DesignHeight="72" d:DesignWidth="400">
+
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="0" Click="Button_Click">
+            <TextBlock>
+                <Run Text="{DynamicResource settings_window_select_active_notifications_button}"/>
+                <Run x:Name="tb_star_changed" Text="*"/>
+            </TextBlock>
+        </Button>
+        <auc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
+    </Grid>
+</local:SettingsItemModuleData>

@@ -1,4 +1,4 @@
-﻿<Window x:Class="OBSNotifier.ActiveNotifications"
+﻿<Window x:Class="OBSNotifier.Modules.UserControls.SettingsItems.Parts.ActiveNotifications"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:OBSNotifier"
         mc:Ignorable="d"
         Title="{DynamicResource active_notifications_title}" Height="500" Width="250" MinHeight="250" MinWidth="250">
+
     <Grid SnapsToDevicePixels="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding Height, ElementName=ButtonsGrid, Mode=OneWay}"/>

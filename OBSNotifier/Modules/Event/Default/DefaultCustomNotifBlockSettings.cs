@@ -1,9 +1,9 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.Default
 {
+    // TODO add categories
     internal class DefaultCustomNotifBlockSettings : OBSModuleSettings
     {
         double onScreenDuration = 4.0;
@@ -11,6 +11,8 @@ namespace OBSNotifier.Modules.Event.Default
         double borderRadius = 4;
         double borderThickness = 1;
         Size blockSize = new(180, 52);
+
+        public NotificationType ActiveNotifications { get; set; } = NotificationType.All;
 
         [SettingsItemStringDisplayID]
         public string DisplayID { get; set; } = string.Empty;
@@ -90,6 +92,11 @@ namespace OBSNotifier.Modules.Event.Default
                 MaxPathChars = MaxPathChars,
                 ShowQuickActions = ShowQuickActions,
             };
+        }
+
+        public override NotificationType GetActiveNotifications()
+        {
+            return ActiveNotifications;
         }
     }
 }

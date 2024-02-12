@@ -2,6 +2,7 @@
 {
     public class OBSModuleSettings
     {
+        public virtual NotificationType GetActiveNotifications() => NotificationType.None;
         public virtual OBSModuleSettings Clone() => throw new NotImplementedException();
     }
 
