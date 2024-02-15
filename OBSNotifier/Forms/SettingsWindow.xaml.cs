@@ -160,7 +160,6 @@ namespace OBSNotifier
                     moduleSettings.Children.Clear();
                 }
 
-                // TODO animations does not update
                 module_settings_container.Children.Clear();
                 moduleSettings = SettingsMenuGenerator.GenerateMenu(moduleData.instance.Settings, moduleData.defaultSettings);
                 moduleSettings.ValueChanged += OnEventModuleSettingChanged;

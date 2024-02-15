@@ -11,6 +11,7 @@ namespace OBSNotifier
 {
     public static class Utils
     {
+        public readonly static string PreviewPathString = @"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv";
         readonly static int EncryptedMagic = 0x4f4e4544; // ONED - OBS Notifier Encrypted Data
 
         /// <summary>

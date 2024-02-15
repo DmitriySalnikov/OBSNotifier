@@ -16,6 +16,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         NvidiaCustomAnimationConfig? previousParams;
         readonly NvidiaCustomAnimationConfig defaultParams = new();
 
+        bool isUpdatedFirstTime = false;
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight; }
         readonly DeferredActionWPF hide_delay;
         readonly BeginStoryboard anim_nv;
@@ -97,13 +98,11 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             // Preview max path
             if (owner.SettingsTyped.IsPreviewNotif)
             {
-                var path = @"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv";
-
                 if (owner.SettingsTyped.ShowQuickActions)
                 {
                     g_fileOpen.Visibility = Visibility.Visible;
-                    l_desc.Text = Utils.GetShortPath(path, owner.SettingsTyped.MaxPathChars);
-                    fileOpenOverlay.FilePath = path;
+                    l_desc.Text = Utils.GetShortPath(Utils.PreviewPathString, owner.SettingsTyped.MaxPathChars);
+                    fileOpenOverlay.FilePath = Utils.PreviewPathString;
                 }
                 else
                 {
@@ -180,8 +179,11 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         bool UpdateAnimationParameters()
         {
-            if (owner.SettingsTyped.IsAnimParamsEqual(previousParams))
+            if (owner.SettingsTyped.IsAnimParamsEqual(previousParams) && isUpdatedFirstTime)
+            {
                 return false;
+            }
+            isUpdatedFirstTime = true;
 
             var timeline = (ParallelTimeline)anim_nv.Storyboard.Children[0];
             var anim_front = (ThicknessAnimationUsingKeyFrames)timeline.Children[0];
@@ -269,6 +271,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 keys_file[5].Value = hidden;
             }
 
+            previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
+
             return true;
         }
 
@@ -289,7 +293,6 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             if (owner.SettingsTyped.IsPreviewNotif)
                 return;
 
-            previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
             UpdateParameters();
 
             l_title.Text = title;
@@ -330,7 +333,6 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         public void ShowPreview()
         {
-            previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
             owner.SettingsTyped.IsPreviewNotif = true;
             UpdateParameters();
 
@@ -351,7 +353,6 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         {
             if (owner.SettingsTyped.IsPreviewNotif)
             {
-                previousParams = (NvidiaCustomAnimationConfig)owner.SettingsTyped.Clone();
                 owner.SettingsTyped.IsPreviewNotif = false;
 
                 // update animation and force it to change values

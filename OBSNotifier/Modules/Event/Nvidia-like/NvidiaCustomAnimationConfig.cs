@@ -23,7 +23,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         [SettingsItemStringDisplayID]
         public string DisplayID { get; set; } = string.Empty;
+
         public bool UseSafeDisplayArea { get; set; }
+
         // TODO test loading with greater values
         [SettingsItemNumberRange(0, 30, 0.1)]
         public double OnScreenTime
@@ -31,6 +33,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
             get => onScreenTime;
             set => onScreenTime = Utils.Clamp(value, 0, 30);
         }
+
         public NvidiaNotification.Positions Option { get; set; }
 
         [SettingsItemNumberRange(0, 1, 0.01)]

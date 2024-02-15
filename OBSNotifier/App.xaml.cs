@@ -179,6 +179,7 @@ namespace OBSNotifier
             Log("App exit");
             StopReconnection();
 
+            if (obs != null)
             {
                 obs.Connected -= Obs_Connected;
                 obs.Disconnected -= Obs_Disconnected;

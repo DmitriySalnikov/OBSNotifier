@@ -49,7 +49,7 @@ namespace OBSNotifier.Modules.Event.Default
                 (prevShowQuickActions != null && prevShowQuickActions != settings.ShowQuickActions)
                ))
             {
-                desc = Utils.GetShortPath(@"D:\Lorem\ipsum\dolor\sit\amet\consectetur\adipiscing\elit.\Donec\pharetra\lorem\turpis\nec\fringilla\leo\interdum\sit\amet.\Mauris\in\placerat\nulla\in\laoreet\Videos\OBS\01.01.01\Replay_01-01-01.mkv", settings.MaxPathChars);
+                desc = Utils.GetShortPath(Utils.PreviewPathString, settings.MaxPathChars);
                 notif = NotificationType.RecordingStopped;
             }
 
