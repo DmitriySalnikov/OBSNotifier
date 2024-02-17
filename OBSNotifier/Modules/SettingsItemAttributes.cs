@@ -10,6 +10,7 @@ namespace OBSNotifier.Modules
         public string Name = name;
     }
 
+    // TODO add localization
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     internal class SettingsItemCategoryAttribute(string categoryName = "") : Attribute
     {
@@ -39,5 +40,5 @@ namespace OBSNotifier.Modules
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    internal class SettingsItemNumberRangeMaxDisplayAttribute : Attribute { }
+    internal class SettingsItemNumberRangeMaxDisplaySizeAttribute : Attribute { }
 }

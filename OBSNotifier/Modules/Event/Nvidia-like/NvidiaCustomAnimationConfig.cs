@@ -5,100 +5,94 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 {
     internal class NvidiaCustomAnimationConfig : OBSModuleSettings
     {
+        bool isOnRightSide = false;
+        bool isPreviewNotif = false;
+        NotificationType activeNotifications = NotificationType.All;
+        string displayID = string.Empty;
+        bool useSafeDisplayArea = false;
         double onScreenTime = 5.0;
-        double iconHeight = 64;
-        double scale = 1.0;
-        double lineWidth = 6;
-        double openFileOffset = 8.0;
+        NvidiaNotification.Positions option = NvidiaNotification.Positions.TopRight;
+        Point offset = new(0, 0.1);
+        bool clickThrough = false;
+
+        // colors
+        Color backgroundColor = (Color)ColorConverter.ConvertFromString("#2E48BD");
+        Color foregroundColor = Colors.Black;
+        Color textColor = (Color)ColorConverter.ConvertFromString("#E4E4E4");
+
+        // animation
         double slideDuration = 0.4;
         double slideOffset = 0.18;
+        double lineWidth = 6;
+        double scale = 1.0;
+
+        // quick actions
         uint maxPathChars = 32;
+        bool showQuickActions = true;
+        bool showQuickActionsColoredLine = true;
+        double quickActionsOffset = 8.0;
+
+        // icon
+        double iconHeight = 64;
+        string iconPath = "INVALID_PATH";
 
         [SettingsItemIgnore]
-        public bool IsOnRightSide { get; set; } = false;
+        public bool IsOnRightSide { get => isOnRightSide; set => isOnRightSide = value; }
         [SettingsItemIgnore]
-        public bool IsPreviewNotif { get; set; } = false;
+        public bool IsPreviewNotif { get => isPreviewNotif; set => isPreviewNotif = value; }
 
-        public NotificationType ActiveNotifications { get; set; } = NotificationType.All;
+        public NotificationType ActiveNotifications { get => activeNotifications; set => activeNotifications = value; }
 
         [SettingsItemStringDisplayID]
-        public string DisplayID { get; set; } = string.Empty;
+        public string DisplayID { get => displayID; set => displayID = value; }
 
-        public bool UseSafeDisplayArea { get; set; }
+        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
 
         // TODO test loading with greater values
         [SettingsItemNumberRange(0, 30, 0.1)]
-        public double OnScreenTime
-        {
-            get => onScreenTime;
-            set => onScreenTime = Utils.Clamp(value, 0, 30);
-        }
+        public double OnScreenTime { get => onScreenTime; set => onScreenTime = Utils.Clamp(value, 0, 30); }
 
-        public NvidiaNotification.Positions Option { get; set; }
+        public NvidiaNotification.Positions Option { get => option; set => option = value; }
 
         [SettingsItemNumberRange(0, 1, 0.01)]
-        public Point Offset { get; set; }
+        public Point Offset { get => offset; set => offset = value; }
+        public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
         [SettingsItemCategory("Colors")]
-        public Color BackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#2E48BD");
-        public Color ForegroundColor { get; set; } = Colors.Black;
-        public Color TextColor { get; set; } = (Color)ColorConverter.ConvertFromString("#E4E4E4");
+        public Color BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
+        public Color ForegroundColor { get => foregroundColor; set => foregroundColor = value; }
+        public Color TextColor { get => textColor; set => textColor = value; }
 
         [SettingsItemCategory("Animation")]
         [SettingsItemNumberRange(0, 15, 0.1)]
-        public double SlideDuration
-        {
-            get => slideDuration;
-            set => slideDuration = Utils.Clamp(value, 0, 15);
-        }
+        public double SlideDuration { get => slideDuration; set => slideDuration = Utils.Clamp(value, 0, 15); }
+
         [SettingsItemNumberRange(0, 5, 0.1)]
-        public double SlideOffset
-        {
-            get => slideOffset;
-            set => slideOffset = Utils.Clamp(value, 0, 5);
-        }
+        public double SlideOffset { get => slideOffset; set => slideOffset = Utils.Clamp(value, 0, 5); }
 
         // TODO broken
         // does not update visuals correctly. Can be fixed with updating the animation and seeking to the end
         [SettingsItemNumberRange(0, 100)]
-        public double LineWidth
-        {
-            get => lineWidth;
-            set => lineWidth = Utils.Clamp(value, 0, 100);
-        }
+        public double LineWidth { get => lineWidth; set => lineWidth = Utils.Clamp(value, 0, 100); }
+
         [SettingsItemNumberRange(0.001, 5, 0.1)]
-        public double Scale
-        {
-            get => scale;
-            set => scale = Utils.Clamp(value, 0.001, 5);
-        }
+        public double Scale { get => scale; set => scale = Utils.Clamp(value, 0.001, 5); }
 
         [SettingsItemCategory("Quick Actions")]
         [SettingsItemNumberRange(0, 256)]
-        public uint MaxPathChars
-        {
-            get => maxPathChars;
-            set => maxPathChars = (uint)Utils.Clamp(value, 0, 256);
-        }
-        public bool ClickThrough { get; set; } = false;
-        public bool ShowQuickActions { get; set; } = true;
-        public bool ShowQuickActionsColoredLine { get; set; } = true;
+        public uint MaxPathChars { get => maxPathChars; set => maxPathChars = (uint)Utils.Clamp(value, 0, 256); }
+        public bool ShowQuickActions { get => showQuickActions; set => showQuickActions = value; }
+        public bool ShowQuickActionsColoredLine { get => showQuickActionsColoredLine; set => showQuickActionsColoredLine = value; }
+
         [SettingsItemNumberRange(0, 2048)]
-        public double QuickActionsOffset
-        {
-            get => openFileOffset;
-            set => openFileOffset = Utils.Clamp(value, 0, 2048);
-        }
+        public double QuickActionsOffset { get => quickActionsOffset; set => quickActionsOffset = Utils.Clamp(value, 0, 2048); }
 
         [SettingsItemCategory("Icon")]
         [SettingsItemNumberRange(0, 192)]
-        public double IconHeight
-        {
-            get => iconHeight;
-            set => iconHeight = Utils.Clamp(value, 0, 192);
-        }
+        public double IconHeight { get => iconHeight; set => iconHeight = Utils.Clamp(value, 0, 192); }
+
         [SettingsItemStringPath(DefaultExt = ".png", FileFilter = "Images|*.png; *.jpg; *.jpeg; *.bmp; *.tif; *.gif; *.ico|All Files|*.*", IsFile = true)]
-        public string IconPath { get; set; } = "INVALID_PATH";
+        public string IconPath { get => iconPath; set => iconPath = value; }
 
         public bool IsAnimParamsEqual(NvidiaCustomAnimationConfig? b)
         {
@@ -117,28 +111,32 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         {
             return new NvidiaCustomAnimationConfig()
             {
-                OnScreenTime = OnScreenTime,
-                IsOnRightSide = IsOnRightSide,
-                IsPreviewNotif = IsPreviewNotif,
+                isOnRightSide = isOnRightSide,
+                isPreviewNotif = isPreviewNotif,
+                activeNotifications = activeNotifications,
+                displayID = displayID,
+                useSafeDisplayArea = useSafeDisplayArea,
+                onScreenTime = onScreenTime,
+                option = option,
+                offset = offset,
+                clickThrough = clickThrough,
 
-                BackgroundColor = BackgroundColor,
-                ForegroundColor = ForegroundColor,
-                TextColor = TextColor,
+                backgroundColor = backgroundColor,
+                foregroundColor = foregroundColor,
+                textColor = textColor,
 
-                SlideDuration = SlideDuration,
-                SlideOffset = SlideOffset,
+                slideDuration = slideDuration,
+                slideOffset = slideOffset,
+                lineWidth = lineWidth,
+                scale = scale,
 
-                LineWidth = LineWidth,
-                Scale = Scale,
+                maxPathChars = maxPathChars,
+                showQuickActions = showQuickActions,
+                showQuickActionsColoredLine = showQuickActionsColoredLine,
+                quickActionsOffset = quickActionsOffset,
 
-                MaxPathChars = MaxPathChars,
-                ClickThrough = ClickThrough,
-                ShowQuickActions = ShowQuickActions,
-                ShowQuickActionsColoredLine = ShowQuickActionsColoredLine,
-                QuickActionsOffset = QuickActionsOffset,
-
-                IconHeight = IconHeight,
-                IconPath = IconPath,
+                iconHeight = iconHeight,
+                iconPath = iconPath,
             };
         }
 

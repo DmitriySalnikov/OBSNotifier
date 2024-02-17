@@ -79,8 +79,8 @@ namespace OBSNotifier.Modules.Event
         {
             var moduleSetting = Settings.Instance.CurrentModuleSettings;
 
-            if (CurrentModule.instance.Settings != null)
-                moduleSetting.Data = CurrentModule.instance.Settings.Clone();
+            //if (CurrentModule.instance.Settings != null)
+            //    moduleSetting.Data = CurrentModule.instance.Settings.Clone();
 
             // Validate current module option
             //    Enum module_option;

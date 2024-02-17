@@ -59,7 +59,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
         {
             if (ValuePropertyInfo.PropertyType == typeof(Size))
             {
-                if (ValuePropertyInfo.GetCustomAttribute<SettingsItemNumberRangeMaxDisplayAttribute>() is SettingsItemNumberRangeMaxDisplayAttribute)
+                if (ValuePropertyInfo.GetCustomAttribute<SettingsItemNumberRangeMaxDisplaySizeAttribute>() is SettingsItemNumberRangeMaxDisplaySizeAttribute)
                 {
                     var s = WPFScreens.GetMaxSize();
                     switch (pos)
@@ -166,7 +166,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                 double? height = null;
                 var step = rangeAttribute?.Step;
 
-                if (ValuePropertyInfo.GetCustomAttribute<SettingsItemNumberRangeMaxDisplayAttribute>() is SettingsItemNumberRangeMaxDisplayAttribute)
+                if (ValuePropertyInfo.GetCustomAttribute<SettingsItemNumberRangeMaxDisplaySizeAttribute>() is SettingsItemNumberRangeMaxDisplaySizeAttribute)
                 {
                     var s = WPFScreens.GetMaxSize();
                     width = s.Width;

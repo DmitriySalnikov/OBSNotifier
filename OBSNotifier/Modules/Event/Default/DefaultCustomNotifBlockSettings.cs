@@ -6,91 +6,91 @@ namespace OBSNotifier.Modules.Event.Default
     // TODO add categories
     internal class DefaultCustomNotifBlockSettings : OBSModuleSettings
     {
+        NotificationType activeNotifications = NotificationType.All;
+        string displayID = string.Empty;
+        bool useSafeDisplayArea = false;
         double onScreenDuration = 4.0;
+        DefaultNotification.Positions option = DefaultNotification.Positions.BottomRight;
+        Point offset = new();
+        bool clickThrough = false;
+
+        Color backgroundColor = (Color)ColorConverter.ConvertFromString("#4C4C4C");
+        Color outlineColor = (Color)ColorConverter.ConvertFromString("#59000000");
+        Color textColor = (Color)ColorConverter.ConvertFromString("#D8D8D8");
+
         uint blocks = 3;
+        Size blockSize = new(180, 52);
         double borderRadius = 4;
         double borderThickness = 1;
-        Size blockSize = new(180, 52);
 
-        public NotificationType ActiveNotifications { get; set; } = NotificationType.All;
+        Thickness margin = new(4);
+        uint maxPathChars = 32;
+        bool showQuickActions = true;
+
+        public NotificationType ActiveNotifications { get => activeNotifications; set => activeNotifications = value; }
 
         [SettingsItemStringDisplayID]
-        public string DisplayID { get; set; } = string.Empty;
-        public bool UseSafeDisplayArea { get; set; }
+        public string DisplayID { get => displayID; set => displayID = value; }
+        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
+
         [SettingsItemNumberRange(0, 30, 0.1)]
-        public double OnScreenTime
-        {
-            get => onScreenDuration;
-            set => onScreenDuration = Utils.Clamp(value, 0, 30);
-        }
-        public DefaultNotification.Positions Option { get; set; }
+        public double OnScreenTime { get => onScreenDuration; set => onScreenDuration = Utils.Clamp(value, 0, 30); }
+        public DefaultNotification.Positions Option { get => option; set => option = value; }
 
         [SettingsItemNumberRange(0, 1, 0.01)]
-        public Point Offset { get; set; }
+        public Point Offset { get => offset; set => offset = value; }
+        public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
-        public Color BackgroundColor { get; set; } = (Color)ColorConverter.ConvertFromString("#4C4C4C");
-        public Color OutlineColor { get; set; } = (Color)ColorConverter.ConvertFromString("#59000000");
-        public Color TextColor { get; set; } = (Color)ColorConverter.ConvertFromString("#D8D8D8");
+        [SettingsItemCategory("Colors")]
+        public Color BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
+        public Color OutlineColor { get => outlineColor; set => outlineColor = value; }
+        public Color TextColor { get => textColor; set => textColor = value; }
 
+        [SettingsItemCategory("Blocks")]
         [SettingsItemNumberRange(1, 24)]
-        public uint Blocks
-        {
-            get => blocks;
-            set => blocks = (uint)Utils.Clamp(value, 1, 24);
-        }
+        public uint Blocks { get => blocks; set => blocks = (uint)Utils.Clamp(value, 1, 24); }
 
-        [SettingsItemNumberRangeMaxDisplay]
-        public Size BlockSize
-        {
-            get => blockSize;
-            set => blockSize = new(Utils.Clamp(value.Width, 1, 1024 * 16), Utils.Clamp(value.Height, 1, 1024 * 16));
-        }
+        [SettingsItemNumberRangeMaxDisplaySize]
+        public Size BlockSize { get => blockSize; set => blockSize = new(Utils.Clamp(value.Width, 1, 1024 * 16), Utils.Clamp(value.Height, 1, 1024 * 16)); }
 
         [SettingsItemNumberRange(0, 500)]
-        public double BorderRadius
-        {
-            get => borderRadius;
-            set => borderRadius = Utils.Clamp(value, 0, 500);
-        }
+        public double BorderRadius { get => borderRadius; set => borderRadius = Utils.Clamp(value, 0, 500); }
 
         [SettingsItemNumberRange(0, 64, 0.5)]
-        public double BorderThickness
-        {
-            get => borderThickness;
-            set => borderThickness = Utils.Clamp(value, 0, 64);
-        }
+        public double BorderThickness { get => borderThickness; set => borderThickness = Utils.Clamp(value, 0, 64); }
 
         [SettingsItemNumberRange(0, 1024, 0.1)]
-        public Thickness Margin { get; set; } = new Thickness(4);
-        public bool ClickThrough { get; set; } = false;
+        public Thickness Margin { get => margin; set => margin = value; }
 
+        [SettingsItemCategory("Quick Actions")]
         [SettingsItemNumberRange(0, 256)]
-        public uint MaxPathChars { get; set; } = 32;
-        public bool ShowQuickActions { get; set; } = true;
+        public uint MaxPathChars { get => maxPathChars; set => maxPathChars = value; }
+        public bool ShowQuickActions { get => showQuickActions; set => showQuickActions = value; }
 
         public override OBSModuleSettings Clone()
         {
             return new DefaultCustomNotifBlockSettings()
             {
-                DisplayID = DisplayID,
-                UseSafeDisplayArea = UseSafeDisplayArea,
-                OnScreenTime = OnScreenTime,
-                Option = Option,
-                Offset = Offset,
+                activeNotifications = activeNotifications,
+                displayID = displayID,
+                useSafeDisplayArea = useSafeDisplayArea,
+                onScreenDuration = onScreenDuration,
+                option = option,
+                offset = offset,
+                clickThrough = clickThrough,
 
-                BackgroundColor = BackgroundColor,
-                OutlineColor = OutlineColor,
-                TextColor = TextColor,
+                backgroundColor = backgroundColor,
+                outlineColor = outlineColor,
+                textColor = textColor,
 
-                Blocks = Blocks,
-                BorderRadius = BorderRadius,
-                BlockSize = BlockSize,
-                Margin = Margin,
+                blocks = blocks,
+                blockSize = blockSize,
+                borderRadius = borderRadius,
+                borderThickness = borderThickness,
 
-                ClickThrough = ClickThrough,
-
-                MaxPathChars = MaxPathChars,
-                ShowQuickActions = ShowQuickActions,
+                margin = margin,
+                maxPathChars = maxPathChars,
+                showQuickActions = showQuickActions,
             };
         }
 
