@@ -38,7 +38,6 @@ In order for this program to work, you need to install OBS version 28+ with the 
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="PixiEditor.ColorPicker" Version="3.4.1" />
 	</ItemGroup>
 

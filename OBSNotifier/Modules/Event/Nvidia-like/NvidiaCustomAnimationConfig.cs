@@ -10,7 +10,6 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         NotificationType activeNotifications = NotificationType.All;
         string displayID = string.Empty;
         bool useSafeDisplayArea = false;
-        double onScreenTime = 5.0;
         NvidiaNotification.Positions option = NvidiaNotification.Positions.TopRight;
         Point offset = new(0, 0.1);
         bool clickThrough = false;
@@ -21,6 +20,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         Color textColor = (Color)ColorConverter.ConvertFromString("#E4E4E4");
 
         // animation
+        double onScreenTime = 5.0;
         double slideDuration = 0.4;
         double slideOffset = 0.18;
         double lineWidth = 6;
@@ -46,16 +46,11 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemStringDisplayID]
         public string DisplayID { get => displayID; set => displayID = value; }
 
-        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
-
-        // TODO test loading with greater values
-        [SettingsItemNumberRange(0, 30, 0.1)]
-        public double OnScreenTime { get => onScreenTime; set => onScreenTime = Utils.Clamp(value, 0, 30); }
-
         public NvidiaNotification.Positions Option { get => option; set => option = value; }
 
         [SettingsItemNumberRange(0, 1, 0.01)]
         public Point Offset { get => offset; set => offset = value; }
+        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
         public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
         [SettingsItemCategory("Colors")]
@@ -64,14 +59,15 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         public Color TextColor { get => textColor; set => textColor = value; }
 
         [SettingsItemCategory("Animation")]
+        [SettingsItemNumberRange(0, 30, 0.1)]
+        public double OnScreenTime { get => onScreenTime; set => onScreenTime = Utils.Clamp(value, 0, 30); }
+
         [SettingsItemNumberRange(0, 15, 0.1)]
         public double SlideDuration { get => slideDuration; set => slideDuration = Utils.Clamp(value, 0, 15); }
 
         [SettingsItemNumberRange(0, 5, 0.1)]
         public double SlideOffset { get => slideOffset; set => slideOffset = Utils.Clamp(value, 0, 5); }
 
-        // TODO broken
-        // does not update visuals correctly. Can be fixed with updating the animation and seeking to the end
         [SettingsItemNumberRange(0, 100)]
         public double LineWidth { get => lineWidth; set => lineWidth = Utils.Clamp(value, 0, 100); }
 

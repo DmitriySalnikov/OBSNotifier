@@ -1,18 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using OBSNotifier.Modules.Event;
-using System.Drawing;
+using System.Text.Json.Serialization.Metadata;
+using System.Windows;
 
 namespace OBSNotifier
 {
-    class Settings
+    partial class Settings
     {
-        public class ModuleSettings
-        {
-            public bool FirstLoad = true;
-            [JsonProperty(TypeNameHandling = TypeNameHandling.Objects)]
-            public OBSModuleSettings? Data { get; set; } = null;
-        }
-
         [JsonIgnore]
         static public Settings Instance { get; private set; } = null!;
 
@@ -32,7 +27,7 @@ namespace OBSNotifier
         public bool FirstRun { get; set; } = true;
         public string SkipVersion { get; set; } = "";
 
-        public Rectangle SettingsWindowRect { get; set; } = new Rectangle(-1, -1, 0, 0);
+        public Rect SettingsWindowRect { get; set; } = new(-1, -1, 0, 0);
         public string ServerAddress { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string DisplayID { get; set; } = string.Empty;
@@ -40,10 +35,34 @@ namespace OBSNotifier
         public bool IsManuallyConnected { get; set; } = false;
         public string NotificationModule { get; set; } = string.Empty;
 
-        [JsonProperty(nameof(PerModuleSettings), Order = 100)]
-        private readonly Dictionary<string, ModuleSettings> perModuleSettings = [];
-        [JsonIgnore]
-        public Dictionary<string, ModuleSettings> PerModuleSettings { get => perModuleSettings; }
+        [JsonPropertyOrder(100)]
+        public Dictionary<string, OBSModuleSettings> PerModuleSettings
+        {
+            get
+            {
+                return App.modules.LoadedModules.Select(m => (m.instance.ModuleID, m.instance.Settings)).ToDictionary(k => k.ModuleID, v => v.Settings);
+            }
+            set
+            {
+                foreach (var s in value)
+                {
+                    bool found = false;
+                    foreach (var module in App.modules.LoadedModules)
+                    {
+                        if (module.instance.ModuleID == s.Key)
+                        {
+                            found = true;
+                            module.instance.Settings = s.Value;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        App.Log($"{s.Key} settings will not be used and will be erased from the settings file.");
+                    }
+                }
+            }
+        }
 
         #region Temp Update Flags
 
@@ -52,32 +71,40 @@ namespace OBSNotifier
 
         #endregion
 
-        [JsonIgnore]
-        public ModuleSettings CurrentModuleSettings
-        {
-            get
-            {
-                if (!PerModuleSettings.ContainsKey(App.modules.CurrentModule.instance.ModuleID))
-                    PerModuleSettings[App.modules.CurrentModule.instance.ModuleID] = new ModuleSettings();
-
-                return PerModuleSettings[App.modules.CurrentModule.instance.ModuleID];
-            }
-        }
-
         #region Save/Load
 
-        Settings()
+        static readonly JsonSerializerOptions jsonOptions = new()
         {
-            Instance ??= this;
-        }
+            WriteIndented = true,
+            TypeInfoResolver = new ModuleSettingsJsonTypeInfoResolver(),
+            Converters = {
+                new FloatJsonConverter(),
+                new DoubleJsonConverter(),
 
-        ~Settings()
-        {
-            if (saveSettings.IsTimerActive())
-                SaveInternal();
+                new CultureInfoJsonConverter(),
 
-            saveSettings.Dispose();
-        }
+                new ThicknessJsonConverter(),
+                new RectJsonConverter(),
+
+                new PointJsonConverter(),
+                new SizeJsonConverter(),
+
+                new ColorJsonConverter(),
+            }
+        };
+
+        //Settings()
+        //{
+        //    Instance ??= this;
+        //}
+
+        //~Settings()
+        //{
+        //    if (saveSettings.IsTimerActive())
+        //        SaveInternal();
+
+        //    saveSettings.Dispose();
+        //}
 
         public bool ClearUnusedModuleSettings()
         {
@@ -132,7 +159,7 @@ namespace OBSNotifier
                     App.Log(ex);
                 }
 
-                File.WriteAllText(SaveFile, JsonConvert.SerializeObject(this, Formatting.Indented));
+                File.WriteAllText(SaveFile, JsonSerializer.Serialize(this, jsonOptions));
             }
             catch (Exception ex)
             {
@@ -140,7 +167,6 @@ namespace OBSNotifier
             }
         }
 
-        // TODO load modules data
         static public void Load()
         {
             static bool tryLoad(string file)
@@ -154,7 +180,7 @@ namespace OBSNotifier
                         throw new FileLoadException($"Save file (\"{file}\") is empty");
                     }
 
-                    Instance = JsonConvert.DeserializeObject<Settings>(fileText) ?? new Settings();
+                    Instance = JsonSerializer.Deserialize<Settings>(fileText, jsonOptions) ?? new Settings();
                     return true;
                 }
                 return false;
@@ -238,6 +264,34 @@ namespace OBSNotifier
                 NotificationStyle = null;
             }
             */
+        }
+
+        // Dynamic loading of module settings, but only for loaded modules
+        class ModuleSettingsJsonTypeInfoResolver : DefaultJsonTypeInfoResolver
+        {
+            public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
+            {
+                JsonTypeInfo jsonTypeInfo = base.GetTypeInfo(type, options);
+
+                if (jsonTypeInfo.Type == typeof(OBSModuleSettings))
+                {
+                    var types = App.modules.LoadedModules.Select(m => new JsonDerivedType(m.defaultSettings.GetType(), m.defaultSettings.GetType().Name)).ToList();
+
+                    jsonTypeInfo.PolymorphismOptions = new JsonPolymorphismOptions
+                    {
+                        TypeDiscriminatorPropertyName = "$settings-type",
+                        IgnoreUnrecognizedTypeDiscriminators = true,
+                        UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FailSerialization,
+                    };
+
+                    foreach (var t in types)
+                    {
+                        jsonTypeInfo.PolymorphismOptions.DerivedTypes.Add(t);
+                    }
+                }
+
+                return jsonTypeInfo;
+            }
         }
     }
 }

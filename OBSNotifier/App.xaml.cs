@@ -55,6 +55,8 @@ namespace OBSNotifier
             Forms.Application.SetCompatibleTextRenderingDefault(false);
             logger ??= new Logger("logs/log.txt");
 
+            // To load the module settings, it must know the available types of settings
+            modules = new ModuleManager();
             // Initialize Settings
             Settings.Load();
 
@@ -104,7 +106,6 @@ namespace OBSNotifier
             obs.Disconnected += Obs_Disconnected;
             obs.Events.ExitStarted += Obs_ExitStarted;
 
-            modules = new ModuleManager();
             notifications = new NotificationManager(this, obs);
 
             // Clear unused

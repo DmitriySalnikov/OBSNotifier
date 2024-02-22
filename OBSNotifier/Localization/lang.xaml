@@ -34,7 +34,7 @@
     <v:String x:Key="settings_window_report_bug">Report a bug or suggest a feature.</v:String>
     <v:String x:Key="settings_window_server_address_label">Server address:</v:String>
     <v:String x:Key="settings_window_password_label">Password:</v:String>
-    <v:String x:Key="settings_window_password_warning">The password will be saved in a local file</v:String>
+    <v:String x:Key="settings_window_password_warning">The password will be encrypted and saved in a local file</v:String>
     <v:String x:Key="settings_window_connect_button_connect">Connect</v:String>
     <v:String x:Key="settings_window_connect_button_disconnect">Disconnect</v:String>
     <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Trying to reconnect... Cancel?</v:String>

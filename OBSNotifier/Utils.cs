@@ -129,7 +129,13 @@ namespace OBSNotifier
         /// <returns><see cref="null"/> on error</returns>
         public static string? DecryptString(string encrypted, string key)
         {
+            if (string.IsNullOrWhiteSpace(encrypted))
+                return null;
+
             var encryptedBytes = Convert.FromBase64String(encrypted);
+            if (encryptedBytes == null || encryptedBytes.Length == 0)
+                return null;
+
             using var mem = new MemoryStream(encryptedBytes);
             using var br = new BinaryReader(mem);
 

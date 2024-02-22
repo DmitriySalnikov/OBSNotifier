@@ -93,7 +93,6 @@ namespace OBSNotifier
 
         void UpdateNotification()
         {
-            App.modules.UpdateCurrentModuleSettings();
             if (cb_preview.IsChecked == true)
             {
                 App.modules.CurrentModule.instance.ShowPreview();
@@ -145,6 +144,7 @@ namespace OBSNotifier
         void OnEventModuleSettingChanged(object? sender, EventArgs e)
         {
             UpdateNotification();
+            Settings.Instance.Save();
         }
 
         void OnModuleChanged()
@@ -195,14 +195,14 @@ namespace OBSNotifier
             if ((bool)e.NewValue)
             {
                 // Update size
-                if (Settings.Instance.SettingsWindowRect.Size != new System.Drawing.Size())
+                if (Settings.Instance.SettingsWindowRect.Size != new Size())
                 {
                     Width = Settings.Instance.SettingsWindowRect.Size.Width;
                     Height = Settings.Instance.SettingsWindowRect.Size.Height;
                 }
 
                 // Update position
-                if (Settings.Instance.SettingsWindowRect.Location != new System.Drawing.Point(-1, -1))
+                if (Settings.Instance.SettingsWindowRect.Location != new Point(-1, -1))
                 {
                     Left = Settings.Instance.SettingsWindowRect.Location.X;
                     Top = Settings.Instance.SettingsWindowRect.Location.Y;
@@ -213,7 +213,7 @@ namespace OBSNotifier
                         Left = 0;
                         Top = 0;
 
-                        Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle(new System.Drawing.Point(), Settings.Instance.SettingsWindowRect.Size);
+                        Settings.Instance.SettingsWindowRect = new Rect(new Point(), Settings.Instance.SettingsWindowRect.Size);
                         Settings.Instance.Save();
                     }
                 }
@@ -251,7 +251,7 @@ namespace OBSNotifier
                 Settings.Instance.IsPreviewShowing = false;
 
                 // Save window size
-                Settings.Instance.SettingsWindowRect = new System.Drawing.Rectangle((int)Left, (int)Top, (int)Width, (int)Height);
+                Settings.Instance.SettingsWindowRect = new Rect((int)Left, (int)Top, (int)Width, (int)Height);
                 Settings.Instance.Save();
             }
 

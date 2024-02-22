@@ -67,60 +67,11 @@ namespace OBSNotifier.Modules.Event
                 ((App)Application.Current).gc_collect.CallDeferred();
 
                 CurrentModule = moduleData;
-                UpdateCurrentModuleSettings();
 
                 return true;
             }
 
             return false;
-        }
-
-        public void UpdateCurrentModuleSettings()
-        {
-            var moduleSetting = Settings.Instance.CurrentModuleSettings;
-
-            //if (CurrentModule.instance.Settings != null)
-            //    moduleSetting.Data = CurrentModule.instance.Settings.Clone();
-
-            // Validate current module option
-            //    Enum module_option;
-            //    try
-            //    {
-            //        module_option = (Enum)Enum.Parse(CurrentModule.instance.EnumOptionsType, moduleSetting.SelectedOption);
-            //    }
-            //    catch
-            //    {
-            //        module_option = CurrentModule.defaultSettings.Option;
-            //    }
-
-            // Set notification types to default
-            //moduleSetting.ActiveNotificationTypes ??= CurrentModule.instance.DefaultActiveNotifications;
-
-            // Save defaults
-            //  if (moduleSetting.FirstLoad)
-            //  {
-            //      moduleSetting.FirstLoad = false;
-            //      moduleSetting.UseSafeDisplayArea = CurrentModule.defaultSettings.UseSafeDisplayArea;
-            //      moduleSetting.AdditionalData = CurrentModule.defaultSettings.AdditionalData;
-            //      moduleSetting.CustomSettings = CurrentModule.defaultSettings.CustomSettings;
-            //      moduleSetting.Offset = CurrentModule.defaultSettings.Offset;
-            //      moduleSetting.OnScreenTime = CurrentModule.defaultSettings.OnScreenTime;
-            //      moduleSetting.SelectedOption = module_option.ToString();
-            //      moduleSetting.Data = CurrentModule.defaultSettings.Settings.Clone();
-            //  }
-
-            // TODO load?
-            // CurrentModule.instance.ModuleSettings = new OBSNotifierModuleSettings()
-            {
-                //        UseSafeDisplayArea = moduleSetting.UseSafeDisplayArea,
-                //        AdditionalData = moduleSetting.AdditionalData,
-                //        CustomSettings = moduleSetting.CustomSettings,
-                //        Offset = new Point(moduleSetting.Offset.X, moduleSetting.Offset.Y),
-                //        OnScreenTime = Math.Min(moduleSetting.OnScreenTime, 30000),
-                //        Option = module_option,
-                //    Settings = CurrentModule.instance.ModuleSettings.Settings, // TODO not copy?
-            };
-            Settings.Instance.Save();
         }
 
         void WriteLog(string txt)

@@ -3,14 +3,13 @@ using System.Windows.Media;
 
 namespace OBSNotifier.Modules.Event.Default
 {
-    // TODO add categories
     internal class DefaultCustomNotifBlockSettings : OBSModuleSettings
     {
         NotificationType activeNotifications = NotificationType.All;
         string displayID = string.Empty;
         bool useSafeDisplayArea = false;
-        double onScreenDuration = 4.0;
         DefaultNotification.Positions option = DefaultNotification.Positions.BottomRight;
+        double onScreenDuration = 4.0;
         Point offset = new();
         bool clickThrough = false;
 
@@ -31,14 +30,15 @@ namespace OBSNotifier.Modules.Event.Default
 
         [SettingsItemStringDisplayID]
         public string DisplayID { get => displayID; set => displayID = value; }
-        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
+
+        public DefaultNotification.Positions Option { get => option; set => option = value; }
 
         [SettingsItemNumberRange(0, 30, 0.1)]
         public double OnScreenTime { get => onScreenDuration; set => onScreenDuration = Utils.Clamp(value, 0, 30); }
-        public DefaultNotification.Positions Option { get => option; set => option = value; }
 
         [SettingsItemNumberRange(0, 1, 0.01)]
         public Point Offset { get => offset; set => offset = value; }
+        public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
         public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
         [SettingsItemCategory("Colors")]

@@ -42,7 +42,7 @@
 
             <Label Content="{DynamicResource settings_window_password_label}" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>
-            <Label Content="{DynamicResource settings_window_password_warning}" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
+            <TextBlock Text="{DynamicResource settings_window_password_warning}" Margin="4,4,4,4" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
             <Button x:Name="btn_connect" Content="{DynamicResource settings_window_connect_button_connect}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
 
             <Separator Height="10" Style="{StaticResource emptySeparator}"/>
