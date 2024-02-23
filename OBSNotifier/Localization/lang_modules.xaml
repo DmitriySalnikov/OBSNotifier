@@ -3,11 +3,22 @@
     <!-- Use &#10; instead of \n -->
     
     <!-- Default Module -->
-    <v:String x:Key="default_module_name">Stack of notifications</v:String>
-    <v:String x:Key="default_module_desc">This is the default notification module.&#10;It displays one or more notifications located in the corner of the monitor.</v:String>
+    <v:String x:Key="module_default_name">Stack of notifications</v:String>
+    <v:String x:Key="module_default_desc">This is the default notification module.&#10;It displays one or more notifications located in the corner of the monitor.</v:String>
+    <v:String x:Key="module_default_setting_category_blockss">Blocks</v:String>
 
     <!-- Nvidia-Like Module -->
-    <v:String x:Key="nvidia_like_module_name">Nvidia-Like</v:String>
-    <v:String x:Key="nvidia_like_module_desc">Simple notification similar to Nvidia's notifications</v:String>
-
+    <v:String x:Key="module_nvidia_like_name">Nvidia-Like</v:String>
+    <v:String x:Key="module_nvidia_like_desc">Simple notification similar to Nvidia's notifications</v:String>
+    
+    <!-- Settings -->
+    <!-- TODO "Прозрачное для кликов" -->
+    <v:String x:Key="module_common_setting_clickthrough_hint">'Click Through' will only work when notification interaction modes such as 'Quick Actions' are disabled.</v:String>
+    
+    <!-- Settings Categories-->
+    <v:String x:Key="module_common_setting_category_icon">Icon</v:String>
+    <v:String x:Key="module_common_setting_category_colors">Colors</v:String>
+    <v:String x:Key="module_common_setting_category_animation">Animation</v:String>
+    <v:String x:Key="module_common_setting_category_quick_actions">Quick Actions</v:String>
+    
 </ResourceDictionary>

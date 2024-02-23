@@ -131,8 +131,6 @@ namespace OBSNotifier
             "dshow_output",
         ];
 
-        static ModuleManager.ModuleData CurrentModule { get => App.modules.CurrentModule; }
-
         #region NotifData
         static readonly List<NotificationType> SkipNotifTypes = [
             NotificationType.None,
@@ -204,8 +202,6 @@ namespace OBSNotifier
 
         void InvokeNotif(Action act)
         {
-            if (IsDisabled()) return;
-
             try
             {
                 app.InvokeAction(act);
@@ -217,31 +213,13 @@ namespace OBSNotifier
             }
         }
 
-        static bool IsDisabled()
-        {
-            return Settings.Instance.IsPreviewShowing || CurrentModule.instance == null;
-        }
-
-        static bool IsActive(NotificationType type)
-        {
-            if (CurrentModule.instance != null)
-            {
-                var notifs = CurrentModule.instance.Settings.GetActiveNotifications();
-                return notifs.HasFlag(type);
-            }
-            return false;
-        }
-
         static void ShowNotif(NotificationType type, Func<string, object[], string> formatter, params object[] origData)
         {
             try
             {
-                if (IsActive(type))
-                {
-                    string fmt = formatter.Invoke(NotificationsData[type].Description, origData);
-                    App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
-                    CurrentModule.instance.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
-                }
+                string fmt = formatter.Invoke(NotificationsData[type].Description, origData);
+                App.Log($"New notification: {type}, Formatted Data: '{fmt}', Data Size: {origData.Length}");
+                App.Modules.ShowNotification(type, NotificationsData[type].Name, fmt, origData.Length == 0 ? null : origData);
             }
             catch (Exception ex)
             {
@@ -253,11 +231,8 @@ namespace OBSNotifier
         {
             try
             {
-                if (IsActive(type))
-                {
-                    App.Log($"New notification: {type}");
-                    CurrentModule.instance.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
-                }
+                App.Log($"New notification: {type}");
+                App.Modules.ShowNotification(type, NotificationsData[type].Name, NotificationsData[type].Description);
             }
             catch (Exception ex)
             {

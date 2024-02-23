@@ -13,11 +13,11 @@
         DefaultNotificationWindow? window = null;
 
         public string ModuleID => "Default";
-        public string ModuleName => Utils.Tr("default_module_name");
+        public string ModuleName => Utils.Tr("module_default_name");
 
         public string ModuleAuthor => "Dmitriy Salnikov";
 
-        public string ModuleDescription => Utils.Tr("default_module_desc");
+        public string ModuleDescription => Utils.Tr("module_default_desc");
 
         public DefaultCustomNotifBlockSettings SettingsTyped { get; set; } = new DefaultCustomNotifBlockSettings();
         public OBSModuleSettings Settings

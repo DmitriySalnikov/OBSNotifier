@@ -326,6 +326,12 @@ namespace ProtocolGenerator
                         Line(sb);
                     }
 
+                    using (var _i4_1 = new BlockIndent(sb, "static readonly JsonSerializerOptions serializerOptions = new()", endWithSemicolon: true))
+                    {
+                        Line(sb, "IncludeFields = true,");
+                    }
+                    Line(sb);
+
                     using (var _i6 = new BlockIndent(sb, "internal void ProcessEventData(JsonElement json)"))
                     {
                         Line(sb, "string eventType = json.ReadString(\"eventType\") ?? \"\";");
@@ -335,10 +341,6 @@ namespace ProtocolGenerator
                             Line(sb, "data = val;");
                         }
                         Line(sb, "string failedToDeserialize = \"Failed to deserialize data for the {0} event.\";");
-                        using (var _i6_1 = new BlockIndent(sb, "JsonSerializerOptions serializerOptions = new()", endWithSemicolon: true))
-                        {
-                            Line(sb, "IncludeFields = true,");
-                        }
                         Line(sb);
 
                         using (var _i7 = new BlockIndent(sb, "switch (eventType)"))

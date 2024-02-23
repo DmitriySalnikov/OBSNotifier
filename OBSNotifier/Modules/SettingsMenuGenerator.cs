@@ -64,6 +64,10 @@ namespace OBSNotifier.Modules
 
                     var item = CreateItem(settingObject, propInfo, propInfo.GetValue(defaultSettings) ?? throw new NullReferenceException($"{defaultSettings} cannot have a null value."));
                     res.AddSettingItem(item);
+
+                    if (mem.GetCustomAttribute<SettingsItemHintAttribute>() is SettingsItemHintAttribute attr_hint)
+                        item.ToolTip = Utils.Tr(attr_hint.HintText);
+
                     res.Children.Add(new SettingsItemSeparator());
                 }
             }

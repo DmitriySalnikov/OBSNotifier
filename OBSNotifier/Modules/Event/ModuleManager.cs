@@ -74,6 +74,30 @@ namespace OBSNotifier.Modules.Event
             return false;
         }
 
+        static bool IsActive(IOBSNotifierModule module, NotificationType type)
+        {
+            var notifs = module.Settings.GetActiveNotifications();
+            return notifs.HasFlag(type);
+        }
+
+        public void ShowNotification(NotificationType type, string title, string? description = null, object[]? originalData = null)
+        {
+            foreach (var m in LoadedModules)
+            {
+                if (IsActive(m.instance, type))
+                {
+                    try
+                    {
+                        m.instance.ShowNotification(type, title, description, originalData);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Log(ex);
+                    }
+                }
+            }
+        }
+
         void WriteLog(string txt)
         {
             logger.Write(txt);

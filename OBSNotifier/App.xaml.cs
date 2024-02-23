@@ -29,7 +29,7 @@ namespace OBSNotifier
         public static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
         public static event EventHandler<ConnectionState>? ConnectionStateChanged;
         public static OBSWebsocket obs = null!;
-        public static ModuleManager modules = null!;
+        public static ModuleManager Modules = null!;
         public static NotificationManager? notifications;
         public static ConnectionState CurrentConnectionState { get; private set; }
         public static bool IsNeedToSkipNextConnectionNotifications = false;
@@ -56,7 +56,7 @@ namespace OBSNotifier
             logger ??= new Logger("logs/log.txt");
 
             // To load the module settings, it must know the available types of settings
-            modules = new ModuleManager();
+            Modules = new ModuleManager();
             // Initialize Settings
             Settings.Load();
 
@@ -113,12 +113,12 @@ namespace OBSNotifier
                 Settings.Instance.Save();
 
             // Select current module
-            if (!modules.SelectCurrent(Settings.Instance.NotificationModule))
+            if (!Modules.SelectCurrent(Settings.Instance.NotificationModule))
             {
                 // Select the default module if the previously used module is not found
                 Settings.Instance.NotificationModule = "Default";
                 Settings.Instance.Save();
-                modules.SelectCurrent(Settings.Instance.NotificationModule);
+                Modules.SelectCurrent(Settings.Instance.NotificationModule);
             }
 
             // Update old settings
@@ -197,7 +197,7 @@ namespace OBSNotifier
             aboutBox?.Dispose();
             aboutBox = null;
 
-            modules?.Dispose();
+            Modules?.Dispose();
 
             trayIcon?.Dispose();
 

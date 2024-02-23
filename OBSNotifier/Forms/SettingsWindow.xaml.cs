@@ -46,7 +46,7 @@ namespace OBSNotifier
             cb_notification_modules.Items.Clear();
             module_id_to_text_block_map.Clear();
 
-            foreach (var p in App.modules.LoadedModules)
+            foreach (var p in App.Modules.LoadedModules)
             {
                 var tb = new TextBlock()
                 {
@@ -67,10 +67,10 @@ namespace OBSNotifier
                 Settings.Instance.Save();
 
                 cb_notification_modules.SelectedItem = module_id_to_text_block_map[Settings.Instance.NotificationModule];
-                App.modules.SelectCurrent(Settings.Instance.NotificationModule);
+                App.Modules.SelectCurrent(Settings.Instance.NotificationModule);
             }
 
-            cb_notification_modules.ToolTip = App.modules.CurrentModule.instance.ModuleDescription;
+            cb_notification_modules.ToolTip = App.Modules.CurrentModule.instance.ModuleDescription;
         }
 
         void UpdateConnectButton()
@@ -95,7 +95,7 @@ namespace OBSNotifier
         {
             if (cb_preview.IsChecked == true)
             {
-                App.modules.CurrentModule.instance.ShowPreview();
+                App.Modules.CurrentModule.instance.ShowPreview();
                 Settings.Instance.IsPreviewShowing = true;
             }
         }
@@ -151,7 +151,7 @@ namespace OBSNotifier
         {
             IsChangedByCode = true;
 
-            var moduleData = App.modules.CurrentModule;
+            var moduleData = App.Modules.CurrentModule;
             if (moduleData.instance != null)
             {
                 if (moduleSettings != null)
@@ -247,7 +247,7 @@ namespace OBSNotifier
             {
                 Instance = null;
                 // hide preview
-                App.modules.CurrentModule.instance.HidePreview();
+                App.Modules.CurrentModule.instance.HidePreview();
                 Settings.Instance.IsPreviewShowing = false;
 
                 // Save window size
@@ -404,11 +404,11 @@ namespace OBSNotifier
             if (cb_notification_modules.SelectedItem == null) return;
 
             var module_id = (string)((TextBlock)cb_notification_modules.SelectedItem).Tag;
-            if (App.modules.SelectCurrent(module_id))
+            if (App.Modules.SelectCurrent(module_id))
             {
                 Settings.Instance.NotificationModule = module_id;
                 Settings.Instance.Save();
-                cb_notification_modules.ToolTip = App.modules.CurrentModule.instance.ModuleDescription;
+                cb_notification_modules.ToolTip = App.Modules.CurrentModule.instance.ModuleDescription;
 
                 OnModuleChanged();
                 UpdateNotification();
@@ -422,7 +422,7 @@ namespace OBSNotifier
 
         private void cb_preview_Unchecked(object? sender, RoutedEventArgs e)
         {
-            App.modules.CurrentModule.instance.HidePreview();
+            App.Modules.CurrentModule.instance.HidePreview();
             Settings.Instance.IsPreviewShowing = false;
         }
     }

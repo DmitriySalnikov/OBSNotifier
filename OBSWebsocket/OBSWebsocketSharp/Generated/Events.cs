@@ -881,6 +881,11 @@ namespace OBSWebsocketSharp
         [EventDataMetadata(EventSubscription.General, 1, 1, false, "5.0.0", "general")]
         public event EventHandler<CustomEventData>? CustomEvent;
 
+        static readonly JsonSerializerOptions serializerOptions = new()
+        {
+            IncludeFields = true,
+        };
+
         internal void ProcessEventData(JsonElement json)
         {
             string eventType = json.ReadString("eventType") ?? "";
@@ -890,10 +895,6 @@ namespace OBSWebsocketSharp
                 data = val;
             }
             string failedToDeserialize = "Failed to deserialize data for the {0} event.";
-            JsonSerializerOptions serializerOptions = new()
-            {
-                IncludeFields = true,
-            };
 
             switch (eventType)
             {

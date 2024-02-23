@@ -10,7 +10,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Additional
         {
             InitializeComponent();
 
-            tb_category_text.Text = categoryName;
+            tb_category_text.Text = Utils.Tr(categoryName);
             if (string.IsNullOrWhiteSpace(tb_category_text.Text))
             {
                 grid_main.Visibility = System.Windows.Visibility.Collapsed;

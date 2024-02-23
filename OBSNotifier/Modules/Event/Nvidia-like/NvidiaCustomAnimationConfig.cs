@@ -51,14 +51,16 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemNumberRange(0, 1, 0.01)]
         public Point Offset { get => offset; set => offset = value; }
         public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
+
+        [SettingsItemHint("module_common_setting_clickthrough_hint")]
         public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
-        [SettingsItemCategory("Colors")]
+        [SettingsItemCategory("module_common_setting_category_colors")]
         public Color BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
         public Color ForegroundColor { get => foregroundColor; set => foregroundColor = value; }
         public Color TextColor { get => textColor; set => textColor = value; }
 
-        [SettingsItemCategory("Animation")]
+        [SettingsItemCategory("module_common_setting_category_animation")]
         [SettingsItemNumberRange(0, 30, 0.1)]
         public double OnScreenTime { get => onScreenTime; set => onScreenTime = Utils.Clamp(value, 0, 30); }
 
@@ -74,7 +76,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemNumberRange(0.001, 5, 0.1)]
         public double Scale { get => scale; set => scale = Utils.Clamp(value, 0.001, 5); }
 
-        [SettingsItemCategory("Quick Actions")]
+        [SettingsItemCategory("module_common_setting_category_quick_actions")]
         [SettingsItemNumberRange(0, 256)]
         public uint MaxPathChars { get => maxPathChars; set => maxPathChars = (uint)Utils.Clamp(value, 0, 256); }
         public bool ShowQuickActions { get => showQuickActions; set => showQuickActions = value; }
@@ -83,7 +85,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         [SettingsItemNumberRange(0, 2048)]
         public double QuickActionsOffset { get => quickActionsOffset; set => quickActionsOffset = Utils.Clamp(value, 0, 2048); }
 
-        [SettingsItemCategory("Icon")]
+        [SettingsItemCategory("module_common_setting_category_icon")]
         [SettingsItemNumberRange(0, 192)]
         public double IconHeight { get => iconHeight; set => iconHeight = Utils.Clamp(value, 0, 192); }
 

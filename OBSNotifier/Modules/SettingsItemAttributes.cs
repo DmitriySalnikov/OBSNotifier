@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OBSNotifier.Modules
+﻿namespace OBSNotifier.Modules
 {
     // TODO add Attribute for custom control type! Useful, for example, for configuring sound notifications
 
@@ -10,11 +8,16 @@ namespace OBSNotifier.Modules
         public string Name = name;
     }
 
-    // TODO add localization
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     internal class SettingsItemCategoryAttribute(string categoryName = "") : Attribute
     {
         public string CategoryName = categoryName;
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    internal class SettingsItemHintAttribute(string hintText = "") : Attribute
+    {
+        public string HintText = hintText;
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]

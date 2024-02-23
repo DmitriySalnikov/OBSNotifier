@@ -37,6 +37,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
             ValueOwner = valueOwner;
             ValuePropertyInfo = propInfo;
             DefaultValue = defaultValue;
+            ToolTipService.SetInitialShowDelay(this, 200);
         }
 
         protected string GetPropertyName()

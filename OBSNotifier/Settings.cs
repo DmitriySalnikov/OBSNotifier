@@ -40,14 +40,14 @@ namespace OBSNotifier
         {
             get
             {
-                return App.modules.LoadedModules.Select(m => (m.instance.ModuleID, m.instance.Settings)).ToDictionary(k => k.ModuleID, v => v.Settings);
+                return App.Modules.LoadedModules.Select(m => (m.instance.ModuleID, m.instance.Settings)).ToDictionary(k => k.ModuleID, v => v.Settings);
             }
             set
             {
                 foreach (var s in value)
                 {
                     bool found = false;
-                    foreach (var module in App.modules.LoadedModules)
+                    foreach (var module in App.Modules.LoadedModules)
                     {
                         if (module.instance.ModuleID == s.Key)
                         {
@@ -111,7 +111,7 @@ namespace OBSNotifier
             List<string> to_delete = [];
             foreach (var p in PerModuleSettings)
             {
-                if (App.modules.LoadedModules.FindIndex((i) => i.instance.ModuleID == p.Key) == -1)
+                if (App.Modules.LoadedModules.FindIndex((i) => i.instance.ModuleID == p.Key) == -1)
                 {
                     to_delete.Add(p.Key);
                 }
@@ -275,7 +275,7 @@ namespace OBSNotifier
 
                 if (jsonTypeInfo.Type == typeof(OBSModuleSettings))
                 {
-                    var types = App.modules.LoadedModules.Select(m => new JsonDerivedType(m.defaultSettings.GetType(), m.defaultSettings.GetType().Name)).ToList();
+                    var types = App.Modules.LoadedModules.Select(m => new JsonDerivedType(m.defaultSettings.GetType(), m.defaultSettings.GetType().Name)).ToList();
 
                     jsonTypeInfo.PolymorphismOptions = new JsonPolymorphismOptions
                     {

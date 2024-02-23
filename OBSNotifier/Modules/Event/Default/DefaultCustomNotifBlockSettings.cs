@@ -39,14 +39,16 @@ namespace OBSNotifier.Modules.Event.Default
         [SettingsItemNumberRange(0, 1, 0.01)]
         public Point Offset { get => offset; set => offset = value; }
         public bool UseSafeDisplayArea { get => useSafeDisplayArea; set => useSafeDisplayArea = value; }
+
+        [SettingsItemHint("module_common_setting_clickthrough_hint")]
         public bool ClickThrough { get => clickThrough; set => clickThrough = value; }
 
-        [SettingsItemCategory("Colors")]
+        [SettingsItemCategory("module_common_setting_category_colors")]
         public Color BackgroundColor { get => backgroundColor; set => backgroundColor = value; }
         public Color OutlineColor { get => outlineColor; set => outlineColor = value; }
         public Color TextColor { get => textColor; set => textColor = value; }
 
-        [SettingsItemCategory("Blocks")]
+        [SettingsItemCategory("module_default_setting_category_blockss")]
         [SettingsItemNumberRange(1, 24)]
         public uint Blocks { get => blocks; set => blocks = (uint)Utils.Clamp(value, 1, 24); }
 
@@ -62,7 +64,7 @@ namespace OBSNotifier.Modules.Event.Default
         [SettingsItemNumberRange(0, 1024, 0.1)]
         public Thickness Margin { get => margin; set => margin = value; }
 
-        [SettingsItemCategory("Quick Actions")]
+        [SettingsItemCategory("module_common_setting_category_quick_actions")]
         [SettingsItemNumberRange(0, 256)]
         public uint MaxPathChars { get => maxPathChars; set => maxPathChars = value; }
         public bool ShowQuickActions { get => showQuickActions; set => showQuickActions = value; }

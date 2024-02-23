@@ -11,11 +11,11 @@
         NvidiaNotificationWindow? window = null;
 
         public string ModuleID => "Nvidia-Like";
-        public string ModuleName => Utils.Tr("nvidia_like_module_name");
+        public string ModuleName => Utils.Tr("module_nvidia_like_name");
 
         public string ModuleAuthor => "Dmitriy Salnikov";
 
-        public string ModuleDescription => Utils.Tr("nvidia_like_module_desc");
+        public string ModuleDescription => Utils.Tr("module_nvidia_like_desc");
 
         public Type EnumOptionsType => typeof(Positions);
 

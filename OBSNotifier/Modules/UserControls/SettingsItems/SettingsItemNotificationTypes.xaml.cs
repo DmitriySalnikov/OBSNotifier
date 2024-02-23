@@ -27,7 +27,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var notifs = Value is NotificationType notif ? notif : App.modules.CurrentModule.instance.DefaultActiveNotifications;
+            var notifs = Value is NotificationType notif ? notif : App.Modules.CurrentModule.instance.DefaultActiveNotifications;
 
             var an = new ActiveNotifications(notifs);
             var wnd = Window.GetWindow(this);
