@@ -73,8 +73,9 @@ namespace Ninja.WebSocketClient
         {
             using (socket)
             {
-                var receiving = StartReceiving(socket);
-                var sending = StartSending(socket);
+                // LongRunning used to avoid deadlocks
+                var receiving = Task.Factory.StartNew(() => StartReceiving(socket).Wait(), TaskCreationOptions.LongRunning);
+                var sending = Task.Factory.StartNew(() => StartSending(socket).Wait(), TaskCreationOptions.LongRunning);
 
                 var trigger = await Task.WhenAny(receiving, sending);
 

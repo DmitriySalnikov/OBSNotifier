@@ -15,7 +15,7 @@ namespace OBSWebsocketSharp
         NinjaWebSocket? ws = null;
         string? authString = null;
         const int RpcVersion = 1;
-        Version obsWebsocketVersion = new Version(0, 0, 0);
+        Version obsWebsocketVersion = new(0, 0, 0);
         readonly Action<Action>? eventInvoke;
         AuthData authData = new(null, null);
 
