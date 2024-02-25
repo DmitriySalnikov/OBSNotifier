@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using System.Xml.Linq;
 
 namespace OBSNotifier
 {
@@ -11,7 +10,18 @@ namespace OBSNotifier
         readonly static string scriptText = GetScriptCode();
 
         public readonly static string ScriptPath = Path.Combine(App.AppDataFolder, scriptName);
-        public static string ProgramPath { get => Assembly.GetExecutingAssembly().Location.Replace('\\', '/'); }
+        public static string ProgramPath
+        {
+            get
+            {
+                var exe = Assembly.GetExecutingAssembly().Location.Replace('\\', '/');
+                if (exe.EndsWith(".dll"))
+                {
+                    return exe.Replace(".dll", ".exe");
+                }
+                return exe;
+            }
+        }
 
         public static bool IsScriptExists()
         {

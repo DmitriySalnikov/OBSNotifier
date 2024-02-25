@@ -44,13 +44,14 @@ namespace OBSNotifier.Modules.Event.UserControls
             InitializeComponent();
         }
 
-        private void Btn_open_folder_Click(object? sender, RoutedEventArgs e)
+        private void btn_open_folder_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
                     Utils.ProcessStartShell(Path.GetFullPath(Path.GetDirectoryName(FilePath) ?? "C:/"));
+                    e.Handled = true;
                 }
                 catch (Exception ex)
                 {
@@ -59,13 +60,14 @@ namespace OBSNotifier.Modules.Event.UserControls
             }
         }
 
-        private void Btn_open_file_Click(object? sender, RoutedEventArgs e)
+        private void btn_open_file_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!IsPreview && FilePath != null)
             {
                 try
                 {
                     Utils.ProcessStartShell(Path.GetFullPath(FilePath));
+                    e.Handled = true;
                 }
                 catch (Exception ex)
                 {

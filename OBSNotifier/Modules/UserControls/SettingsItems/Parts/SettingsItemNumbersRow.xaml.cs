@@ -99,10 +99,12 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
             if (is_changed_by_code)
                 return;
 
-            if (Utils.ApproxEqual(number, slider_value.Value, Math.Pow(0.1, precision)))
+            var new_val = Math.Round(slider_value.Value, (int)precision);
+
+            if (Utils.ApproxEqual(number, new_val, Math.Pow(0.1, precision)))
                 return;
 
-            number = slider_value.Value;
+            number = new_val;
 
             is_changed_by_code = true;
             set.Invoke(number);
@@ -115,10 +117,12 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
             if (is_changed_by_code)
                 return;
 
-            if (Utils.ApproxEqual(number, nud_value.Value, Math.Pow(0.1, precision)))
+            var new_val = Math.Round(nud_value.Value, (int)precision);
+
+            if (Utils.ApproxEqual(number, new_val, Math.Pow(0.1, precision)))
                 return;
 
-            number = nud_value.Value;
+            number = new_val;
 
             is_changed_by_code = true;
             set(number);

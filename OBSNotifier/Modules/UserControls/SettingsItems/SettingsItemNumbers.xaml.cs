@@ -178,7 +178,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                         v => Value = (Size)Value! with { Width = v },
                         () => (double)Convert.ChangeType(((Size)Value!).Width, typeof(double)),
                         typeof(double),
-                        RowRightActionButtonType.Revert, customMax: width, customStep: step);
+                        RowRightActionButtonType.Revert, customMin: 1, customMax: width, customStep: step);
 
                 control_container.Children.Add(new SettingsItemSeparator(true));
 
@@ -186,7 +186,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     v => Value = (Size)Value! with { Height = v },
                     () => (double)Convert.ChangeType(((Size)Value!).Height, typeof(double)),
                     typeof(double),
-                    RowRightActionButtonType.Center, customMax: height, customStep: step);
+                    RowRightActionButtonType.Center, customMin: 1, customMax: height, customStep: step);
             }
             // THICKNESS
             else if (typeof(Thickness) == ValuePropertyInfo.PropertyType)
