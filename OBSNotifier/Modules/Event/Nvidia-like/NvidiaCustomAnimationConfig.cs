@@ -9,9 +9,9 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         bool isPreviewNotif = false;
         NotificationType activeNotifications = NotificationType.All;
         string displayID = string.Empty;
-        bool useSafeDisplayArea = false;
         NvidiaNotification.Positions option = NvidiaNotification.Positions.TopRight;
         Point offset = new(0, 0.1);
+        bool useSafeDisplayArea = true;
         bool clickThrough = false;
 
         // colors

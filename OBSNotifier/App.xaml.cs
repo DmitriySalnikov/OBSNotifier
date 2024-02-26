@@ -177,9 +177,12 @@ namespace OBSNotifier
 
         private void Application_Exit(object? sender, ExitEventArgs e)
         {
-            Log("App exit");
+            Log("App exiting");
             StopReconnection();
+            Log("Force Saving");
+            Settings.Instance?.Save(true);
 
+            Log("Disconnecting");
             if (obs != null)
             {
                 obs.Connected -= Obs_Connected;
@@ -188,6 +191,7 @@ namespace OBSNotifier
                 _ = obs.Disconnect();
             }
 
+            Log("Clearing variables");
             gc_collect.Dispose();
 
             settingsWindow?.Close();
@@ -206,9 +210,8 @@ namespace OBSNotifier
 
             versionCheckerGitHub?.Dispose();
 
+            Log("App closed");
             logger?.Dispose();
-
-            Settings.Instance?.Save(true);
             mutex?.Dispose();
 
 #if DEBUG

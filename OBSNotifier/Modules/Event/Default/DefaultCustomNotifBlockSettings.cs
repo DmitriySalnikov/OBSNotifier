@@ -7,7 +7,7 @@ namespace OBSNotifier.Modules.Event.Default
     {
         NotificationType activeNotifications = NotificationType.All;
         string displayID = string.Empty;
-        bool useSafeDisplayArea = false;
+        bool useSafeDisplayArea = true;
         DefaultNotification.Positions option = DefaultNotification.Positions.BottomRight;
         double onScreenDuration = 4.0;
         Point offset = new();
