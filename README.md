@@ -49,9 +49,9 @@ If you have found a bug or want to suggest a new feature, then please create a n
 
 ## Support
 
-[<img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QIWI_logo.svg" alt="qiwi" width=90px/>](https://qiwi.com/n/DMITRIYSALNIKOV)
-
 [<img src="https://static.boosty.to/assets/images/boostyDomainLogo.5Vlxt.svg" alt="Boosty" width=120px/>](https://boosty.to/dmitriysalnikov/donate)
+
+[<img src="https://upload.wikimedia.org/wikipedia/commons/5/5d/ЮMoney.png" alt="YooMoney" width=120px/>](https://yoomoney.ru/to/4100118474505859)
 
 ## Localization
 

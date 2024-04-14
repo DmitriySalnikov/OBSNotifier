@@ -5,6 +5,7 @@ namespace OBSNotifier
     static class AutostartManager
     {
         const string OBSNotifierPathReplacePattern = "&OBS_NOTIFIER_PATH&";
+        const string OBSNotifierOsReplacePattern = "&OBS_NOTIFIER_OS&";
         const string scriptName = "obs_notifier_autostart.lua";
         const string autostartKeyName = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
         readonly static string scriptText = GetScriptCode();
@@ -72,7 +73,9 @@ namespace OBSNotifier
 
         static string GetScriptCode()
         {
-            return AppResources.obs_notifier_autostart.Replace(OBSNotifierPathReplacePattern, ProgramPath);
+            return AppResources.obs_notifier_autostart
+                .Replace(OBSNotifierPathReplacePattern, ProgramPath)
+                .Replace(OBSNotifierOsReplacePattern, Utils.GetOsName());
         }
 
         /// <summary>

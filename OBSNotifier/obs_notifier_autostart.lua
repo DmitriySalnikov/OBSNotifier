@@ -1,20 +1,28 @@
-﻿--[[
-	The original code was written by xcasxcursex
-	https://github.com/DmitriySalnikov/OBSNotifier/issues/5
---]]
+﻿obs = obslua
 
-obs = obslua
-
--- WinAPI
 -- https://stackoverflow.com/a/61269226/8980874
 local ffi = require("ffi")
 local bit32 = require("bit")
+
+local createdUsingOS = "&OBS_NOTIFIER_OS&"
+local isOsWindows = createdUsingOS == "Windows"
+local isOsLinux = createdUsingOS == "Linux"
+local isOsMacOS = createdUsingOS == "MacOS"
+local isOsAndroid = createdUsingOS == "Android"
+local isOsUnknown = createdUsingOS == "Unknown"
+
+-- WinAPI
 local BELOW_NORMAL_PRIORITY_CLASS = 0x00004000
 local NORMAL_PRIORITY_CLASS = 0x00000020
 local CREATE_NEW_PROCESS_GROUP = 0x00000200
 
-ffi.cdef [[ typedef struct _STARTUPINFOW { uint32_t cb; void * lpReserved; void * lpDesktop; void * lpTitle; uint32_t dwX; uint32_t dwY; uint32_t dwXSize; uint32_t dwYSize; uint32_t dwXCountChars; uint32_t dwYCountChars; uint32_t dwFillAttribute; uint32_t dwFlags; uint16_t wShowWindow; uint16_t cbReserved2; void * lpReserved2; void ** hStdInput; void ** hStdOutput; void ** hStdError; } STARTUPINFOW, *LPSTARTUPINFOW; typedef struct _PROCESS_INFORMATION { void ** hProcess; void ** hThread; uint32_t dwProcessId; uint32_t dwThreadId; } PROCESS_INFORMATION, *LPPROCESS_INFORMATION; uint32_t CreateProcessW( void *, const wchar_t * commandLine, void *, void *, uint32_t, uint32_t, void *, const wchar_t *, LPSTARTUPINFOW, LPPROCESS_INFORMATION ); uint32_t CloseHandle(void **);]]
-ffi.cdef [[ int MultiByteToWideChar(unsigned int CodePage, unsigned int dwFlags, const char* lpMultiByteStr, int cbMultiByte, wchar_t* lpWideCharStr, int cchWideChar); ]]
+if isOsWindows then
+	ffi.cdef [[ typedef struct _STARTUPINFOW { uint32_t cb; void * lpReserved; void * lpDesktop; void * lpTitle; uint32_t dwX; uint32_t dwY; uint32_t dwXSize; uint32_t dwYSize; uint32_t dwXCountChars; uint32_t dwYCountChars; uint32_t dwFillAttribute; uint32_t dwFlags; uint16_t wShowWindow; uint16_t cbReserved2; void * lpReserved2; void ** hStdInput; void ** hStdOutput; void ** hStdError; } STARTUPINFOW, *LPSTARTUPINFOW; ]]
+	ffi.cdef [[ typedef struct _PROCESS_INFORMATION { void ** hProcess; void ** hThread; uint32_t dwProcessId; uint32_t dwThreadId; } PROCESS_INFORMATION, *LPPROCESS_INFORMATION; ]]
+	ffi.cdef [[ uint32_t CreateProcessW( void *, const wchar_t * commandLine, void *, void *, uint32_t, uint32_t, void *, const wchar_t *, LPSTARTUPINFOW, LPPROCESS_INFORMATION ); ]]
+	ffi.cdef [[ uint32_t CloseHandle(void **); ]]
+	ffi.cdef [[ int MultiByteToWideChar(unsigned int CodePage, unsigned int dwFlags, const char* lpMultiByteStr, int cbMultiByte, wchar_t* lpWideCharStr, int cchWideChar); ]]
+end
 
 local function execute(commandLine, priority)
 	local si = ffi.new("STARTUPINFOW")
@@ -54,11 +62,16 @@ function script_update(settings)
 end
 
 function start_OBSNotifier(lowprio)
-	local prio = lowprio and BELOW_NORMAL_PRIORITY_CLASS or NORMAL_PRIORITY_CLASS
-	local StartCommand = "\"&OBS_NOTIFIER_PATH&\" --force_close"
+	local startCommand = "\"&OBS_NOTIFIER_PATH&\" --force_close"
 	obs.script_log(obs.LOG_INFO,
-		"Executing command: " .. StartCommand .. ". With " .. (lowprio and "\"Below Normal\"" or "\"Normal\"") .. " priority.")
+		"Executing command: " .. startCommand .. ". With " .. (lowprio and "\"Below Normal\"" or "\"Normal\"") .. " priority.")
 
-	local output = execute(StartCommand, prio)
+	local output = false
+	if isOsWindows then
+		local prio = lowprio and BELOW_NORMAL_PRIORITY_CLASS or NORMAL_PRIORITY_CLASS
+		output = execute(startCommand, prio)
+	else
+		obs.script_log(obs.LOG_INFO, "The Autostart script is currently supported only on Windows.")
+	end
 	obs.script_log(obs.LOG_INFO, "Output: " .. tostring(output))
 end

@@ -75,6 +75,27 @@ namespace OBSNotifier
             return $"{App.AppNameSpaced}: {Tr("message_box_error_title")}";
         }
 
+        public static string GetOsName()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return "Windows";
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                return "Linux";
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                return "MacOS";
+            }
+            else if (OperatingSystem.IsAndroid())
+            {
+                return "Android";
+            }
+            return "Unknown";
+        }
+
         public enum AnchorPoint
         {
             TopLeft = 0, TopRight = 1, BottomRight = 2, BottomLeft = 3,

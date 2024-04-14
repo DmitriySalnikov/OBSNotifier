@@ -40,7 +40,7 @@ namespace ProtocolGenerator
         static readonly string DefaultNS = "OBSWebsocketSharp";
         static int indent = 0;
 
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
             Directory.CreateDirectory(RootDir);
             JsonDocument json = JsonDocument.Parse(ResFiles.protocol) ?? throw new NullReferenceException();
@@ -144,32 +144,25 @@ namespace ProtocolGenerator
 
         static string GetJsonConvertMethodFromCSType(string type)
         {
-            switch (type)
+            return type switch
             {
-                case "string":
-                    return "ReadString";
-                case "string[]":
-                    return "ReadStringArray";
-                case "double":
-                    return "ReadDouble";
-                case "bool":
-                    return "ReadBool";
-                case "JsonObject":
-                case "JsonElement":
-                    return "";
-            }
-
-            return $".{type}.";
+                "string" => "ReadString",
+                "string[]" => "ReadStringArray",
+                "double" => "ReadDouble",
+                "bool" => "ReadBool",
+                "JsonObject" or "JsonElement" => "",
+                _ => $".{type}.",
+            };
         }
 
-        static Dictionary<string, string> EnumStringMap = new(){
+        static readonly Dictionary<string, string> EnumStringMap = new(){
            {"outputState", "ObsOutputState"},
            {"mediaAction", "ObsMediaInputAction"},
         };
 
         static bool IsEnumString(string name, string type)
         {
-            if (type.ToLower() != "string")
+            if (!type.Equals("string", StringComparison.CurrentCultureIgnoreCase))
                 return false;
 
             return EnumStringMap.ContainsKey(name);
@@ -245,7 +238,7 @@ namespace ProtocolGenerator
             File.WriteAllText(Path.Combine(RootDir, "Enums.cs"), sb.ToString());
         }
 
-        struct eventData
+        struct OBSEventData
         {
             public string name;
             public string desc;
@@ -264,7 +257,7 @@ namespace ProtocolGenerator
             Line(sb);
             using (var _i1 = new BlockIndent(sb, $"namespace {DefaultNS}"))
             {
-                List<eventData> eventsData = [];
+                List<OBSEventData> eventsData = [];
 
                 foreach (var event_obj in events.EnumerateArray())
                 {
@@ -273,7 +266,7 @@ namespace ProtocolGenerator
                     JsonElement dataFields = event_obj.GetProperty("dataFields");
                     var hasDataClass = dataFields.GetArrayLength() > 0;
 
-                    eventsData.Add(new eventData()
+                    eventsData.Add(new OBSEventData()
                     {
                         name = eventName,
                         desc = event_obj.ReadString("description") ?? "",
@@ -372,7 +365,7 @@ namespace ProtocolGenerator
             File.WriteAllText(Path.Combine(RootDir, "Events.cs"), sb.ToString());
         }
 
-        struct requestArgs
+        struct OBSRequestArgs
         {
             public string name;
             public string type;
@@ -382,7 +375,7 @@ namespace ProtocolGenerator
             public string? optionalHint;
         }
 
-        struct responseData
+        struct OBSResponseData
         {
             public string name;
             public string type;
@@ -400,7 +393,6 @@ namespace ProtocolGenerator
 
             Line(sb, "using System.Text.Json;");
             Line(sb, "using System.Text.Json.Nodes;");
-            Line(sb, "using System.Text.Json.Serialization;");
             Line(sb, "using OBSWebsocketSharp.Extensions;");
             Line(sb);
             using (var _i1 = new BlockIndent(sb, $"namespace {DefaultNS}"))
@@ -418,8 +410,8 @@ namespace ProtocolGenerator
                         JsonElement requestArgs = request_obj.GetProperty("requestFields");
                         JsonElement responeObjs = request_obj.GetProperty("responseFields");
 
-                        List<requestArgs> parsedArgs = [];
-                        List<responseData> parsedResp = [];
+                        List<OBSRequestArgs> parsedArgs = [];
+                        List<OBSResponseData> parsedResp = [];
 
                         foreach (var arg in requestArgs.EnumerateArray())
                         {
