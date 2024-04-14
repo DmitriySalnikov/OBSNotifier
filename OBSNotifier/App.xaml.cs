@@ -112,14 +112,8 @@ namespace OBSNotifier
             if (Settings.Instance.ClearUnusedModuleSettings())
                 Settings.Instance.Save();
 
-            // Select current module
-            if (!Modules.SelectCurrent(Settings.Instance.NotificationModule))
-            {
-                // Select the default module if the previously used module is not found
-                Settings.Instance.NotificationModule = "Default";
-                Settings.Instance.Save();
-                Modules.SelectCurrent(Settings.Instance.NotificationModule);
-            }
+            // Select active modules
+            Modules.UpdateActiveModules();
 
             // Update old settings
             Settings.Instance.PatchSavedSettings();

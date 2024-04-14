@@ -49,7 +49,8 @@
     <v:String x:Key="settings_window_notification_settings">Notification Settings</v:String>
     <v:String x:Key="settings_window_preview">Preview</v:String>
     <v:String x:Key="settings_window_screen_label">Screen:</v:String>
-    <v:String x:Key="settings_window_module_label">Module:</v:String>
+    <v:String x:Key="settings_window_active_modules_label">Active modules:</v:String>
+    <v:String x:Key="settings_window_module_settings_label">Module settings:</v:String>
     <v:String x:Key="settings_window_select_active_notifications_button">Select Active Notifications</v:String>
     <v:String x:Key="settings_window_use_safe_zone">Use safe display area&#10;(without the taskbar and other panels)</v:String>
     <v:String x:Key="settings_window_style_options_label">Style Options:</v:String>

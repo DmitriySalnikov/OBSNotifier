@@ -33,7 +33,7 @@ namespace OBSNotifier
         public string DisplayID { get; set; } = string.Empty;
         public bool IsCloseOnOBSClosing { get; set; } = false;
         public bool IsManuallyConnected { get; set; } = false;
-        public string NotificationModule { get; set; } = string.Empty;
+        public List<string> ActiveModules { get; set; } = ["Default"];
 
         [JsonPropertyOrder(100)]
         public Dictionary<string, OBSModuleSettings> PerModuleSettings

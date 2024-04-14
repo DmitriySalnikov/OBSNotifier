@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace OBSNotifier.Modules.Event
 {
-    internal class ModuleManager : IDisposable
+    public class ModuleManager : IDisposable
     {
         public struct ModuleData
         {
@@ -22,7 +22,19 @@ namespace OBSNotifier.Modules.Event
 
         // TODO add support for persistent modules
         public List<ModuleData> LoadedModules { get; } = [];
-        public ModuleData CurrentModule { get; private set; }
+        public IEnumerable<ModuleData> ActiveModules
+        {
+            get
+            {
+                foreach (var mod in LoadedModules)
+                {
+                    if (Settings.Instance.ActiveModules.Contains(mod.instance.ModuleID))
+                    {
+                        yield return mod;
+                    }
+                }
+            }
+        }
 
         public ModuleManager()
         {
@@ -50,28 +62,30 @@ namespace OBSNotifier.Modules.Event
             WriteLog("\n:Module logs will be shown below");
         }
 
-        public bool SelectCurrent(string name)
+        public ModuleData? GetModuleById(string moduleId)
         {
-            var p = LoadedModules.FirstOrDefault((pp) => pp.instance.ModuleID == name);
-            return SelectCurrent(p);
-        }
-
-        public bool SelectCurrent(ModuleData moduleData)
-        {
-            if (moduleData.instance != null)
+            foreach (var mod in LoadedModules)
             {
-                if (moduleData.instance == CurrentModule.instance)
-                    return true;
-
-                CurrentModule.instance?.ForceCloseAllRelativeToModule();
-                ((App)Application.Current).gc_collect.CallDeferred();
-
-                CurrentModule = moduleData;
-
-                return true;
+                if (mod.instance.ModuleID == moduleId)
+                {
+                    return mod;
+                }
             }
 
-            return false;
+            return null;
+        }
+
+        public void UpdateActiveModules()
+        {
+            foreach (var mod in LoadedModules)
+            {
+                if (!Settings.Instance.ActiveModules.Contains(mod.instance.ModuleID))
+                {
+                    mod.instance.ForceCloseAllRelativeToModule();
+                }
+            }
+
+                ((App)Application.Current).gc_collect.CallDeferred();
         }
 
         static bool IsActive(IOBSNotifierModule module, NotificationType type)
@@ -82,7 +96,7 @@ namespace OBSNotifier.Modules.Event
 
         public void ShowNotification(NotificationType type, string title, string? description = null, object[]? originalData = null)
         {
-            foreach (var m in LoadedModules)
+            foreach (var m in ActiveModules)
             {
                 if (IsActive(m.instance, type))
                 {

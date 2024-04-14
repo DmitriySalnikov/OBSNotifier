@@ -75,7 +75,10 @@
 
             <CheckBox x:Name="cb_preview" Content="{DynamicResource settings_window_preview}" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
 
-            <Label Content="{DynamicResource settings_window_module_label}"/>
+            <Label Content="{DynamicResource settings_window_active_modules_label}"/>
+            <ListBox x:Name="lb_available_modules" Height="72"/>
+
+            <Label Content="{DynamicResource settings_window_module_settings_label}"/>
             <ComboBox x:Name="cb_notification_modules" Grid.ColumnSpan="1" SelectionChanged="cb_notification_modules_SelectionChanged" />
 
             <Separator Height="8" Style="{StaticResource emptySeparator}"/>

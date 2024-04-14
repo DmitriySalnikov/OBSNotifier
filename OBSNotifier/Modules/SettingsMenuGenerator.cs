@@ -1,4 +1,5 @@
-﻿using OBSNotifier.Modules.UserControls.SettingsItems;
+﻿using OBSNotifier.Modules.Event;
+using OBSNotifier.Modules.UserControls.SettingsItems;
 using OBSNotifier.Modules.UserControls.SettingsItems.Additional;
 using System.Windows;
 using System.Windows.Media;
@@ -35,15 +36,18 @@ namespace OBSNotifier.Modules
             .. NumericStructTypes
         ];
 
-        public static ModuleSettingsContainer GenerateMenu(object settingObject, object defaultSettings)
+        public static ModuleSettingsContainer GenerateMenu(ModuleManager.ModuleData moduleData)
         {
+            object settingObject = moduleData.instance.Settings;
+            object defaultSettings = moduleData.defaultSettings;
+
             ArgumentNullException.ThrowIfNull(settingObject);
             ArgumentNullException.ThrowIfNull(defaultSettings);
 
             if (settingObject.GetType() != defaultSettings.GetType())
                 throw new ArgumentException($"Type {nameof(settingObject)}, not equal to {nameof(defaultSettings)}");
 
-            var res = new ModuleSettingsContainer();
+            var res = new ModuleSettingsContainer(moduleData);
             var members = settingObject.GetType().GetMembers();
 
             res.AddResetAllButton();
@@ -62,7 +66,7 @@ namespace OBSNotifier.Modules
                     if (mem.GetCustomAttribute<SettingsItemCategoryAttribute>() is SettingsItemCategoryAttribute attr_category)
                         res.AddItem(new SettingsItemSeparatorGroup(attr_category.CategoryName));
 
-                    var item = CreateItem(settingObject, propInfo, propInfo.GetValue(defaultSettings) ?? throw new NullReferenceException($"{defaultSettings} cannot have a null value."));
+                    var item = CreateItem(ref moduleData, settingObject, propInfo, propInfo.GetValue(defaultSettings) ?? throw new NullReferenceException($"{defaultSettings} cannot have a null value."));
                     res.AddSettingItem(item);
 
                     if (mem.GetCustomAttribute<SettingsItemHintAttribute>() is SettingsItemHintAttribute attr_hint)
@@ -75,7 +79,7 @@ namespace OBSNotifier.Modules
             return res;
         }
 
-        static SettingsItemModuleData CreateItem(object owner, PropertyInfo propertyInfo, object defaultValue)
+        static SettingsItemModuleData CreateItem(ref ModuleManager.ModuleData moduleData, object owner, PropertyInfo propertyInfo, object defaultValue)
         {
             Type type = propertyInfo.PropertyType;
 
@@ -110,7 +114,7 @@ namespace OBSNotifier.Modules
             }
             else if (type == typeof(NotificationType))
             {
-                return new SettingsItemNotificationTypes(name, owner, propertyInfo, defaultValue);
+                return new SettingsItemNotificationTypes(name, owner, propertyInfo, defaultValue, ref moduleData);
             }
             else if (propertyInfo.PropertyType.IsEnum)
             {

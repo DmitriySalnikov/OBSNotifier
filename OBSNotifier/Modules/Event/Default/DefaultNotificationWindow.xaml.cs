@@ -8,7 +8,7 @@ namespace OBSNotifier.Modules.Event.Default
         readonly DefaultNotification owner;
         bool isPreviewNotif = false;
 
-        readonly DeferredActionWPF hide_delay;
+        DeferredActionWPF? hide_delay = null;
 
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == DefaultNotification.Positions.TopLeft || owner.SettingsTyped.Option == DefaultNotification.Positions.TopRight; }
 
@@ -37,7 +37,8 @@ namespace OBSNotifier.Modules.Event.Default
 
         protected override void OnClosed(EventArgs e)
         {
-            hide_delay.Dispose();
+            hide_delay?.Dispose();
+            hide_delay = null;
 
             base.OnClosed(e);
         }
@@ -132,13 +133,13 @@ namespace OBSNotifier.Modules.Event.Default
                 }
                 sp_main_panel.Children.Clear();
 
-                hide_delay.CallDeferred();
+                hide_delay?.CallDeferred();
             }
         }
 
         void ShowWithLocationFix()
         {
-            hide_delay.Cancel();
+            hide_delay?.Cancel();
             Show();
             if (!IsPositionedOnTop)
             {
@@ -179,7 +180,7 @@ namespace OBSNotifier.Modules.Event.Default
                 if (c.Visibility == Visibility.Visible)
                     return;
             }
-            hide_delay.CallDeferred();
+            hide_delay?.CallDeferred();
         }
     }
 }

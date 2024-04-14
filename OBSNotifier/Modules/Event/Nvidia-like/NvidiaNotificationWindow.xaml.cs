@@ -18,7 +18,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         bool isUpdatedFirstTime = false;
         bool IsPositionedOnTop { get => owner.SettingsTyped.Option == NvidiaNotification.Positions.TopRight; }
-        readonly DeferredActionWPF hide_delay;
+        DeferredActionWPF? hide_delay = null;
         readonly BeginStoryboard anim_nv;
         readonly BeginStoryboard anim_f;
 
@@ -54,7 +54,8 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
         {
             StopAnimNV();
             StopAnimFile();
-            hide_delay.Dispose();
+            hide_delay?.Dispose();
+            hide_delay = null;
 
             base.OnClosed(e);
         }
@@ -278,7 +279,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
 
         void ShowWithLocationFix()
         {
-            hide_delay.Cancel();
+            hide_delay?.Cancel();
             Show();
             if (!IsPositionedOnTop)
             {
@@ -390,7 +391,7 @@ namespace OBSNotifier.Modules.Event.NvidiaLike
                 if (animation_finished[0] &&
                     animation_finished[1])
                 {
-                    hide_delay.CallDeferred();
+                    hide_delay?.CallDeferred();
                 }
             }
         }

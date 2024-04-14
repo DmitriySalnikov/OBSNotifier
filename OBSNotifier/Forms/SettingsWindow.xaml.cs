@@ -1,4 +1,5 @@
 ﻿using OBSNotifier.Modules;
+using OBSNotifier.Modules.Event;
 using OBSNotifier.Modules.UserControls.SettingsItems;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +11,7 @@ namespace OBSNotifier
     {
         bool IsChangedByCode = false;
         bool IsConnecting = false;
-        readonly Dictionary<string, TextBlock> module_id_to_text_block_map = [];
+        readonly Dictionary<string, FrameworkElement> module_id_to_text_block_map = [];
         ModuleSettingsContainer? moduleSettings = null;
 
         static SettingsWindow? Instance = null;
@@ -31,7 +32,11 @@ namespace OBSNotifier
 
             UpdateWindowAppearance();
             UpdateModulesMenu();
-            OnModuleChanged();
+
+            if (Settings.Instance.ActiveModules.Count > 0)
+            {
+                OnModuleChanged(Settings.Instance.ActiveModules[0]);
+            }
 
             IsChangedByCode = false;
         }
@@ -43,7 +48,16 @@ namespace OBSNotifier
 
         void UpdateModulesMenu()
         {
+            var prevId = cb_notification_modules.SelectedItem != null ? (string)((FrameworkElement)cb_notification_modules.SelectedItem).Tag : "";
+            if (string.IsNullOrWhiteSpace(prevId) && Settings.Instance.ActiveModules.Count > 0)
+            {
+                prevId = Settings.Instance.ActiveModules[0];
+            }
+
+            cb_notification_modules.ToolTip = "";
+
             cb_notification_modules.Items.Clear();
+            lb_available_modules.Items.Clear();
             module_id_to_text_block_map.Clear();
 
             foreach (var p in App.Modules.LoadedModules)
@@ -53,24 +67,43 @@ namespace OBSNotifier
                     Text = p.instance.ModuleName,
                     Tag = p.instance.ModuleID,
                 };
+
                 cb_notification_modules.Items.Add(tb);
                 module_id_to_text_block_map.Add(p.instance.ModuleID, tb);
-            }
 
-            if (module_id_to_text_block_map.TryGetValue(Settings.Instance.NotificationModule, out TextBlock? value))
+                if (p.instance.ModuleID == prevId)
+                {
+                    cb_notification_modules.SelectedItem = tb;
+                    cb_notification_modules.ToolTip = p.instance.ModuleDescription;
+                }
+
+                var cb = new CheckBox()
+                {
+                    Content = p.instance.ModuleName,
+                    Tag = p.instance.ModuleID,
+                    IsChecked = Settings.Instance.ActiveModules.Contains(p.instance.ModuleID),
+                };
+                cb.Checked += (s, e) => UpdateActiveModules(p.instance.ModuleID, true);
+                cb.Unchecked += (s, e) => UpdateActiveModules(p.instance.ModuleID, false);
+
+                lb_available_modules.Items.Add(cb);
+            }
+        }
+
+        void UpdateActiveModules(string moduleId, bool add)
+        {
+            if (add && !Settings.Instance.ActiveModules.Contains(moduleId))
             {
-                cb_notification_modules.SelectedItem = value;
+                Settings.Instance.ActiveModules.Add(moduleId);
             }
             else
             {
-                Settings.Instance.NotificationModule = "Default";
-                Settings.Instance.Save();
-
-                cb_notification_modules.SelectedItem = module_id_to_text_block_map[Settings.Instance.NotificationModule];
-                App.Modules.SelectCurrent(Settings.Instance.NotificationModule);
+                Settings.Instance.ActiveModules.Remove(moduleId);
             }
+            App.Modules.UpdateActiveModules();
+            Settings.Instance.Save();
 
-            cb_notification_modules.ToolTip = App.Modules.CurrentModule.instance.ModuleDescription;
+            UpdateNotification();
         }
 
         void UpdateConnectButton()
@@ -91,11 +124,21 @@ namespace OBSNotifier
             }
         }
 
-        void UpdateNotification()
+        void UpdateNotification(ModuleManager.ModuleData? moduleData = null)
         {
             if (cb_preview.IsChecked == true)
             {
-                App.Modules.CurrentModule.instance.ShowPreview();
+                if (!moduleData.HasValue)
+                {
+                    foreach (var mod in App.Modules.ActiveModules)
+                    {
+                        mod.instance.ShowPreview();
+                    }
+                }
+                else
+                {
+                    moduleData.Value.instance.ShowPreview();
+                }
                 Settings.Instance.IsPreviewShowing = true;
             }
         }
@@ -141,48 +184,31 @@ namespace OBSNotifier
             }
         }
 
-        void OnEventModuleSettingChanged(object? sender, EventArgs e)
+        void OnEventModuleSettingChanged(object? sender, ModuleManager.ModuleData mod)
         {
-            UpdateNotification();
+            UpdateNotification(mod);
             Settings.Instance.Save();
         }
 
-        void OnModuleChanged()
+        void OnModuleChanged(string moduleId)
         {
             IsChangedByCode = true;
 
-            var moduleData = App.Modules.CurrentModule;
-            if (moduleData.instance != null)
+            var mod = App.Modules.GetModuleById(moduleId);
+            if (mod.HasValue)
             {
+                var moduleData = mod.Value;
+
                 if (moduleSettings != null)
                 {
                     moduleSettings.ValueChanged -= OnEventModuleSettingChanged;
                     moduleSettings.Children.Clear();
                 }
 
-                module_settings_container.Children.Clear();
-                moduleSettings = SettingsMenuGenerator.GenerateMenu(moduleData.instance.Settings, moduleData.defaultSettings);
+                moduleSettings = SettingsMenuGenerator.GenerateMenu(moduleData);
                 moduleSettings.ValueChanged += OnEventModuleSettingChanged;
+                module_settings_container.Children.Clear();
                 module_settings_container.Children.Add(moduleSettings);
-
-                //  cb_use_safe_area.IsChecked = moduleData.instance.ModuleSettings.UseSafeDisplayArea;
-
-                // Update options list
-                // cb_notification_options.Items.Clear();
-
-                if (moduleData.instance.EnumOptionsType != null)
-                {
-
-                    var names = Enum.GetNames(moduleData.instance.EnumOptionsType);
-
-                    // foreach (var e in names)
-                    // cb_notification_options.Items.Add(e);
-
-                    //  if (names.Contains(Settings.Instance.CurrentModuleSettings.SelectedOption))
-                    //      cb_notification_options.SelectedItem = Settings.Instance.CurrentModuleSettings.SelectedOption;
-                    // else
-                    //      cb_notification_options.SelectedItem = Enum.GetName(moduleData.instance.EnumOptionsType, moduleData.defaultSettings.Option);
-                }
             }
 
             IsChangedByCode = false;
@@ -246,8 +272,12 @@ namespace OBSNotifier
             else
             {
                 Instance = null;
+
                 // hide preview
-                App.Modules.CurrentModule.instance.HidePreview();
+                foreach (var mod in App.Modules.ActiveModules)
+                {
+                    mod.instance.HidePreview();
+                }
                 Settings.Instance.IsPreviewShowing = false;
 
                 // Save window size
@@ -403,15 +433,16 @@ namespace OBSNotifier
             if (IsChangedByCode) return;
             if (cb_notification_modules.SelectedItem == null) return;
 
-            var module_id = (string)((TextBlock)cb_notification_modules.SelectedItem).Tag;
-            if (App.Modules.SelectCurrent(module_id))
-            {
-                Settings.Instance.NotificationModule = module_id;
-                Settings.Instance.Save();
-                cb_notification_modules.ToolTip = App.Modules.CurrentModule.instance.ModuleDescription;
+            var module_id = (string)((FrameworkElement)cb_notification_modules.SelectedItem).Tag;
+            var mod = App.Modules.GetModuleById(module_id);
 
-                OnModuleChanged();
-                UpdateNotification();
+            if (mod.HasValue)
+            {
+                var moduleData = mod.Value;
+                cb_notification_modules.ToolTip = moduleData.instance.ModuleDescription;
+
+                OnModuleChanged(module_id);
+                UpdateNotification(moduleData);
             }
         }
 
@@ -422,7 +453,10 @@ namespace OBSNotifier
 
         private void cb_preview_Unchecked(object? sender, RoutedEventArgs e)
         {
-            App.Modules.CurrentModule.instance.HidePreview();
+            foreach (var mod in App.Modules.ActiveModules)
+            {
+                mod.instance.HidePreview();
+            }
             Settings.Instance.IsPreviewShowing = false;
         }
     }

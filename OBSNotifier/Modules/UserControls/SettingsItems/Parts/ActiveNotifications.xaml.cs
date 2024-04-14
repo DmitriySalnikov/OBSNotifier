@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using OBSNotifier.Modules.Event;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
@@ -10,12 +11,14 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
     {
         readonly Dictionary<NotificationType, CheckBox> activeNotifications = [];
         readonly NotificationType currentNotifications;
+        readonly ModuleManager.ModuleData moduleData;
 
-        public ActiveNotifications(NotificationType currentNotifications)
+        public ActiveNotifications(ModuleManager.ModuleData moduleData, NotificationType currentNotifications)
         {
             InitializeComponent();
 
             this.currentNotifications = currentNotifications;
+            this.moduleData = moduleData;
 
             foreach (var e in NotificationManager.NotificationsData)
             {
@@ -53,7 +56,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems.Parts
 
         private void btn_reset_Click(object? sender, RoutedEventArgs e)
         {
-            UpdateValues(App.Modules.CurrentModule.instance.DefaultActiveNotifications);
+            UpdateValues(moduleData.instance.DefaultActiveNotifications);
         }
 
         private void btn_reset_to_current_Click(object? sender, RoutedEventArgs e)

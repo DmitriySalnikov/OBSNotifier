@@ -1,4 +1,5 @@
-﻿using OBSNotifier.Modules.UserControls.SettingsItems.Additional;
+﻿using OBSNotifier.Modules.Event;
+using OBSNotifier.Modules.UserControls.SettingsItems.Additional;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,12 +7,14 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
 {
     internal class ModuleSettingsContainer : StackPanel
     {
-        public event EventHandler? ValueChanged;
+        public event EventHandler<ModuleManager.ModuleData>? ValueChanged;
         readonly List<SettingsItemModuleData> settingsItems = [];
         bool isNotifyValueChange = true;
+        ModuleManager.ModuleData moduleData;
 
-        public ModuleSettingsContainer() : base()
+        public ModuleSettingsContainer(ModuleManager.ModuleData moduleData) : base()
         {
+            this.moduleData = moduleData;
         }
 
         public void AddResetAllButton()
@@ -24,7 +27,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
                     item.ResetToDefault();
 
                 isNotifyValueChange = true;
-                ValueChanged?.Invoke(this, EventArgs.Empty);
+                ValueChanged?.Invoke(this, moduleData);
             }));
         }
 
@@ -39,7 +42,7 @@ namespace OBSNotifier.Modules.UserControls.SettingsItems
             item.ValueChanged += (s, e) =>
             {
                 if (isNotifyValueChange)
-                    ValueChanged?.Invoke(this, EventArgs.Empty);
+                    ValueChanged?.Invoke(this, moduleData);
             };
             settingsItems.Add(item);
         }
