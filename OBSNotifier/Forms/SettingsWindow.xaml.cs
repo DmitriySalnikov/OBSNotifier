@@ -315,7 +315,7 @@ namespace OBSNotifier
 
         private async void btn_connect_Click(object? sender, RoutedEventArgs e)
         {
-            if (!App.obs.IsAuthorized)
+            if (!App.OBS.IsAuthorized)
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
                 {

@@ -18,7 +18,7 @@ namespace OBSNotifier.Modules.Event
             }
         }
 
-        readonly Logger logger = new("logs/module_manager_log.txt");
+        readonly Logger logger = new(Path.Combine(App.AppDataFolder, "logs/module_manager_log.txt"));
 
         // TODO add support for persistent modules
         public List<ModuleData> LoadedModules { get; } = [];

@@ -45,25 +45,25 @@
         readonly DeferredActionWPF flushFastConsole;
         DateTime timeFlushConsole = DateTime.UtcNow;
 
-        public Logger(string saveFile)
+        public Logger(string savePath)
         {
-            this.saveFile = Path.Combine(App.AppDataFolder, saveFile);
+            saveFile = savePath;
             flushFastConsole = new DeferredActionWPF(() => FastConsole.Flush(), 500);
 
             try
             {
-                string dir_name = Path.GetDirectoryName(this.saveFile) ?? string.Empty;
+                string dir_name = Path.GetDirectoryName(saveFile) ?? string.Empty;
                 if (!Directory.Exists(dir_name))
                     Directory.CreateDirectory(dir_name);
 
-                if (File.Exists(this.saveFile))
-                    File.Delete(this.saveFile);
-                logWriter = new StreamWriter(File.Open(this.saveFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read));
+                if (File.Exists(saveFile))
+                    File.Delete(saveFile);
+                logWriter = new StreamWriter(File.Open(saveFile, FileMode.CreateNew, FileAccess.Write, FileShare.Read));
                 flushFileAction = new DeferredActionWPF(() => logWriter.Flush(), 500);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"The log file (\"{this.saveFile}\") cannot be opened for writing.");
+                Console.WriteLine($"The log file (\"{saveFile}\") cannot be opened for writing.");
                 Write(ex);
             }
 

@@ -26,11 +26,12 @@ namespace OBSNotifier
         }
 
         static Logger logger = null!;
-        public static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+        public static readonly bool IsPortable = File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".portable"));
+        public static readonly string AppDataFolder = IsPortable ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData") : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
         public static event EventHandler<ConnectionState>? ConnectionStateChanged;
-        public static OBSWebsocket obs = null!;
+        public static OBSWebsocket OBS = null!;
         public static ModuleManager Modules = null!;
-        public static NotificationManager? notifications;
+        public static NotificationManager? Notifications;
         public static ConnectionState CurrentConnectionState { get; private set; }
         public static bool IsNeedToSkipNextConnectionNotifications = false;
         public DeferredActionWPF gc_collect = new(() => { GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect(); }, 1000);
@@ -53,7 +54,7 @@ namespace OBSNotifier
 
             Forms.Application.EnableVisualStyles();
             Forms.Application.SetCompatibleTextRenderingDefault(false);
-            logger ??= new Logger("logs/log.txt");
+            logger ??= new Logger(Path.Combine(AppDataFolder, "logs/log.txt"));
 
             // To load the module settings, it must know the available types of settings
             Modules = new ModuleManager();
@@ -81,6 +82,9 @@ namespace OBSNotifier
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
+            if (!Directory.Exists(AppDataFolder))
+                Directory.CreateDirectory(AppDataFolder);
+
             // Just log the message if the autorun script exists
             if (AutostartManager.IsScriptExists())
                 AutostartManager.IsFileNeedToUpdate();
@@ -101,12 +105,12 @@ namespace OBSNotifier
 
             CurrentConnectionState = ConnectionState.Disconnected;
 
-            obs = new(OBSEventInvoke);
-            obs.Authorized += Obs_Connected;
-            obs.Disconnected += Obs_Disconnected;
-            obs.Events.ExitStarted += Obs_ExitStarted;
+            OBS = new(OBSEventInvoke);
+            OBS.Authorized += Obs_Connected;
+            OBS.Disconnected += Obs_Disconnected;
+            OBS.Events.ExitStarted += Obs_ExitStarted;
 
-            notifications = new NotificationManager(this, obs);
+            Notifications = new NotificationManager(this, OBS);
 
             // Clear unused
             if (Settings.Instance.ClearUnusedModuleSettings())
@@ -140,7 +144,7 @@ namespace OBSNotifier
             else
             {
                 // Connect to obs if previously connected
-                if (Settings.Instance.IsManuallyConnected && !obs.IsAuthorized)
+                if (Settings.Instance.IsManuallyConnected && !OBS.IsAuthorized)
                 {
                     IsNeedToSkipNextConnectionNotifications = true;
                     ChangeConnectionState(ConnectionState.TryingToReconnect);
@@ -177,12 +181,12 @@ namespace OBSNotifier
             Settings.Instance?.Save(true);
 
             Log("Disconnecting");
-            if (obs != null)
+            if (OBS != null)
             {
-                obs.Connected -= Obs_Connected;
-                obs.Disconnected -= Obs_Disconnected;
-                obs.Events.ExitStarted -= Obs_ExitStarted;
-                _ = obs.Disconnect();
+                OBS.Connected -= Obs_Connected;
+                OBS.Disconnected -= Obs_Disconnected;
+                OBS.Events.ExitStarted -= Obs_ExitStarted;
+                _ = OBS.Disconnect();
             }
 
             Log("Clearing variables");
@@ -514,7 +518,7 @@ namespace OBSNotifier
                     {
                         var res = await ConnectToOBS(Settings.Instance.ServerAddress, Utils.DecryptString(Settings.Instance.Password, EncryptionKey) ?? "");
                         if (!res)
-                            await (obs?.Disconnect() ?? Task.CompletedTask);
+                            await (OBS?.Disconnect() ?? Task.CompletedTask);
                     }
                     catch (Exception ex)
                     {
@@ -531,7 +535,7 @@ namespace OBSNotifier
 
                     }
 
-                    if ((obs != null && obs.IsAuthorized) || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
+                    if ((OBS != null && OBS.IsAuthorized) || (reconnectCancellationToken == null || reconnectCancellationToken.IsCancellationRequested))
                     {
                         isNeedToSkipDisconnectErrorPrinting = false;
                         return;
@@ -572,7 +576,7 @@ namespace OBSNotifier
 
                 if (CurrentConnectionState != ConnectionState.TryingToReconnect)
                     Settings.Instance.Save();
-                return obs.Connect(adrs, pass, EventSubscription.All);
+                return OBS.Connect(adrs, pass, EventSubscription.All);
             }
             catch (Exception ex)
             {
@@ -586,7 +590,7 @@ namespace OBSNotifier
         {
             try
             {
-                _ = obs.Disconnect();
+                _ = OBS.Disconnect();
             }
             catch (Exception ex)
             {

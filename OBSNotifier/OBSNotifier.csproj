@@ -74,8 +74,12 @@ In order for this program to work, you need to install OBS version 28+ with the 
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(OS.StartsWith('Windows'))">
 		<Exec Command="taskkill /F /IM $(TargetFileName.Replace(&quot;.dll&quot;, &quot;.exe&quot;)) /FI &quot;STATUS eq RUNNING&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ConfigurationName.StartsWith('Debug'))">
+	  <Exec Command="echo + &gt; $(OutDir).portable" />
 	</Target>
 
 </Project>
