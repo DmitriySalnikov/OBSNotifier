@@ -5,6 +5,7 @@
         public virtual NotificationType GetActiveNotifications() => NotificationType.None;
         public virtual OBSModuleSettings Clone() => throw new NotImplementedException();
     }
+
     public class OBSPerModuleAppInfo(Action<string> logWriter, string? moduleFolder)
     {
         public void Log(string message)
