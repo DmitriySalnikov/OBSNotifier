@@ -45,7 +45,7 @@ namespace OBSNotifier.Modules.Event
 
             foreach (var pd in LoadedModules)
             {
-                if (!pd.instance.ModuleInit((s) => WriteLog($"{pd.instance.ModuleID}: {s}")))
+                if (!pd.instance.ModuleInit(new OBSPerModuleAppInfo((s) => WriteLog($"{pd.instance.ModuleID}: {s}"), null)))
                 {
                     throw new Exception($"{pd.instance.GetType()} is broken!");
                 }
@@ -81,7 +81,7 @@ namespace OBSNotifier.Modules.Event
             {
                 if (!Settings.Instance.ActiveModules.Contains(mod.instance.ModuleID))
                 {
-                    mod.instance.ForceCloseAllRelativeToModule();
+                    mod.instance.ModuleDeactivate();
                 }
             }
 

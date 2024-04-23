@@ -9,7 +9,7 @@
             Center
         }
 
-        Action<string>? logWriter;
+        OBSPerModuleAppInfo? moduleInfo = null;
         DefaultNotificationWindow? window = null;
 
         public string ModuleID => "Default";
@@ -31,13 +31,11 @@
             }
         }
 
-        public Type EnumOptionsType => typeof(Positions);
-
         public NotificationType DefaultActiveNotifications => NotificationType.All;
 
-        public bool ModuleInit(Action<string> logWriter)
+        public bool ModuleInit(OBSPerModuleAppInfo moduleInfo)
         {
-            this.logWriter = logWriter;
+            this.moduleInfo = moduleInfo;
             return true;
         }
 
@@ -75,7 +73,7 @@
             window?.HidePreview();
         }
 
-        public void ForceCloseAllRelativeToModule()
+        public void ModuleDeactivate()
         {
             if (window != null)
             {
@@ -96,12 +94,12 @@
 
         public void Log(string txt)
         {
-            logWriter?.Invoke(txt);
+            moduleInfo?.Log(txt);
         }
 
         public void Log(Exception ex)
         {
-            Log($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
+            moduleInfo?.Log($"Exception:\n{ex.Message}\nStackTrace:\n{ex.StackTrace}");
         }
     }
 }

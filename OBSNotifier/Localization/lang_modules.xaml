@@ -5,7 +5,7 @@
     <!-- Default Module -->
     <v:String x:Key="module_default_name">Stack of notifications</v:String>
     <v:String x:Key="module_default_desc">This is the default notification module.&#10;It displays one or more notifications located in the corner of the monitor.</v:String>
-    <v:String x:Key="module_default_setting_category_blockss">Blocks</v:String>
+    <v:String x:Key="module_default_setting_category_blocks">Blocks</v:String>
 
     <!-- Nvidia-Like Module -->
     <v:String x:Key="module_nvidia_like_name">Nvidia-Like</v:String>

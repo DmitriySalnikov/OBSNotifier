@@ -48,7 +48,7 @@ namespace OBSNotifier.Modules.Event.Default
         public Color OutlineColor { get => outlineColor; set => outlineColor = value; }
         public Color TextColor { get => textColor; set => textColor = value; }
 
-        [SettingsItemCategory("module_default_setting_category_blockss")]
+        [SettingsItemCategory("module_default_setting_category_blocks")]
         [SettingsItemNumberRange(1, 24)]
         public uint Blocks { get => blocks; set => blocks = (uint)Utils.Clamp(value, 1, 24); }
 
