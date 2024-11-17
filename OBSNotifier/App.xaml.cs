@@ -372,11 +372,14 @@ namespace OBSNotifier
                 // Find a similar language
                 else
                 {
-                    var similarLang = Languages.Where((lang) => lang.TwoLetterISOLanguageName == start_ui_info.TwoLetterISOLanguageName).First();
-
-                    if (similarLang != null)
+                    var similarLangs = Languages.Where((lang) => lang.TwoLetterISOLanguageName == start_ui_info.TwoLetterISOLanguageName);
+                    if (similarLangs.Any())
                     {
-                        Language = similarLang;
+                        Language = similarLangs.First();
+                    }
+                    else
+                    {
+                        Language = DefaultLanguage;
                     }
                 }
             }
