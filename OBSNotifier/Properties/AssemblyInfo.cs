@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dmitriy Salnikov")]
 [assembly: AssemblyProduct("OBS Notifier")]
-[assembly: AssemblyCopyright("Copyright ©  2023")]
+[assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -34,5 +34,5 @@ using System.Windows;
                                               // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: AssemblyVersion("1.3.2")]
-[assembly: AssemblyFileVersion("1.3.2")]
+[assembly: AssemblyVersion("1.3.3")]
+[assembly: AssemblyFileVersion("1.3.3")]

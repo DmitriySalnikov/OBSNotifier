@@ -49,9 +49,13 @@ If you have found a bug or want to suggest a new feature, then please create a n
 
 ## Support
 
-[<img src="https://upload.wikimedia.org/wikipedia/commons/8/8f/QIWI_logo.svg" alt="qiwi" width=90px/>](https://qiwi.com/n/DMITRIYSALNIKOV)
+Your support adds motivation to develop my projects.
 
-[<img src="https://static.boosty.to/assets/images/boostyDomainLogo.5Vlxt.svg" alt="Boosty" width=120px/>](https://boosty.to/dmitriysalnikov/donate)
+<a href="https://boosty.to/dmitriysalnikov/donate"><img src="Images/readme/boosty.png" alt="Boosty" width=150px/></a>
+
+<img src="Images/readme/USDT-TRC20.png" alt="USDT-TRC20" width=150px/>
+
+<b>USDT-TRC20 TEw934PrsffHsAn5M63SoHYRuZo984EF6v</b>
 
 ## Localization
 
