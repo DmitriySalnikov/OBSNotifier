@@ -71,35 +71,35 @@ namespace OBSNotifier.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [OK] Fetching project info
+        ///   Looks up a localized string similar to вњ”пёЏ  Fetching project info
         ///Translated:
         ///	- af: 0%
-        ///	- ar: 78%
+        ///	- ar: 82%
         ///	- ca: 0%
-        ///	- cs: 98%
-        ///	- da: 98%
-        ///	- de: 98%
-        ///	- el: 79%
-        ///	- es-ES: 86%
-        ///	- fi: 98%
-        ///	- fr: 86%
+        ///	- cs: 100%
+        ///	- da: 100%
+        ///	- de: 100%
+        ///	- el: 82%
+        ///	- es-ES: 89%
+        ///	- fi: 100%
+        ///	- fr: 89%
         ///	- he: 0%
         ///	- hu: 0%
-        ///	- it: 98%
-        ///	- ja: 84%
+        ///	- it: 100%
+        ///	- ja: 81%
         ///	- ko: 0%
-        ///	- nl: 86%
-        ///	- no: 86%
-        ///	- pl: 86%
-        ///	- pt-BR: 93%
-        ///	- pt-PT: 93%
-        ///	- ro: 98%
-        ///	- ru: 99%
+        ///	- nl: 89%
+        ///	- no: 88%
+        ///	- pl: 89%
+        ///	- pt-BR: 95%
+        ///	- pt-PT: 95%
+        ///	- ro: 100%
+        ///	- ru: 100%
         ///	- sr: 0%
-        ///	- sv-SE: 98%
+        ///	- sv-SE: 100%
         ///	- tr: 0%
         ///	- vi: 0%
-        ///	- zh-CN: 75%
+        ///	- zh-CN: 93%
         ///	- zh-TW: 0%
         ///Approved:
         ///	- af: 0%
@@ -111,7 +111,6 @@ namespace OBSNotifier.Properties {
         ///	- el: 0%
         ///	- es-ES: 0%
         ///	- fi: 0%
-        ///	- fr: 0%
         ///	- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string localization_status {

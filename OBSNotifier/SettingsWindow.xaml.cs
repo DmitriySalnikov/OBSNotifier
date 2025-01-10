@@ -300,7 +300,7 @@ namespace OBSNotifier
         {
             System.Diagnostics.Process.Start("https://boosty.to/dmitriysalnikov/donate");
         }
-        
+
         private void ReportErrorTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/DmitriySalnikov/OBSNotifier/issues");
@@ -422,7 +422,7 @@ namespace OBSNotifier
             var isScriptExists = AutostartScriptManager.IsScriptExists();
             if (AutostartScriptManager.CreateScript())
             {
-                Clipboard.SetText(AutostartScriptManager.ScriptPath);
+                Clipboard.SetDataObject(AutostartScriptManager.ScriptPath);
                 App.ShowMessageBox(string.Join("\n",
                     (isScriptExists ? Utils.Tr("message_box_autostart_script_updated") : Utils.Tr("message_box_autostart_script_created")),
                     Utils.Tr("message_box_autostart_script_path_copied"),
