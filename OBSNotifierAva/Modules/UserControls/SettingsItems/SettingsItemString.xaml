@@ -1,0 +1,23 @@
+﻿<local:SettingsItemModuleData x:Class="OBSNotifier.Modules.UserControls.SettingsItems.SettingsItemString"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems"
+             xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+             xmlns:auc="clr-namespace:OBSNotifier.Modules.UserControls.SettingsItems.Additional"
+             mc:Ignorable="d"
+             d:DesignHeight="72" d:DesignWidth="400">
+
+    <StackPanel VerticalAlignment="Center" >
+        <TextBlock x:Name="tb_text" TextWrapping="Wrap" Text="Nothing"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="tb_value" Grid.Column="0" VerticalAlignment="Center" TextChanged="tb_value_TextChanged"/>
+            <auc:ValueQuickActionButton Grid.Column="1" Margin="8,0,0,0"/>
+        </Grid>
+    </StackPanel>
+</local:SettingsItemModuleData>

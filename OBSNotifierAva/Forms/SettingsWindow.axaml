@@ -1,0 +1,89 @@
+﻿<local:NotifierWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="600"
+        x:Class="OBSNotifier.SettingsWindow"
+        Title="Window1"
+        xmlns:local="using:OBSNotifier"
+        xmlns:Tr="using:OBSNotifier.Tr"
+        xmlns:uc="using:OBSNotifier.Modules.UserControls.SettingsItems"
+        xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
+        Height="500" Width="357"
+        MinHeight="264" MinWidth="357"
+        UseLayoutRounding="True"
+        >
+
+	<Window.Styles>
+		<StyleInclude Source="/Styles.axaml" />
+	</Window.Styles>
+
+	<ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
+		<StackPanel Margin="8,0,8,0">
+			<!-- TODO  StaysOpen="False" AllowsTransparency="True" -->
+			<Popup x:Name="colorPicker_popup">
+				<Border BorderThickness="1" CornerRadius="6" BorderBrush="Black" Background="White">
+					<colorPicker:StandardColorPicker x:Name="colorPicker" Width="200" Height="380"/>
+				</Border>
+			</Popup>
+
+			<TextBlock x:Name="label" TextWrapping="WrapWithOverflow" VerticalAlignment="Top" FontWeight="Bold" Text="{x:Static Tr:SettingsWindow.TopHint}"/>
+
+			<TextBlock Text="{x:Static Tr:SettingsWindow.TopHintHowTo}" Classes="textblockWithHint" FontStyle="Normal" HorizontalAlignment="Left">
+				<ToolTip.Tip>
+					<StackPanel>
+						<Image Source="/Assets/Images/websocket_hint.png" Height="329" />
+						<TextBlock Text="{x:Static Tr:SettingsWindow.TopHintTooltip}" />
+					</StackPanel>
+				</ToolTip.Tip>
+			</TextBlock>
+
+			<Label Content="{x:Static Tr:SettingsWindow.ServerAddressLabel}" HorizontalAlignment="Left" Width="120" VerticalAlignment="Top"/>
+			<TextBox x:Name="tb_address" Watermark="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" VerticalAlignment="Top"/>
+
+			<Label Content="{x:Static Tr:SettingsWindow.PasswordLabel}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			<TextBox x:Name="tb_password" VerticalAlignment="Top" PasswordChar="•"/>
+			<TextBlock Text="{x:Static Tr:SettingsWindow.PasswordWarning}" Margin="4,4,4,4" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="#FF5B5B5B"/>
+			<Button x:Name="btn_connect" Content="{x:Static Tr:SettingsWindow.ConnectButtonConnect}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="btn_connect_Click"/>
+
+			<Separator Height="10" Classes="emptySeparator"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<CheckBox x:Name="cb_autostart" Grid.Column="0" Checked="cb_autostart_Checked" Unchecked="cb_autostart_Unchecked" VerticalContentAlignment="Center" VerticalAlignment="Center">
+					<TextBlock x:Name="cb_autostart_text" Text="{x:Static Tr:SettingsWindow.RunWithWindows}" TextWrapping="Wrap"/>
+				</CheckBox>
+				<Button x:Name="btn_autostart_script_create_update" Grid.Column="1" MinWidth="110" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="btn_autostart_script_create_update_Click">
+					<TextBlock x:Name="tb_autostart_button_text" Text="Start with OBS&#xD;&#xA;(update☹️)" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+				</Button>
+			</Grid>
+
+			<Separator Height="2" Classes="emptySeparator"/>
+			<CheckBox x:Name="cb_close_on_closing" Content="{x:Static Tr:SettingsWindow.CloseOnObsExit}" Checked="cb_close_on_closing_Checked" Unchecked="cb_close_on_closing_Unchecked" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+
+			<Separator Height="2" Classes="emptySeparator"/>
+			<TextBlock HorizontalAlignment="Center" Cursor="Hand" PointerPressed="SupportTextBlock_MouseLeftButtonUp">
+				<Run Text="{x:Static Tr:SettingsWindow.SupportDeveloper}" TextDecorations="Underline" FontWeight="DemiBold"/>
+				<Run Text="❤"/>
+			</TextBlock>
+			<Separator Height="2" Classes="emptySeparator"/>
+			<TextBlock Text="{x:Static Tr:SettingsWindow.ReportBug}"  PointerPressed="ReportErrorTextBlock_MouseLeftButtonUp" TextDecorations="Underline" HorizontalAlignment="Center" Cursor="Hand" />
+
+			<Separator Height="16" Classes="emptySeparator"/>
+			<Label Content="{x:Static Tr:SettingsWindow.NotificationSettings}" HorizontalAlignment="Center" FontWeight="Bold"/>
+
+			<CheckBox x:Name="cb_preview" Content="{x:Static Tr:SettingsWindow.Preview}" Unchecked="cb_preview_Unchecked" Checked="cb_preview_Checked" HorizontalAlignment="Right"/>
+
+			<Label Content="{x:Static Tr:SettingsWindow.ActiveModulesLabel}"/>
+			<ListBox x:Name="lb_available_modules" Height="72"/>
+
+			<Label Content="{x:Static Tr:SettingsWindow.ModuleSettingsLabel}"/>
+			<ComboBox x:Name="cb_notification_modules" Grid.ColumnSpan="1" SelectionChanged="cb_notification_modules_SelectionChanged" />
+
+			<Separator Height="8" Classes="emptySeparator"/>
+			<StackPanel x:Name="module_settings_container"/>
+		</StackPanel>
+	</ScrollViewer>
+</local:NotifierWindow>

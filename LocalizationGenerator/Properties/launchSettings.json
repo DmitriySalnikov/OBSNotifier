@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LocalizationGenerator": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)"
+    }
+  }
+}

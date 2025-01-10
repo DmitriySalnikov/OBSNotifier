@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaXaml Remove="Modules\**" />
+		<Compile Remove="bin\**" />
+		<Compile Remove="Modules\**" />
+		<Compile Remove="obj\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="Modules\**" />
+		<EmbeddedResource Remove="obj\**" />
+		<None Remove="bin\**" />
+		<None Remove="Modules\**" />
+		<None Remove="obj\**" />
+		<Page Remove="bin\**" />
+		<Page Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Include="Modules\Event\Default\DefaultNotificationBlock.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
+	  <AvaloniaXaml Include="Modules\Event\Default\DefaultNotificationWindow.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="Modules\Event\Default\DefaultCustomNotifBlockSettings.cs" />
+	  <Compile Include="Modules\Event\Default\DefaultNotification.cs" />
+	  <Compile Include="Modules\Event\Default\DefaultNotificationBlock.axaml.cs" />
+	  <Compile Include="Modules\Event\Default\DefaultNotificationWindow.axaml.cs" />
+	  <Compile Include="Modules\Event\IOBSNotifierModule.cs" />
+	  <Compile Include="Modules\Event\ModuleManager.cs" />
+	  <Compile Include="Modules\SettingsItemAttributes.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.0.10" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Themes.Simple" Version="11.0.10" />
+		<PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
+		<PackageReference Include="PixiEditor.ColorPicker.AvaloniaUI" Version="1.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OBSWebsocket\OBSWebsocketSharp\OBSWebsocketSharp.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Forms\SettingsWindow.axaml.cs">
+	    <DependentUpon>SettingsWindow.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="AppResources.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Modules\Event\UserControls\" />
+	</ItemGroup>
+</Project>

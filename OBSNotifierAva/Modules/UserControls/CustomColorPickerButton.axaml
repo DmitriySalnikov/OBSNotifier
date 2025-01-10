@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OBSNotifier.Modules.UserControls.CustomColorPickerButton">
+	<UserControl.Resources>
+		<ResourceDictionary Source="/Resources.xaml"/>
+	</UserControl.Resources>
+
+	<Grid MinHeight="16" MinWidth="16" VerticalAlignment="Center">
+		<Border x:Name="clipMask" CornerRadius="2.5" BorderThickness="1" BorderBrush="Transparent"
+                Padding="0" Margin="0" RenderOptions.BitmapScalingMode="NearestNeighbor">
+			<Border.Background>
+				<ImageBrush ImageSource="/ColorPicker;component/Images/transparentbg_mini.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,8,8"/>
+			</Border.Background>
+		</Border>
+		<Border BorderBrush="Black" Padding="0" Margin="0"
+            CornerRadius="{Binding Path=CornerRadius, ElementName=clipMask}"
+            BorderThickness="{Binding Path=BorderThickness, ElementName=clipMask}">
+			<Grid>
+				<Grid.OpacityMask>
+					<VisualBrush Visual="{Binding ElementName=clipMask}" Stretch="None"/>
+				</Grid.OpacityMask>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<Border BorderThickness="0" Grid.Column="0" Background="{Binding SelectedColor, Converter={StaticResource ColorToBrushConverter}, ConverterParameter=False}"/>
+				<Border BorderThickness="0" Grid.Column="1" Background="{Binding SelectedColor, Converter={StaticResource ColorToBrushConverter}, ConverterParameter=True}"/>
+				<ToggleButton  Padding="0" Margin="0" Grid.ColumnSpan="2" Style="{StaticResource colorToggleButtonStyle}"
+                          x:Name="toggleButton" BorderThickness="0"
+                          Background="Transparent" Foreground="Transparent" PointerEntered="ToggleButton_PointerEntered" PointerExited="ToggleButton_PointerExited" IsCheckedChanged="ToggleButton_IsCheckedChanged">
+				</ToggleButton>
+			</Grid>
+		</Border>
+	</Grid>
+</UserControl>

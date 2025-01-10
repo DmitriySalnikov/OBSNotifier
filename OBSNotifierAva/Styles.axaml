@@ -1,0 +1,79 @@
+﻿<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Style Selector="TextBox.placeHolder">
+		<!--
+		<Setter Property="Template">
+			<Template>
+				<ControlTemplate TargetType="TextBox">
+					<Grid>
+						<TextBox Name="textSource"
+                                 Text="{TemplateBinding Text}"
+                                 Background="Transparent"
+                                 ZIndex="2" />
+						<TextBox Text="{TemplateBinding Tag}"
+                                 Background="{TemplateBinding Background}"
+                                 ZIndex="1">
+							<TextBox.Styles>
+								<Style Selector="TextBox">
+									<Setter Property="Foreground" Value="Transparent"/>
+		-->
+		<!-- TODO
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding Text, ElementName=textSource}" Value="">
+											<Setter Property="Foreground" Value="#FF989898"/>
+										</DataTrigger>
+									</Style.Triggers>
+									-->
+		<!--
+								</Style>
+							</TextBox.Styles>
+						</TextBox>
+					</Grid>
+				</ControlTemplate>
+			</Template>
+		</Setter>
+	-->
+	</Style>
+
+	<Style Selector="TextBlock.textblockWithHint">
+		<Setter Property="Cursor" Value="Hand"/>
+		<Setter Property="TextDecorations">
+			<TextDecorationCollection>
+				<TextDecoration StrokeThicknessUnit="FontRecommended">
+					<!--
+					<TextDecoration.Stroke>
+						<Pen Thickness="1.5">
+							<Pen.Brush>
+								<SolidColorBrush Color="Blue"/>
+							</Pen.Brush>
+							<Pen.DashStyle>
+								<DashStyle Dashes="3"/>
+							</Pen.DashStyle>
+						</Pen>
+					</TextDecoration.Stroke>
+					-->
+				</TextDecoration>
+			</TextDecorationCollection>
+		</Setter>
+	</Style>
+
+	<Style Selector="Separator.emptySeparator">
+		<Setter Property="Background" Value="{x:Null}"/>
+		<Setter Property="Foreground" Value="{x:Null}"/>
+	</Style>
+
+	<Style Selector="ToggleButton.colorToggleButtonStyle">
+		<Setter Property="Focusable" Value="False"/>
+		<!--
+		<Setter Property="Template">
+			<Template>
+				<ControlTemplate TargetType="ToggleButton">
+					<Border BorderThickness="0" Background="{TemplateBinding Background}">
+						<ContentPresenter Content="{TemplateBinding Content}" />
+					</Border>
+				</ControlTemplate>
+			</Template>
+		</Setter>
+		-->
+	</Style>
+</Styles>

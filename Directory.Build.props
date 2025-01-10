@@ -4,6 +4,7 @@
 		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
 		<BaseOutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(PlatformShortName)</BaseOutputPath>
 		<BaseIntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\$(PlatformShortName)</BaseIntermediateOutputPath>
+		<AvaloniaVersion>11.0.10</AvaloniaVersion>
 	</PropertyGroup>
 
 	<!--workaround for strange wpftmp folders https://github.com/dotnet/wpf/issues/2930-->

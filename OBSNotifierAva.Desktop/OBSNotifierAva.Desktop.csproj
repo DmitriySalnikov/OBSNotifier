@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
+    One for Windows with net7.0-windows TFM, one for MacOS with net7.0-macos and one with net7.0 TFM for Linux.-->
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<SatelliteResourceLanguages>none</SatelliteResourceLanguages>
+
+		<Version>1.4.0</Version>
+		<Title>OBS Notifier</Title>
+		<Authors>DmitriySalnikov</Authors>
+		<Description>This is a program for displaying notifications from OBS.
+In order for this program to work, you need to install OBS version 28+ with the built-in 'obs-websocket' version 5+.</Description>
+		<PackageProjectUrl>https://github.com/DmitriySalnikov/OBSNotifier</PackageProjectUrl>
+		<Copyright>Copyright © 2024</Copyright>
+		<RepositoryUrl>https://github.com/DmitriySalnikov/OBSNotifier</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<NeutralLanguage>en</NeutralLanguage>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="bin\**" />
+		<Compile Remove="obj\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="obj\**" />
+		<None Remove="bin\**" />
+		<None Remove="obj\**" />
+		<Page Remove="bin\**" />
+		<Page Remove="obj\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OBSNotifierAva\OBSNotifier.csproj" />
+	</ItemGroup>
+	
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="$(OS.StartsWith('Windows'))">
+		<Exec Command="taskkill /F /IM $(TargetFileName.Replace(&quot;.dll&quot;, &quot;.exe&quot;)) /FI &quot;STATUS eq RUNNING&quot;" />
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ConfigurationName.StartsWith('Debug'))">
+		<Exec Command="echo $(OutDir)&#xD;&#xA;echo + &gt; $(OutDir).portable" />
+	</Target>
+</Project>

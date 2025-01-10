@@ -1,0 +1,22 @@
+﻿<Window x:Class="OBSNotifier.Modules.Event.Default.DefaultNotificationWindow"
+        xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OBSNotifier.Modules.Event.Default"
+        mc:Ignorable="d"
+        Title="Default Notification"
+        Topmost="True" ShowInTaskbar="False"
+        ShowActivated="False" Focusable="False"
+        Opacity="1.0"
+        Width="180" Height="104"
+        Background="{x:Null}"
+        UseLayoutRounding="True"
+		SystemDecorations="None"
+        >
+
+	<StackPanel x:Name="sp_main_panel" VerticalAlignment="Bottom">
+		<local:DefaultNotificationBlock/>
+		<local:DefaultNotificationBlock/>
+	</StackPanel>
+</Window>

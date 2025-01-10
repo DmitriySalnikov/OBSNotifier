@@ -1,0 +1,124 @@
+﻿<uc:ModuleWindow x:Class="OBSNotifier.Modules.Event.NvidiaLike.NvidiaNotificationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:OBSNotifier.Modules.UserControls"
+        xmlns:euc="clr-namespace:OBSNotifier.Modules.Event.UserControls"
+        mc:Ignorable="d" x:ClassModifier="internal"
+        Title="Nvidia Notification"
+        WindowStyle="None" AllowsTransparency="True" Topmost="True"
+        ShowActivated="False" Focusable="False" FocusManager.IsFocusScope="False"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        Opacity="1.0"
+        Background="{x:Null}"
+        MouseDown="Window_MouseDown"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        RenderOptions.ClearTypeHint="Enabled">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources.xaml"/>
+                <ResourceDictionary>
+                    <BeginStoryboard x:Key="nvidia_anim">
+                        <Storyboard Completed="AnimationNV_Finished">
+                            <ParallelTimeline>
+                                <!--It's just an initial mess...-->
+                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="g_front" Storyboard.TargetProperty="Margin" Duration="0:0:3">
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:0"/>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:0.2"/>
+                                    <EasingThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:2.2">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.65"/>
+                                    <EasingThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.45">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.46"/>
+                                    <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.47"/>
+                                </ThicknessAnimationUsingKeyFrames>
+
+                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="g_back" Storyboard.TargetProperty="Margin" Duration="0:0:3">
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:0"/>
+                                    <EasingThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.65">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:2"/>
+                                    <EasingThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.45">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.46"/>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.47"/>
+                                </ThicknessAnimationUsingKeyFrames>
+                            </ParallelTimeline>
+                        </Storyboard>
+                    </BeginStoryboard>
+                    <BeginStoryboard x:Key="fileOpen_anim">
+                        <Storyboard Completed="AnimationFile_Finished">
+                            <ParallelTimeline>
+                                <!--It's just an initial mess...-->
+                                <ThicknessAnimationUsingKeyFrames Storyboard.TargetName="g_fileOpen" Storyboard.TargetProperty="Margin" Duration="0:0:3">
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:0"/>
+                                    <EasingThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:0.65">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="300,0,-300,0" KeyTime="0:0:2"/>
+                                    <EasingThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.45">
+                                        <EasingThicknessKeyFrame.EasingFunction>
+                                            <QuadraticEase EasingMode="EaseInOut"/>
+                                        </EasingThicknessKeyFrame.EasingFunction>
+                                    </EasingThicknessKeyFrame>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.46"/>
+                                    <LinearThicknessKeyFrame Value="0,0,0,0" KeyTime="0:0:2.47"/>
+                                </ThicknessAnimationUsingKeyFrames>
+                            </ParallelTimeline>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <StackPanel>
+        <Viewbox StretchDirection="Both">
+            <Grid x:Name="g_back" Background="#76b900" Margin="0,0,0,0" Height="90" Width="300">
+                <Grid x:Name="g_front" Margin="6,0,0,0" Background="Black" Height="90" Width="294">
+                    <Image x:Name="i_icon" HorizontalAlignment="Left" Margin="6,0,0,0" Height="64" Source="/Modules/Event/Nvidia-like/obs.png"/>
+                    <StackPanel Margin="76,0,6,0" x:Name="sp_text" VerticalAlignment="Center">
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock x:Name="l_title" Text="Something happened" Foreground="#e4e4e4" FontSize="18" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
+                        </Viewbox>
+                        <Viewbox StretchDirection="DownOnly">
+                            <TextBlock x:Name="l_desc" Text="Description" Foreground="#e4e4e4" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+                        </Viewbox>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Viewbox>
+        <StackPanel x:Name="g_fileOpen">
+            <Separator x:Name="fileOpen_sep" Height="8" Style="{StaticResource emptySeparator}" Margin="0"/>
+            <Viewbox x:Name="fileOpen_viewbox" Stretch="UniformToFill" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay}">
+                <Grid>
+                    <!-- TODO background is just a line -->
+                    <Grid x:Name="fileOpen_bg" Width="{Binding Width, ElementName=fileOpenOverlay}">
+                        <Rectangle Fill="{Binding Background, ElementName=g_front}"/>
+                        <Rectangle x:Name="fileOpen_colored_line" Fill="{Binding Background, ElementName=g_back}" Width="4" HorizontalAlignment="{Binding HorizontalAlignment, ElementName=fileOpenOverlay, Converter={StaticResource InverseAlignmentConverter}}"/>
+                    </Grid>
+                    <euc:OpenFileActions x:Name="fileOpenOverlay" Height="42" Width="200" HorizontalAlignment="Right" ForegroundElementsColorBrush="{Binding Foreground, Mode=OneWay, ElementName=l_title}"/>
+                </Grid>
+            </Viewbox>
+        </StackPanel>
+    </StackPanel>
+</uc:ModuleWindow>

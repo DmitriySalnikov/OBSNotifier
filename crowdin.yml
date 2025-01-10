@@ -1,7 +1,7 @@
 #
 # Your Crowdin credentials
 #
-base_path: "OBSNotifier/"
+base_path: "Localization/"
 base_url: "https://api.crowdin.com"
 project_id_env: CROWDIN_PROJECT_ID
 api_token_env: CROWDIN_PERSONAL_TOKEN
@@ -21,13 +21,13 @@ files: [
     # Source files filter
     # e.g. "/resources/en/*.json"
     #
-    source: "Localization/lang.xaml",
+    source: "strings.json",
 
     #
     # Where translations will be placed
     # e.g. "/resources/%two_letters_code%/%original_file_name%"
     #
-    translation: "Localization/lang.%two_letters_code%.xaml",
+    translation: "strings.%two_letters_code%.xaml",
 
     #
     # Files or directories for ignore
@@ -123,10 +123,5 @@ files: [
     # e.g. "identifier,source_phrase,context,uk,ru,fr"
     #
     # scheme: "",
-  },
-  {
-    source: "Localization/lang_modules.xaml",
-    translation: "Localization/lang_modules.%two_letters_code%.xaml",
-    #update_option: "update_as_unapproved",
   }
 ]

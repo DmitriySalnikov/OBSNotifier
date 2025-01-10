@@ -1,0 +1,64 @@
+<UserControl x:Class="OBSNotifier.Modules.Event.Default.DefaultNotificationBlock"
+            xmlns="https://github.com/avaloniaui"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:local="clr-namespace:OBSNotifier.Modules.Event.Default"
+            xmlns:uc="clr-namespace:OBSNotifier.Modules.Event.UserControls"
+            mc:Ignorable="d"
+            Height="52" Width="180" IsHitTestVisible="True" Background="Transparent" PointerPressed="Window_MouseDown">
+
+	<UserControl.Styles>
+		<Style Selector="Grid">
+			<Style.Animations>
+				<Animation Duration="0:0:1">
+					<KeyFrame Cue="0%">
+						<Setter Property="Opacity" Value="0.0"/>
+					</KeyFrame>
+					<KeyFrame Cue="100%">
+						<Setter Property="Opacity" Value="1.0"/>
+					</KeyFrame>
+				</Animation>
+			</Style.Animations>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid x:Name="g_notif">
+		<!-- 
+		<Grid.Resources>
+			<BeginStoryboard x:Key="FadeAnimBoard" HandoffBehavior="SnapshotAndReplace">
+				<Storyboard Completed="Animation_Completed">
+					<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Duration="0:0:3">
+						<LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+						<LinearDoubleKeyFrame Value="0" KeyTime="0:0:0.05"/>
+						 Next key is Fade length with init delay (next key - init delay = fade time) 
+						<LinearDoubleKeyFrame Value="1" KeyTime="0:0:0.25"/>
+						<LinearDoubleKeyFrame Value="1" KeyTime="0:0:0"/>
+						<LinearDoubleKeyFrame Value="0" KeyTime="0:0:0"/>
+					</DoubleAnimationUsingKeyFrames>
+				</Storyboard>
+			</BeginStoryboard>
+		</Grid.Resources>
+		-->
+		<Border x:Name="b_background" CornerRadius="4" BorderThickness="1" BorderBrush="Transparent" Background="White">
+			<Viewbox x:Name="mainBox" Margin="4,4,4,4">
+				<StackPanel x:Name="stackPanel" VerticalAlignment="Center">
+					<Viewbox StretchDirection="DownOnly">
+						<TextBlock x:Name="l_title" Text="Something happened" FontWeight="Bold" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" TextAlignment="Center"/>
+					</Viewbox>
+					<Viewbox StretchDirection="DownOnly">
+						<TextBlock x:Name="l_desc" Text="Description" FontSize="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center"/>
+					</Viewbox>
+				</StackPanel>
+			</Viewbox>
+		</Border>
+
+		<!--
+		<uc:OpenFileOverlayActions x:Name="fileOpenOverlay">
+			<uc:OpenFileOverlayActions.OpacityMask>
+				<VisualBrush Visual="{Binding ElementName=b_background}" Stretch="None"/>
+			</uc:OpenFileOverlayActions.OpacityMask>
+		</uc:OpenFileOverlayActions>
+		-->
+	</Grid>
+</UserControl>
