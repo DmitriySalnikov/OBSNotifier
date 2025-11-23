@@ -1,4 +1,4 @@
-﻿<Window x:Class="OBSNotifier.SettingsWindow"
+<Window x:Class="OBSNotifier.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -70,6 +70,152 @@
 
             <Separator Height="8" Style="{StaticResource emptySeparator}"/>
             <Button Content="{DynamicResource settings_window_select_active_notifications_button}" Click="btn_select_active_notifications_Click"/>
+
+            <Separator Height="8" Style="{StaticResource emptySeparator}"/>
+            <StackPanel x:Name="group_audio_alerts">
+                <Label Content="{DynamicResource audio_alerts_title}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="cb_enable_audio_alerts" Grid.Column="0" Content="{DynamicResource audio_alerts_enable}" Checked="cb_enable_audio_alerts_Checked" Unchecked="cb_enable_audio_alerts_Unchecked"/>
+                    <Button Grid.Column="1" Content="{DynamicResource audio_alerts_restore_default_button}" Click="btn_restore_audio_defaults_Click"/>
+                </Grid>
+                <Label Content="{DynamicResource audio_alerts_sound_screenshot}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_screenshot" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_screenshot_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_screenshot" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_screenshot_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_screenshot_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_screenshot_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_screenshot" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_screenshot"/>
+                </StackPanel>
+                <Label Content="{DynamicResource audio_alerts_sound_replay}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_replay" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_replay_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_replay" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_replay_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_replay_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_replay_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_replay" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_replay"/>
+                </StackPanel>
+                <Label Content="{DynamicResource audio_alerts_sound_rec_start}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_rec_start" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_rec_start_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_rec_start" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_rec_start_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_rec_start_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_rec_start_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_rec_start" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_rec_start"/>
+                </StackPanel>
+                <Label Content="{DynamicResource audio_alerts_sound_rec_stop}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_rec_stop" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_rec_stop_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_rec_stop" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_rec_stop_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_rec_stop_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_rec_stop_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_rec_stop" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_rec_stop"/>
+                </StackPanel>
+                <Label Content="{DynamicResource audio_alerts_sound_connected}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_connected" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_connected_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_connected" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_connected_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_connected_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_connected_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_connected" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_connected"/>
+                </StackPanel>
+                <Label Content="{DynamicResource audio_alerts_sound_disconnected}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="cb_type_disconnected" Grid.Column="0" MinWidth="140" SelectionChanged="cb_type_disconnected_SelectionChanged">
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_ring}" Tag="Ring"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_voice}" Tag="Voice"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_custom}" Tag="Custom"/>
+                        <ComboBoxItem Content="{DynamicResource audio_alerts_type_random}" Tag="Random"/>
+                    </ComboBox>
+                    <ComboBox x:Name="cb_file_disconnected" Grid.Column="1" MinWidth="220" HorizontalAlignment="Stretch" SelectionChanged="cb_file_disconnected_SelectionChanged"/>
+                    <Button Grid.Column="2" Content="{DynamicResource audio_alerts_preview_button_short}" Click="btn_preview_disconnected_Click"/>
+                    <Button Grid.Column="3" Content="{DynamicResource audio_alerts_browse_button}" Click="btn_browse_disconnected_Click"/>
+                </Grid>
+                <StackPanel x:Name="panel_random_disconnected" Visibility="Collapsed">
+                    <Label Content="{DynamicResource audio_alerts_random_select_label}"/>
+                    <ItemsControl x:Name="ic_random_disconnected"/>
+                </StackPanel>
+                
+            </StackPanel>
 
             <Separator Height="8" Style="{StaticResource emptySeparator}"/>
             <StackPanel x:Name="group_safe_area">

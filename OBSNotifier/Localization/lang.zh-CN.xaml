@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+<?xml version="1.0"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:v="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
     <!-- Use 
  instead of \n -->
@@ -80,6 +80,26 @@ Don't forget to click Apply after making changes to the server.</v:String>
     <v:String x:Key="settings_window_fade_delay_hint">隐藏通知前延迟</v:String>
     <v:String x:Key="settings_window_additional_label">附加：</v:String>
     <v:String x:Key="settings_window_open_module_settings">打开模块设置</v:String>
+
+    <!-- Audio Alerts -->
+    <v:String x:Key="audio_alerts_title">声音提示</v:String>
+    <v:String x:Key="audio_alerts_enable">启用声音提示</v:String>
+    <v:String x:Key="audio_alerts_sound_screenshot">截屏提示音：</v:String>
+    <v:String x:Key="audio_alerts_sound_replay">回放保存提示音：</v:String>
+    <v:String x:Key="audio_alerts_sound_rec_start">录制开始提示音：</v:String>
+    <v:String x:Key="audio_alerts_sound_rec_stop">录制结束提示音：</v:String>
+    <v:String x:Key="audio_alerts_preview_button_short">预览</v:String>
+    <v:String x:Key="audio_alerts_browse_button">自定义...</v:String>
+    <v:String x:Key="audio_alerts_sound_none">无</v:String>
+    <v:String x:Key="audio_alerts_type_label">类型：</v:String>
+    <v:String x:Key="audio_alerts_type_ring">提示铃声</v:String>
+    <v:String x:Key="audio_alerts_type_voice">提示语音</v:String>
+    <v:String x:Key="audio_alerts_type_custom">自定义</v:String>
+    <v:String x:Key="audio_alerts_type_random">随机</v:String>
+    <v:String x:Key="audio_alerts_random_select_label">随机池：</v:String>
+    <v:String x:Key="audio_alerts_sound_connected">OBS连接提示音：</v:String>
+    <v:String x:Key="audio_alerts_sound_disconnected">OBS断开提示音：</v:String>
+    <v:String x:Key="audio_alerts_restore_default_button">恢复默认</v:String>
 
     <!-- Active Notifications -->
     <v:String x:Key="active_notifications_title">选择活动通知</v:String>
