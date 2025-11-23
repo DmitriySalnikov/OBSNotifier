@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -50,6 +50,32 @@ namespace OBSNotifier
         public bool IsCloseOnOBSClosing { get; set; } = false;
         public bool IsManuallyConnected { get; set; } = false;
         public string NotificationModule { get; set; } = string.Empty;
+
+        // Audio Alerts Settings
+        public bool EnableAudioAlerts { get; set; } = true;
+        public string AudioMode { get; set; } = "Simple";
+        public int TTSRate { get; set; } = 0;
+        public int TTSVolume { get; set; } = 100;
+        public string TTSVoiceName { get; set; } = null;
+        public List<string> CustomAudioFiles { get; set; } = new List<string>();
+        public string SoundTypeForConnected { get; set; } = "Ring";
+        public string SoundFileForConnected { get; set; } = null;
+        public List<string> RandomPoolForConnected { get; set; } = new List<string>();
+        public string SoundTypeForDisconnected { get; set; } = "Ring";
+        public string SoundFileForDisconnected { get; set; } = null;
+        public List<string> RandomPoolForDisconnected { get; set; } = new List<string>();
+        public string SoundTypeForScreenshot { get; set; } = "Ring";
+        public string SoundFileForScreenshot { get; set; } = "ring_sound/shutter1.mp3";
+        public List<string> RandomPoolForScreenshot { get; set; } = new List<string>();
+        public string SoundTypeForReplaySaved { get; set; } = "Ring";
+        public string SoundFileForReplaySaved { get; set; } = "ring_sound/notification-4.mp3";
+        public List<string> RandomPoolForReplaySaved { get; set; } = new List<string>();
+        public string SoundTypeForRecordingStarted { get; set; } = "Ring";
+        public string SoundFileForRecordingStarted { get; set; } = "ring_sound/pluck-on.mp3";
+        public List<string> RandomPoolForRecordingStarted { get; set; } = new List<string>();
+        public string SoundTypeForRecordingStopped { get; set; } = "Ring";
+        public string SoundFileForRecordingStopped { get; set; } = "ring_sound/pluck-off.mp3";
+        public List<string> RandomPoolForRecordingStopped { get; set; } = new List<string>();
 
         [JsonProperty("PerModuleSettings", Order = 100)]
         private Dictionary<string, ModuleSettings> perModuleSettings = new Dictionary<string, ModuleSettings>();

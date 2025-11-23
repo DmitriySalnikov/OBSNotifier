@@ -1,11 +1,14 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Runtime.InteropServices;
 
 namespace OBSNotifier
 {
@@ -281,6 +284,22 @@ namespace OBSNotifier
 
                 // Bring to top
                 Activate();
+
+                cb_enable_audio_alerts.IsChecked = Settings.Instance.EnableAudioAlerts;
+
+                var ring = GetRingSounds();
+                UpdateEventSoundUI("screenshot", cb_type_screenshot, cb_file_screenshot, panel_random_screenshot, ic_random_screenshot,
+                    Settings.Instance.SoundTypeForScreenshot, Settings.Instance.SoundFileForScreenshot, Settings.Instance.RandomPoolForScreenshot, ring, GetTtsSoundsForOp("screenshot"));
+                UpdateEventSoundUI("replay", cb_type_replay, cb_file_replay, panel_random_replay, ic_random_replay,
+                    Settings.Instance.SoundTypeForReplaySaved, Settings.Instance.SoundFileForReplaySaved, Settings.Instance.RandomPoolForReplaySaved, ring, GetTtsSoundsForOp("replay"));
+                UpdateEventSoundUI("rec_start", cb_type_rec_start, cb_file_rec_start, panel_random_rec_start, ic_random_rec_start,
+                    Settings.Instance.SoundTypeForRecordingStarted, Settings.Instance.SoundFileForRecordingStarted, Settings.Instance.RandomPoolForRecordingStarted, ring, GetTtsSoundsForOp("rec_start"));
+                UpdateEventSoundUI("rec_stop", cb_type_rec_stop, cb_file_rec_stop, panel_random_rec_stop, ic_random_rec_stop,
+                    Settings.Instance.SoundTypeForRecordingStopped, Settings.Instance.SoundFileForRecordingStopped, Settings.Instance.RandomPoolForRecordingStopped, ring, GetTtsSoundsForOp("rec_stop"));
+                UpdateEventSoundUI("connected", cb_type_connected, cb_file_connected, panel_random_connected, ic_random_connected,
+                    Settings.Instance.SoundTypeForConnected, Settings.Instance.SoundFileForConnected, Settings.Instance.RandomPoolForConnected, ring, GetTtsSoundsForOp("connected"));
+                UpdateEventSoundUI("disconnected", cb_type_disconnected, cb_file_disconnected, panel_random_disconnected, ic_random_disconnected,
+                    Settings.Instance.SoundTypeForDisconnected, Settings.Instance.SoundFileForDisconnected, Settings.Instance.RandomPoolForDisconnected, ring, GetTtsSoundsForOp("disconnected"));
             }
             else
             {
@@ -294,6 +313,247 @@ namespace OBSNotifier
             }
 
             IsChangedByCode = false;
+        }
+
+        List<string> GetAvailableSounds()
+        {
+            var list = new List<string>();
+            var baseDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var exeDir = System.IO.Path.GetDirectoryName(baseDir);
+            var candidates = new List<string>();
+            candidates.Add(System.IO.Path.Combine(exeDir, "sounds"));
+            candidates.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(exeDir, "..", "..", "..", "sounds")));
+            candidates.Add(System.IO.Path.Combine(Environment.CurrentDirectory, "sounds"));
+
+            foreach (var dir in candidates)
+            {
+                try
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        var files = Directory.GetFiles(dir, "*.mp3");
+                        list.AddRange(files.Select(f => System.IO.Path.GetFileName(f)));
+                        var wavs = Directory.GetFiles(dir, "*.wav");
+                        list.AddRange(wavs.Select(f => System.IO.Path.GetFileName(f)));
+                        break;
+                    }
+                }
+                catch { }
+            }
+
+            list = SortNaturally(list.Distinct());
+            return list;
+        }
+
+        List<string> GetRingSounds()
+        {
+            var list = new List<string>();
+            var baseDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var exeDir = System.IO.Path.GetDirectoryName(baseDir);
+            var candidates = new List<string>();
+            candidates.Add(System.IO.Path.Combine(exeDir, "sounds", "ring_sound"));
+            candidates.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(exeDir, "..", "..", "..", "sounds", "ring_sound")));
+            candidates.Add(System.IO.Path.Combine(Environment.CurrentDirectory, "sounds", "ring_sound"));
+            foreach (var dir in candidates)
+            {
+                try
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        foreach (var p in Directory.GetFiles(dir, "*.mp3")) list.Add("ring_sound/" + System.IO.Path.GetFileName(p));
+                        foreach (var p in Directory.GetFiles(dir, "*.wav")) list.Add("ring_sound/" + System.IO.Path.GetFileName(p));
+                        break;
+                    }
+                }
+                catch { }
+            }
+            return SortNaturally(list.Distinct());
+        }
+
+        string MapOpToTtsFolder(string op)
+        {
+            switch (op)
+            {
+                case "connected": return "tts_sound_connection";
+                case "disconnected": return "tts_sound_disconnection";
+                case "rec_start": return "tts_sound_recording_on";
+                case "rec_stop": return "tts_sound_recording_off";
+                case "replay": return "tts_sound_replay";
+                case "screenshot": return "tts_sound_screenshot";
+            }
+            return null;
+        }
+
+        List<string> GetTtsSoundsForOp(string op)
+        {
+            var folder = MapOpToTtsFolder(op);
+            var list = new List<string>();
+            if (string.IsNullOrWhiteSpace(folder)) return list;
+            var baseDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var exeDir = System.IO.Path.GetDirectoryName(baseDir);
+            var candidates = new List<string>();
+            candidates.Add(System.IO.Path.Combine(exeDir, "sounds", folder));
+            candidates.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(exeDir, "..", "..", "..", "sounds", folder)));
+            candidates.Add(System.IO.Path.Combine(Environment.CurrentDirectory, "sounds", folder));
+            foreach (var dir in candidates)
+            {
+                try
+                {
+                    if (Directory.Exists(dir))
+                    {
+                        foreach (var p in Directory.GetFiles(dir, "*.wav")) list.Add(folder + "/" + System.IO.Path.GetFileName(p));
+                        foreach (var p in Directory.GetFiles(dir, "*.mp3")) list.Add(folder + "/" + System.IO.Path.GetFileName(p));
+                        break;
+                    }
+                }
+                catch { }
+            }
+            return SortNaturally(list.Distinct());
+        }
+
+        class NaturalComparer : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                return StrCmpLogicalW(x, y);
+            }
+        }
+
+        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+        static extern int StrCmpLogicalW(string x, string y);
+
+        List<string> SortNaturally(IEnumerable<string> src)
+        {
+            return src.OrderBy(s => s, new NaturalComparer()).ToList();
+        }
+
+        void UpdateEventSoundUI(string key,
+            ComboBox cbType,
+            ComboBox cbFile,
+            FrameworkElement randomPanel,
+            ItemsControl randomItems,
+            string type,
+            string selected,
+            List<string> randomPool,
+            List<string> ring,
+            List<string> voice)
+        {
+            SelectType(cbType, type);
+            FillFileCombo(cbFile, type, selected, ring, voice);
+            if (type == "Random")
+            {
+                randomPanel.Visibility = Visibility.Visible;
+                FillRandomItems(randomItems, randomPool, ring, voice, Settings.Instance.CustomAudioFiles);
+            }
+            else
+            {
+                randomPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        void SelectType(ComboBox cbType, string type)
+        {
+            foreach (var it in cbType.Items)
+            {
+                var cbi = it as ComboBoxItem;
+                if (cbi != null && (string)cbi.Tag == type)
+                {
+                    cbType.SelectedItem = cbi;
+                    break;
+                }
+            }
+        }
+
+        void FillFileCombo(ComboBox cbFile, string type, string selected, List<string> ring, List<string> voice)
+        {
+            cbFile.Items.Clear();
+            var none = new ComboBoxItem() { Content = Utils.Tr("audio_alerts_sound_none"), Tag = null };
+            if (type == "Random")
+            {
+                cbFile.IsEnabled = false;
+                cbFile.Items.Add(none);
+                cbFile.SelectedIndex = 0;
+                return;
+            }
+            cbFile.IsEnabled = true;
+            cbFile.Items.Add(none);
+            if (type == "Ring")
+            {
+                foreach (var s in ring) cbFile.Items.Add(new ComboBoxItem() { Content = System.IO.Path.GetFileName(s), Tag = s });
+            }
+            else if (type == "Voice")
+            {
+                foreach (var s in voice) cbFile.Items.Add(new ComboBoxItem() { Content = System.IO.Path.GetFileName(s), Tag = s });
+            }
+            else if (type == "Custom")
+            {
+                foreach (var p in Settings.Instance.CustomAudioFiles)
+                {
+                    var name = System.IO.Path.GetFileName(p);
+                    cbFile.Items.Add(new ComboBoxItem() { Content = name, Tag = p });
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(selected))
+            {
+                bool found = false;
+                foreach (var it in cbFile.Items)
+                {
+                    var cbi = it as ComboBoxItem;
+                    if (cbi != null && (string)cbi.Tag == selected)
+                    {
+                        cbFile.SelectedItem = cbi;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    var display = System.IO.Path.GetFileName(selected);
+                    var custom = new ComboBoxItem() { Content = display, Tag = selected };
+                    cbFile.Items.Add(custom);
+                    cbFile.SelectedItem = custom;
+                }
+            }
+            else
+            {
+                cbFile.SelectedIndex = 0;
+            }
+        }
+
+        void FillRandomItems(ItemsControl ic, List<string> pool, List<string> ring, List<string> voice, List<string> custom)
+        {
+            ic.Items.Clear();
+            var all = new List<string>();
+            all.AddRange(ring);
+            all.AddRange(voice);
+            all.AddRange(custom);
+            foreach (var s in SortNaturally(all.Distinct()))
+            {
+                var cb = new CheckBox();
+                cb.Content = System.IO.Path.GetFileName(s);
+                cb.Tag = s;
+                cb.IsChecked = pool != null && pool.Contains(s);
+                cb.Checked += (o, e) => { ApplyRandomItems(ic, pool); };
+                cb.Unchecked += (o, e) => { ApplyRandomItems(ic, pool); };
+                ic.Items.Add(cb);
+            }
+        }
+
+        void ApplyRandomItems(ItemsControl ic, List<string> pool)
+        {
+            var list = new List<string>();
+            foreach (var it in ic.Items)
+            {
+                var cb = it as CheckBox;
+                if (cb != null && cb.IsChecked == true)
+                {
+                    list.Add((string)cb.Tag);
+                }
+            }
+            pool.Clear();
+            pool.AddRange(list);
+            Settings.Instance.Save();
         }
 
         private void SupportTextBlock_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -449,6 +709,341 @@ namespace OBSNotifier
 
             Settings.Instance.IsCloseOnOBSClosing = false;
             Settings.Instance.Save();
+        }
+
+        private void cb_enable_audio_alerts_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            Settings.Instance.EnableAudioAlerts = true;
+            Settings.Instance.Save();
+        }
+
+        private void cb_enable_audio_alerts_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            Settings.Instance.EnableAudioAlerts = false;
+            Settings.Instance.Save();
+        }
+
+        void PreviewSound(string type, string file, List<string> pool)
+        {
+            string target = file;
+            if (type == "Random")
+            {
+                var src = pool != null ? pool.Where(s => !string.IsNullOrWhiteSpace(s)).ToList() : new List<string>();
+                if (src.Count > 0)
+                {
+                    var r = new Random();
+                    target = src[r.Next(src.Count)];
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(target))
+            {
+                TryPlaySimpleSound(target);
+            }
+        }
+
+        private void btn_preview_screenshot_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForScreenshot, Settings.Instance.SoundFileForScreenshot, Settings.Instance.RandomPoolForScreenshot);
+        }
+
+        private void btn_preview_replay_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForReplaySaved, Settings.Instance.SoundFileForReplaySaved, Settings.Instance.RandomPoolForReplaySaved);
+        }
+
+        private void btn_preview_rec_start_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForRecordingStarted, Settings.Instance.SoundFileForRecordingStarted, Settings.Instance.RandomPoolForRecordingStarted);
+        }
+
+        private void btn_preview_rec_stop_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForRecordingStopped, Settings.Instance.SoundFileForRecordingStopped, Settings.Instance.RandomPoolForRecordingStopped);
+        }
+
+        private void btn_preview_connected_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForConnected, Settings.Instance.SoundFileForConnected, Settings.Instance.RandomPoolForConnected);
+        }
+        private void btn_preview_disconnected_Click(object sender, RoutedEventArgs e)
+        {
+            PreviewSound(Settings.Instance.SoundTypeForDisconnected, Settings.Instance.SoundFileForDisconnected, Settings.Instance.RandomPoolForDisconnected);
+        }
+
+        private void sldr_tts_rate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (IsChangedByCode) return;
+            Settings.Instance.TTSRate = (int)Math.Round(e.NewValue);
+            Settings.Instance.Save();
+        }
+
+        private void sldr_tts_volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (IsChangedByCode) return;
+            Settings.Instance.TTSVolume = (int)Math.Round(e.NewValue);
+            Settings.Instance.Save();
+        }
+
+        void BrowseAndAssign(ComboBox combo, Action<string> assign)
+        {
+            try
+            {
+                var dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.Filter = "Audio files (*.mp3;*.wav)|*.mp3;*.wav|All files (*.*)|*.*";
+                dlg.CheckFileExists = true;
+                dlg.Multiselect = false;
+                if (dlg.ShowDialog() == true)
+                {
+                    var path = dlg.FileName;
+                    assign(path);
+                    if (!Settings.Instance.CustomAudioFiles.Contains(path))
+                        Settings.Instance.CustomAudioFiles.Add(path);
+                    Settings.Instance.Save();
+
+                    var display = System.IO.Path.GetFileName(path);
+                    var custom = new ComboBoxItem() { Content = display, Tag = path };
+                    combo.Items.Add(custom);
+                    combo.SelectedItem = custom;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Log(ex);
+            }
+        }
+
+        private void btn_browse_screenshot_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForScreenshot = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_screenshot, (p) => Settings.Instance.SoundFileForScreenshot = p);
+        }
+        private void btn_browse_replay_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForReplaySaved = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_replay, (p) => Settings.Instance.SoundFileForReplaySaved = p);
+        }
+        private void btn_browse_rec_start_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForRecordingStarted = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_rec_start, (p) => Settings.Instance.SoundFileForRecordingStarted = p);
+        }
+        private void btn_browse_rec_stop_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForRecordingStopped = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_rec_stop, (p) => Settings.Instance.SoundFileForRecordingStopped = p);
+        }
+
+        private void btn_browse_connected_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForConnected = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_connected, (p) => Settings.Instance.SoundFileForConnected = p);
+        }
+        private void btn_browse_disconnected_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.SoundTypeForDisconnected = "Custom";
+            Settings.Instance.Save();
+            BrowseAndAssign(cb_file_disconnected, (p) => Settings.Instance.SoundFileForDisconnected = p);
+        }
+
+        private void btn_restore_audio_defaults_Click(object sender, RoutedEventArgs e)
+        {
+            IsChangedByCode = true;
+            Settings.Instance.SoundTypeForConnected = "Ring";
+            Settings.Instance.SoundFileForConnected = null;
+            Settings.Instance.RandomPoolForConnected.Clear();
+            Settings.Instance.SoundTypeForDisconnected = "Ring";
+            Settings.Instance.SoundFileForDisconnected = null;
+            Settings.Instance.RandomPoolForDisconnected.Clear();
+            Settings.Instance.SoundTypeForScreenshot = "Ring";
+            Settings.Instance.SoundFileForScreenshot = "ring_sound/shutter1.mp3";
+            Settings.Instance.RandomPoolForScreenshot.Clear();
+            Settings.Instance.SoundTypeForReplaySaved = "Ring";
+            Settings.Instance.SoundFileForReplaySaved = "ring_sound/notification-4.mp3";
+            Settings.Instance.RandomPoolForReplaySaved.Clear();
+            Settings.Instance.SoundTypeForRecordingStarted = "Ring";
+            Settings.Instance.SoundFileForRecordingStarted = "ring_sound/pluck-on.mp3";
+            Settings.Instance.RandomPoolForRecordingStarted.Clear();
+            Settings.Instance.SoundTypeForRecordingStopped = "Ring";
+            Settings.Instance.SoundFileForRecordingStopped = "ring_sound/pluck-off.mp3";
+            Settings.Instance.RandomPoolForRecordingStopped.Clear();
+            Settings.Instance.Save();
+
+            var ring = GetRingSounds();
+            UpdateEventSoundUI("connected", cb_type_connected, cb_file_connected, panel_random_connected, ic_random_connected,
+                Settings.Instance.SoundTypeForConnected, Settings.Instance.SoundFileForConnected, Settings.Instance.RandomPoolForConnected, ring, GetTtsSoundsForOp("connected"));
+            UpdateEventSoundUI("disconnected", cb_type_disconnected, cb_file_disconnected, panel_random_disconnected, ic_random_disconnected,
+                Settings.Instance.SoundTypeForDisconnected, Settings.Instance.SoundFileForDisconnected, Settings.Instance.RandomPoolForDisconnected, ring, GetTtsSoundsForOp("disconnected"));
+            UpdateEventSoundUI("screenshot", cb_type_screenshot, cb_file_screenshot, panel_random_screenshot, ic_random_screenshot,
+                Settings.Instance.SoundTypeForScreenshot, Settings.Instance.SoundFileForScreenshot, Settings.Instance.RandomPoolForScreenshot, ring, GetTtsSoundsForOp("screenshot"));
+            UpdateEventSoundUI("replay", cb_type_replay, cb_file_replay, panel_random_replay, ic_random_replay,
+                Settings.Instance.SoundTypeForReplaySaved, Settings.Instance.SoundFileForReplaySaved, Settings.Instance.RandomPoolForReplaySaved, ring, GetTtsSoundsForOp("replay"));
+            UpdateEventSoundUI("rec_start", cb_type_rec_start, cb_file_rec_start, panel_random_rec_start, ic_random_rec_start,
+                Settings.Instance.SoundTypeForRecordingStarted, Settings.Instance.SoundFileForRecordingStarted, Settings.Instance.RandomPoolForRecordingStarted, ring, GetTtsSoundsForOp("rec_start"));
+            UpdateEventSoundUI("rec_stop", cb_type_rec_stop, cb_file_rec_stop, panel_random_rec_stop, ic_random_rec_stop,
+                Settings.Instance.SoundTypeForRecordingStopped, Settings.Instance.SoundFileForRecordingStopped, Settings.Instance.RandomPoolForRecordingStopped, ring, GetTtsSoundsForOp("rec_stop"));
+            IsChangedByCode = false;
+        }
+
+        private void cb_type_screenshot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_screenshot.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForScreenshot = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("screenshot");
+            UpdateEventSoundUI("screenshot", cb_type_screenshot, cb_file_screenshot, panel_random_screenshot, ic_random_screenshot,
+                Settings.Instance.SoundTypeForScreenshot, Settings.Instance.SoundFileForScreenshot, Settings.Instance.RandomPoolForScreenshot, ring, voice);
+        }
+
+        private void cb_type_replay_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_replay.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForReplaySaved = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("replay");
+            UpdateEventSoundUI("replay", cb_type_replay, cb_file_replay, panel_random_replay, ic_random_replay,
+                Settings.Instance.SoundTypeForReplaySaved, Settings.Instance.SoundFileForReplaySaved, Settings.Instance.RandomPoolForReplaySaved, ring, voice);
+        }
+
+        private void cb_type_rec_start_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_rec_start.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForRecordingStarted = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("rec_start");
+            UpdateEventSoundUI("rec_start", cb_type_rec_start, cb_file_rec_start, panel_random_rec_start, ic_random_rec_start,
+                Settings.Instance.SoundTypeForRecordingStarted, Settings.Instance.SoundFileForRecordingStarted, Settings.Instance.RandomPoolForRecordingStarted, ring, voice);
+        }
+
+        private void cb_type_rec_stop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_rec_stop.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForRecordingStopped = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("rec_stop");
+            UpdateEventSoundUI("rec_stop", cb_type_rec_stop, cb_file_rec_stop, panel_random_rec_stop, ic_random_rec_stop,
+                Settings.Instance.SoundTypeForRecordingStopped, Settings.Instance.SoundFileForRecordingStopped, Settings.Instance.RandomPoolForRecordingStopped, ring, voice);
+        }
+
+        private void cb_type_connected_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_connected.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForConnected = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("connected");
+            UpdateEventSoundUI("connected", cb_type_connected, cb_file_connected, panel_random_connected, ic_random_connected,
+                Settings.Instance.SoundTypeForConnected, Settings.Instance.SoundFileForConnected, Settings.Instance.RandomPoolForConnected, ring, voice);
+        }
+
+        private void cb_type_disconnected_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var type = (cb_type_disconnected.SelectedItem as ComboBoxItem)?.Tag as string;
+            if (type == null) return;
+            Settings.Instance.SoundTypeForDisconnected = type;
+            Settings.Instance.Save();
+            var ring = GetRingSounds();
+            var voice = GetTtsSoundsForOp("disconnected");
+            UpdateEventSoundUI("disconnected", cb_type_disconnected, cb_file_disconnected, panel_random_disconnected, ic_random_disconnected,
+                Settings.Instance.SoundTypeForDisconnected, Settings.Instance.SoundFileForDisconnected, Settings.Instance.RandomPoolForDisconnected, ring, voice);
+        }
+
+        private void cb_file_screenshot_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_screenshot.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForScreenshot = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+        private void cb_file_replay_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_replay.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForReplaySaved = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+        private void cb_file_rec_start_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_rec_start.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForRecordingStarted = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+        private void cb_file_rec_stop_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_rec_stop.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForRecordingStopped = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+        private void cb_file_connected_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_connected.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForConnected = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+        private void cb_file_disconnected_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IsChangedByCode) return;
+            var sel = cb_file_disconnected.SelectedItem as ComboBoxItem;
+            Settings.Instance.SoundFileForDisconnected = sel?.Tag as string;
+            Settings.Instance.Save();
+        }
+
+        void TryPlaySimpleSound(string file)
+        {
+            try
+            {
+                if (System.IO.Path.IsPathRooted(file) && File.Exists(file))
+                {
+                    var mp = new System.Windows.Media.MediaPlayer();
+                    mp.Open(new Uri(file));
+                    mp.Volume = 1.0;
+                    mp.Play();
+                    return;
+                }
+                var baseDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                var exeDir = System.IO.Path.GetDirectoryName(baseDir);
+                var candidates = new List<string>();
+                candidates.Add(System.IO.Path.Combine(exeDir, "sounds", file));
+                candidates.Add(System.IO.Path.GetFullPath(System.IO.Path.Combine(exeDir, "..", "..", "..", "sounds", file)));
+                candidates.Add(System.IO.Path.Combine(Environment.CurrentDirectory, "sounds", file));
+
+                foreach (var p in candidates)
+                {
+                    if (File.Exists(p))
+                    {
+                        var mp = new System.Windows.Media.MediaPlayer();
+                        mp.Open(new Uri(p));
+                        mp.Volume = 1.0;
+                        mp.Play();
+                        break;
+                    }
+                }
+            }
+            catch { }
         }
 
         private void cb_use_safe_area_Unchecked(object sender, RoutedEventArgs e)
