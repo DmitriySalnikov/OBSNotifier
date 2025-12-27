@@ -26,7 +26,7 @@ Translated:
 	- sv-SE: 100%
 	- tr: 0%
 	- vi: 0%
-	- zh-CN: 93%
+	- zh-CN: 100%
 	- zh-TW: 0%
 Approved:
 	- af: 0%
@@ -55,5 +55,5 @@ Approved:
 	- sv-SE: 0%
 	- tr: 0%
 	- vi: 0%
-	- zh-CN: 90%
+	- zh-CN: 100%
 	- zh-TW: 0%

@@ -4,12 +4,12 @@
  instead of \n -->
     
     <!-- Default Module -->
-    <v:String x:Key="default_module_name">堆栈通知</v:String>
-    <v:String x:Key="default_module_desc">这是默认的通知模块。
-它显示一个或多个位于监视器角落的通知。</v:String>
+    <v:String x:Key="default_module_name">堆叠</v:String>
+    <v:String x:Key="default_module_desc">这是默认的通知样式。
+在显示器角落显示一个或多个通知。</v:String>
 
     <!-- Nvidia-Like Module -->
-    <v:String x:Key="nvidia_like_module_name">Nvidia风格的通知样式</v:String>
-    <v:String x:Key="nvidia_like_module_desc">类似于Nvidia通知的简单通知</v:String>
+    <v:String x:Key="nvidia_like_module_name">类Nvidia</v:String>
+    <v:String x:Key="nvidia_like_module_desc">类似于Nvidia通知的简单通知样式</v:String>
 
 </ResourceDictionary>
