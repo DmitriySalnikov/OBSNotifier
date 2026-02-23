@@ -1,4 +1,4 @@
-﻿using OBSNotifier.Modules;
+using OBSNotifier.Modules;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using OBSWebsocketDotNet.Types.Events;
@@ -307,7 +307,18 @@ namespace OBSNotifier
         {
             InvokeNotif(() =>
             {
-                switch (e.OutputState.State)
+                OutputState? state;
+                try
+                {
+                    state = e.OutputState.State;
+                }
+                catch (Exception ex)
+                {
+                    App.Log(ex);
+                    return;
+                }
+
+                switch (state)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.RecordingStarted);
@@ -337,7 +348,18 @@ namespace OBSNotifier
         {
             InvokeNotif(() =>
             {
-                switch (e.OutputState.State)
+                OutputState? state;
+                try
+                {
+                    state = e.OutputState.State;
+                }
+                catch (Exception ex)
+                {
+                    App.Log(ex);
+                    return;
+                }
+
+                switch (state)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.StreamingStarted);
@@ -355,7 +377,18 @@ namespace OBSNotifier
         {
             InvokeNotif(() =>
             {
-                switch (e.OutputState.State)
+                OutputState? state;
+                try
+                {
+                    state = e.OutputState.State;
+                }
+                catch (Exception ex)
+                {
+                    App.Log(ex);
+                    return;
+                }
+
+                switch (state)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.ReplayStarted);
@@ -378,7 +411,18 @@ namespace OBSNotifier
         {
             InvokeNotif(() =>
             {
-                switch (e.OutputState.State)
+                OutputState? state;
+                try
+                {
+                    state = e.OutputState.State;
+                }
+                catch (Exception ex)
+                {
+                    App.Log(ex);
+                    return;
+                }
+
+                switch (state)
                 {
                     case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
                         ShowNotif(NotificationType.VirtualCameraStarted);
