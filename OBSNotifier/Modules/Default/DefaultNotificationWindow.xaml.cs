@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 
 namespace OBSNotifier.Modules.Default
@@ -77,6 +77,8 @@ namespace OBSNotifier.Modules.Default
 
         public void ShowNotif(NotificationType type, string title, string desc)
         {
+            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
+
             if (isPreviewNotif)
                 return;
 
@@ -110,6 +112,8 @@ namespace OBSNotifier.Modules.Default
 
         public void ShowPreview()
         {
+            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
+
             isPreviewNotif = true;
             UpdateParameters();
             CreateMissingBlocks();

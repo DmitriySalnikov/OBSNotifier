@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -293,6 +293,8 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public void ShowNotif(NotificationType type, string title, string desc)
         {
+            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
+
             if (currentParams.IsPreviewNotif)
                 return;
 
@@ -337,6 +339,8 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public void ShowPreview()
         {
+            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
+
             previousParams = currentParams.Duplicate();
             currentParams.IsPreviewNotif = true;
             UpdateParameters();
