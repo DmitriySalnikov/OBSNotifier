@@ -1,4 +1,4 @@
-﻿using OBSNotifier.Modules;
+using OBSNotifier.Modules;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using System;
@@ -562,7 +562,7 @@ namespace OBSNotifier
             {
                 if (string.IsNullOrWhiteSpace(adrs))
                     adrs = "ws://localhost:4455";
-                if (!adrs.StartsWith("ws://"))
+                if (!(adrs.StartsWith("ws://") || adrs.StartsWith("wss://")))
                     adrs = "ws://" + adrs;
                 var pass = pas;
 

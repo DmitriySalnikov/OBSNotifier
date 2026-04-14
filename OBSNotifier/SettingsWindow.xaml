@@ -1,4 +1,4 @@
-﻿<Window x:Class="OBSNotifier.SettingsWindow"
+<Window x:Class="OBSNotifier.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -27,7 +27,9 @@
             </TextBlock>
 
             <Label Content="{DynamicResource settings_window_server_address_label}" HorizontalAlignment="Left" Width="120" Height="26" VerticalAlignment="Top"/>
-            <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top"/>
+            <Border x:Name="b_error_border" BorderThickness="0" BorderBrush="Red" Margin="0">
+                <TextBox x:Name="tb_address" Style="{StaticResource placeHolder}" Tag="localhost:4455" TextWrapping="NoWrap" Text="" MaxLines="1" Height="18" VerticalAlignment="Top" TextChanged="tb_address_TextChanged"/>
+            </Border>
 
             <Label Content="{DynamicResource settings_window_password_label}" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top"/>
             <PasswordBox x:Name="tb_password" Height="18" VerticalAlignment="Top"/>

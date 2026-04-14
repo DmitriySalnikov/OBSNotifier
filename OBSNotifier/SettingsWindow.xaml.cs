@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -138,6 +138,21 @@ namespace OBSNotifier
             {
                 tb_autostart_button_text.Text = Utils.Tr("settings_window_run_with_obs_button");
                 tb_autostart_button_text.ToolTip = Utils.Tr("settings_window_run_with_obs_hint");
+            }
+        }
+
+        void UpdateAddressRedBorder(bool isRed)
+        {
+            if (isRed)
+            {
+                b_error_border.BorderThickness = new Thickness(2);
+                b_error_border.Margin = new Thickness(-2);
+            }
+            else
+            {
+                b_error_border.ToolTip = null;
+                b_error_border.BorderThickness = new Thickness(0);
+                b_error_border.Margin = new Thickness(0);
             }
         }
 
@@ -323,6 +338,8 @@ namespace OBSNotifier
 
         private async void btn_connect_Click(object sender, RoutedEventArgs e)
         {
+            UpdateAddressRedBorder(false);
+
             if (!App.obs.IsConnected)
             {
                 if (App.CurrentConnectionState == App.ConnectionState.TryingToReconnect)
@@ -339,7 +356,12 @@ namespace OBSNotifier
                     {
                         await App.ConnectToOBS(tb_address.Text, tb_password.Password);
                     }
-                    catch (Exception ex) { App.Log(ex); }
+                    catch (Exception ex)
+                    {
+                        UpdateAddressRedBorder(true);
+                        b_error_border.ToolTip = ex.Message;
+                        App.Log(ex);
+                    }
 
                     IsConnecting = false;
                     UpdateConnectButton();
@@ -362,6 +384,11 @@ namespace OBSNotifier
         {
             if (WindowState == WindowState.Minimized)
                 Close();
+        }
+
+        private void tb_address_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateAddressRedBorder(false);
         }
 
         private void cb_display_to_show_SelectionChanged(object sender, SelectionChangedEventArgs e)
