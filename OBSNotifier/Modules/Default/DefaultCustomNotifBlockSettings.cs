@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Media;
 
@@ -23,6 +23,7 @@ namespace OBSNotifier.Modules.Default
         public double Width { get { return width; } set { width = Math.Max(1, value); } }
         public double Height { get { return height; } set { height = Math.Max(1, value); } }
         public Thickness Margin { get; set; }
+        public bool HideFromDisplayCapture { get; set; }
         public uint MaxPathChars { get; set; }
         public bool ClickThrough { get; set; }
         public bool ShowQuickActions { get; set; }
@@ -38,6 +39,7 @@ namespace OBSNotifier.Modules.Default
             Width = 180;
             Height = 52;
             Margin = new Thickness(4);
+            HideFromDisplayCapture = true;
             MaxPathChars = 32;
             ClickThrough = false;
             ShowQuickActions = true;

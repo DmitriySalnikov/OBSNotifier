@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Media;
 
 namespace OBSNotifier.Modules.NvidiaLike
@@ -30,6 +30,7 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public uint MaxPathChars { get; set; }
         public bool ClickThrough { get; set; }
+        public bool HideFromDisplayCapture { get; set; }
         public bool ShowQuickActions { get; set; }
         public bool ShowQuickActionsColoredLine { get; set; }
         public double QuickActionsOffset { get => openFileOffset; set => openFileOffset = Math.Max(0, value); }
@@ -55,6 +56,7 @@ namespace OBSNotifier.Modules.NvidiaLike
 
             MaxPathChars = 32;
             ClickThrough = false;
+            HideFromDisplayCapture = true;
             ShowQuickActions = true;
             ShowQuickActionsColoredLine = true;
             QuickActionsOffset = 8.0;

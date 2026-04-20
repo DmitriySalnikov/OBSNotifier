@@ -18,6 +18,13 @@ namespace OBSNotifier
         const int WS_EX_TRANSPARENT = 0x20;
         const int GWL_EXSTYLE = -20;
 
+        enum DisplayAffinity
+        {
+            WDA_NONE = 0x00000000,
+            //WDA_MONITOR = 0x00000001,
+            WDA_EXCLUDEFROMCAPTURE = 0x00000011,
+        }
+
         const uint SWP_NOMOVE = 0x0002;
         const uint SWP_NOSIZE = 0x0001;
         const uint SWP_NOACTIVATE = 0x0010;
@@ -34,6 +41,8 @@ namespace OBSNotifier
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         static extern int WA_GetWindowLong(IntPtr hWnd, int nIndex);
 
+        [DllImport("user32.dll", EntryPoint = "SetWindowDisplayAffinity")]
+        static extern bool WA_SetWindowDisplayAffinity(IntPtr hwnd, DisplayAffinity affinity);
         #endregion
 
         static void UpdateWindowLong(IntPtr hwnd, bool isEnabled, int updateWith)
@@ -88,6 +97,18 @@ namespace OBSNotifier
         {
             IntPtr hwndIdx = fAlwaysTop ? HWND_TOPMOST : HWND_NOTOPMOST;
             WA_SetWindowPos(hwnd, hwndIdx, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
+        }
+
+        /// <summary>
+        /// Starting with Windows 10 2004 (19041), this function will make the specified window invisible to most screen capture methods.
+        /// This function is supported starting with Windows 7, and up to Windows 10 version 2004, it replaces the window's content with a black rectangle.
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="isHidden"></param>
+        /// <returns></returns>
+        public static bool HideWindowFromCapture(IntPtr hwnd, bool isHidden)
+        {
+            return WA_SetWindowDisplayAffinity(hwnd, isHidden ? DisplayAffinity.WDA_EXCLUDEFROMCAPTURE : DisplayAffinity.WDA_NONE);
         }
     }
 }

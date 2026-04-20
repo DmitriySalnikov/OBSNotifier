@@ -291,15 +291,27 @@ namespace OBSNotifier.Modules.NvidiaLike
             }
         }
 
+        void UpdateWindowFlags()
+        {
+            if (!IsLoaded)
+            {
+                Utils.InvokeAction(this, UpdateWindowFlags);
+                return;
+            }
+
+            var h = this.GetHandle();
+            UtilsWinApi.SetWindowTopmost(h, true);
+            UtilsWinApi.HideWindowFromCapture(h, currentParams.HideFromDisplayCapture);
+        }
+
         public void ShowNotif(NotificationType type, string title, string desc)
         {
-            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
-
             if (currentParams.IsPreviewNotif)
                 return;
 
             previousParams = currentParams.Duplicate();
             UpdateParameters();
+            UpdateWindowFlags();
 
             l_title.Text = title;
 
@@ -339,11 +351,10 @@ namespace OBSNotifier.Modules.NvidiaLike
 
         public void ShowPreview()
         {
-            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
-
             previousParams = currentParams.Duplicate();
             currentParams.IsPreviewNotif = true;
             UpdateParameters();
+            UpdateWindowFlags();
 
             l_title.Text = Utils.Tr("notification_events_preview");
             l_desc.Visibility = string.IsNullOrWhiteSpace(l_desc.Text) ? Visibility.Collapsed : Visibility.Visible;

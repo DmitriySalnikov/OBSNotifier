@@ -75,10 +75,21 @@ namespace OBSNotifier.Modules.Default
             Top = pos.Y;
         }
 
+        void UpdateWindowFlags()
+        {
+            if (!IsLoaded)
+            {
+                Utils.InvokeAction(this, UpdateWindowFlags);
+                return;
+            }
+
+            var h = this.GetHandle();
+            UtilsWinApi.SetWindowTopmost(h, true);
+            UtilsWinApi.HideWindowFromCapture(h, CurrentNotifBlockSettings.HideFromDisplayCapture);
+        }
+
         public void ShowNotif(NotificationType type, string title, string desc)
         {
-            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
-
             if (isPreviewNotif)
                 return;
 
@@ -106,16 +117,18 @@ namespace OBSNotifier.Modules.Default
                 sp_main_panel.Children.Add(nb);
 
             UpdateParameters();
+            UpdateWindowFlags();
+
             nb.SetupNotif(CurrentNotifBlockSettings, type, title, desc);
             ShowWithLocationFix();
         }
 
         public void ShowPreview()
         {
-            UtilsWinApi.SetWindowTopmost(this.GetHandle(), true);
-
             isPreviewNotif = true;
             UpdateParameters();
+            UpdateWindowFlags();
+
             CreateMissingBlocks();
 
             if (IsPositionedOnTop)
