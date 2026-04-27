@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -251,6 +251,7 @@ namespace OBSNotifier
         {
             BitmapImage img = new BitmapImage();
             img.BeginInit();
+            img.CacheOption = BitmapCacheOption.OnLoad;
 
             if (assembly != null)
                 img.UriSource = new Uri(Path.Combine(Path.GetDirectoryName(assembly.Location), path));

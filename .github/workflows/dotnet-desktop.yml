@@ -46,7 +46,11 @@ jobs:
       - name: Prepare artifacts
         if: matrix.configuration == 'Release'
         shell: powershell
-        run: Remove-Item ${{ env.Project_Name }}/bin/${{ matrix.configuration }}/* -Include *.xml,*.pdb -Force
+        run: |
+          $bin = "${{env.Project_Name}}/bin/${{matrix.configuration}}"
+          rm $bin/* -i *.xml,*.pdb -Force
+          rm $bin/runtimes/linux-* -r -Force
+          rm $bin/runtimes/osx-* -r -Force
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

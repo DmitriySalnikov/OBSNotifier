@@ -13,12 +13,12 @@ This is a simple program for displaying notifications from OBS on your desktop.
 ## Features
 
 * Supports `obs-websocket` 5.x (embedded in OBS 28+)
-* Plugin system
 * Separate settings for each plugin
 * Adjusting the position and offsets of notifications
 * Configurable notification display time
 * Highly customizable default plugin
 * Nvidia-like plugin out of the box
+* Animated image support: GIF, WebP, APNG (`webp` requires https://apps.microsoft.com/detail/9PG2DK419DRG (installed by default in Win 11))
 * Ability to choose which types of notifications to display
 * Ability to quickly open saved files
 * Multi-language support (English, Chinese (Simplified, China), Russian, Czech, Danish, Finnish, German, Italian and 21 other languages)
@@ -46,6 +46,8 @@ If you have found a bug or want to suggest a new feature, then please create a n
 ![Default notifications](Images/readme/default_notif2.png)
 
 ![Settings Window](Images/readme/OBSNotifier_setting.png)
+
+![Nvidia-like animation](Images/readme/obs_notifier_anim_icon.gif)
 
 ## Support
 

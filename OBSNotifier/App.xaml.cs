@@ -1,3 +1,4 @@
+using AnimatedImage;
 using OBSNotifier.Modules;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using System.Runtime.InteropServices;
 
 namespace OBSNotifier
 {
@@ -163,6 +165,20 @@ namespace OBSNotifier
             UpdateTrayStatus();
 
             SetupVersionChecker(true);
+
+            var proc_arch = RuntimeInformation.ProcessArchitecture;
+
+            var arch_to_folder = new Dictionary<Architecture, string> {
+                { Architecture.X86, "win-x86" },
+                { Architecture.X64, "win-x64" },
+                { Architecture.Arm64, "win-arm64" },
+            };
+
+            // Load webp libs for AnimatedImage
+            NativeLibsLocator.SetNativeLibraryPath(Path.Combine(
+                Path.GetDirectoryName(GetType().Assembly.Location),
+                "runtimes/" + arch_to_folder[proc_arch] + "/native"
+                ));
 
             // Debug print all languages
 #if false

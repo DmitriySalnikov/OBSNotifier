@@ -1,3 +1,4 @@
+using AnimatedImage.Wpf;
 using System;
 using System.Windows;
 using System.Windows.Media.Animation;
@@ -145,13 +146,17 @@ namespace OBSNotifier.Modules.NvidiaLike
             try
             {
                 if (currentParams.IconPath != defaultParams.IconPath)
-                    i_icon.Source = Utils.GetBitmapImage(currentParams.IconPath, GetType().Assembly);
+                {
+                    ImageBehavior.SetAnimatedSource(i_icon, Utils.GetBitmapImage(currentParams.IconPath, GetType().Assembly));
+                }
                 else
-                    i_icon.Source = Utils.GetBitmapImage(default_icon_path);
+                {
+                    ImageBehavior.SetAnimatedSource(i_icon, Utils.GetBitmapImage(default_icon_path));
+                }
             }
             catch
             {
-                i_icon.Source = Utils.GetBitmapImage(default_icon_path);
+                ImageBehavior.SetAnimatedSource(i_icon, Utils.GetBitmapImage(default_icon_path));
             }
 
             i_icon.Height = currentParams.IconHeight;

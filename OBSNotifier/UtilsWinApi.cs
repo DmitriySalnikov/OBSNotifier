@@ -102,6 +102,7 @@ namespace OBSNotifier
         /// <summary>
         /// Starting with Windows 10 2004 (19041), this function will make the specified window invisible to most screen capture methods.
         /// This function is supported starting with Windows 7, and up to Windows 10 version 2004, it replaces the window's content with a black rectangle.
+        /// Only with DWM.
         /// </summary>
         /// <param name="hwnd"></param>
         /// <param name="isHidden"></param>
