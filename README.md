@@ -16,6 +16,7 @@ This is a simple program for displaying notifications from OBS on your desktop.
 * Separate settings for each plugin
 * Portable mode (Just create a `portable_mode` file in the program folder. Optionally, you can specify the absolute path to the folder inside this file.)
 * Adjusting the position and offsets of notifications
+* Not visible for recording when the `HideFromDisplayCapture` setting is enabled (requires `Windows 10 version 2004 (19041)` or newer, and `dwm` must be enabled)
 * Configurable notification display time
 * Highly customizable default plugin
 * Nvidia-like plugin out of the box
