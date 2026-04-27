@@ -34,7 +34,7 @@ namespace OBSNotifier
         }
 
         static Logger logger;
-        public static readonly string AppDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
+        public static readonly string AppDataFolder = GetPortableModePathOrNull() ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), AppName);
         public static event EventHandler<ConnectionState> ConnectionStateChanged;
         public static OBSWebsocket obs;
         public static ModuleManager modules;
@@ -233,6 +233,27 @@ namespace OBSNotifier
 
             Settings.Instance?.Save(true);
             mutex?.Dispose();
+        }
+
+        internal static string GetPortableModePathOrNull()
+        {
+            var app_folder = Path.GetDirectoryName(typeof(App).Assembly.Location);
+            var pm_file = Path.Combine(app_folder, "portable_mode");
+            if (File.Exists(pm_file))
+            {
+                var lines = File.ReadAllLines(pm_file);
+                if (lines.Length > 0)
+                {
+                    if (!string.IsNullOrEmpty(lines[0]) && Path.IsPathRooted(lines[0]))
+                    {
+                        return Path.GetFullPath(lines[0]);
+                    }
+                }
+
+                return Path.Combine(app_folder, "userdata");
+            }
+
+            return null;
         }
 
         internal void SetupVersionChecker(bool isSilent = true)
