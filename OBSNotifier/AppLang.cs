@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -176,7 +176,7 @@ namespace OBSNotifier
                         is_approved = false;
                         continue;
                     }
-                    else if (line.ToLower().StartsWith("approved"))
+                    else if (line.ToLower().StartsWith("proofread"))
                     {
                         is_approved = true;
                         continue;
