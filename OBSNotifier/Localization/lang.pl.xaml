@@ -20,29 +20,29 @@ Wybierz 'Nie', aby pominąć tę wersję.</v:String>
     <v:String x:Key="message_box_version_check_failed_parse_info">Nie udało się uzyskać informacji o nowej wersji.</v:String>
     <v:String x:Key="message_box_version_check_failed_to_check">Nie udało się sprawdzić aktualizacji.</v:String>
     <v:String x:Key="message_box_autostart_script_title">Zakończ konfigurację</v:String>
-    <v:String x:Key="message_box_autostart_script_created">Skrypt autostart został pomyślnie utworzony!</v:String>
-    <v:String x:Key="message_box_autostart_script_updated">Skrypt autostart został pomyślnie zaktualizowany!</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Skrypt autostartu został pomyślnie utworzony!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Skrypt autostartu został pomyślnie zaktualizowany!</v:String>
     <v:String x:Key="message_box_autostart_script_path_copied">Ścieżka do pliku została skopiowana do schowka.</v:String>
     <v:String x:Key="message_box_autostart_script_already_added">Jeśli już wcześniej dodałeś skrypt do OBS, możesz bezpiecznie zamknąć tę wiadomość.
 Jeśli nie, postępuj zgodnie z poniższymi instrukcjami.</v:String>
     <v:String x:Key="message_box_autostart_script_need_to_add">Teraz musisz dodać to do OBS.</v:String>
-    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
-Tools -&gt; Scripts.
-Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+    <v:String x:Key="message_box_autostart_script_instruction">Musisz otworzyć okno OBS, po czym przejść do okna ustawień skryptu.
+Narzędzia -&gt; Skrypty.
+Następnie naciśnij na przycisk &quot;+&quot;, wklej ścieżkę pliku ze schowka w polu &quot;Nazwa pliku&quot; i naciśnij &quot;Otwórz&quot;.
 
-Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+Podsumowanie: Narzędzia -&gt; Skrypty -&gt; Przycisk &quot;+&quot; -&gt; Wklej ścieżkę pliku w polu &quot;Nazwa pliku&quot; -&gt; Naciśnij &quot;Otwórz&quot;
 
-After that, {0} will automatically start with OBS.</v:String>
+Po tym, {0} będzie włączać się automatycznie wraz z OBS.</v:String>
 
     <!-- About Window -->
-    <v:String x:Key="about_window_description">To jest program do wyświetlania powiadomień z OBS. Aby ten program działał, musisz zainstalować OBS w wersji 28+ z wbudowaną wersją &quot;obs-websocket&quot; 5+.</v:String>
+    <v:String x:Key="about_window_description">To jest program do wyświetlania powiadomień z OBS. Aby ten program działał poprawnie, musisz zainstalować OBS w wersji 28+ z wbudowaną wersją serwera &quot;obs-websocket&quot; 5+.</v:String>
     <v:String x:Key="about_window_view_source_code">Zobacz kod źródłowy</v:String>
 
     <!-- Settings Window -->
-    <v:String x:Key="settings_window_top_hint">Aby aplikacja działała musisz połączyć się z wtyczką obs-websocket.</v:String>
+    <v:String x:Key="settings_window_top_hint">Aby aplikacja działała musisz połączyć się z serwerem obs-websocket.</v:String>
     <v:String x:Key="settings_window_top_hint_how_to">Jak włączyć 'obs-websocket'?</v:String>
     <v:String x:Key="settings_window_top_hint_tooltip">1. Narzędzia - 2. Ustawienia serwera WebSocket - 3. Włącz serwer WebSocket
-?. Opcjonalnie 'Włącz uwierzytelnienienie'. Aby uzyskać aktualne hasło, kliknij 'Pokaż informacje o połączeniu'.
+?. Opcjonalnie 'Włącz uwierzytelnienie'. Aby uzyskać aktualne hasło, kliknij 'Pokaż informacje połączenia'.
 Nie zapomnij kliknąć Zastosuj po dokonaniu zmian na serwerze.</v:String>
     <v:String x:Key="settings_window_support_developer">Wesprzyj programistę!</v:String>
     <v:String x:Key="settings_window_report_bug">Zgłoś błąd lub zaproponuj funkcję.</v:String>
@@ -57,7 +57,7 @@ Nie zapomnij kliknąć Zastosuj po dokonaniu zmian na serwerze.</v:String>
 Spróbuj uruchomić jako administrator)</v:String>
     <v:String x:Key="settings_window_run_with_windows_different_path">(używana jest teraz inna ścieżka)</v:String>
     <v:String x:Key="settings_window_run_with_obs_hint">Utwórz lub zaktualizuj skrypt, aby uruchomić program automatycznie.</v:String>
-    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skrypt nie pasuje do bieżącej wersji,
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Skrypt nie pasuje do bieżącej wersji
 lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.</v:String>
     <v:String x:Key="settings_window_run_with_obs_button">Rozpocznij z OBS</v:String>
     <v:String x:Key="settings_window_run_with_obs_button_outdated">(skrypt jest nieaktualny)</v:String>
@@ -76,14 +76,14 @@ lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.
     <v:String x:Key="settings_window_fix_config_hint">Napraw konfigurację</v:String>
     <v:String x:Key="settings_window_position_offset_label">Przesunięcie pozycji:</v:String>
     <v:String x:Key="settings_window_fade_delay_label">Opóźnienie zanikania (sekundy):</v:String>
-    <v:String x:Key="settings_window_fade_delay_hint">Opóźnienie przed ukryciem powiadomienia</v:String>
-    <v:String x:Key="settings_window_additional_label">Dodatkowo:</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Opóźnienie przed zniknięciem powiadomienia</v:String>
+    <v:String x:Key="settings_window_additional_label">Ustawienia dodatkowe:</v:String>
     <v:String x:Key="settings_window_open_module_settings">Otwórz ustawienia modułu</v:String>
 
     <!-- Active Notifications -->
     <v:String x:Key="active_notifications_title">Wybierz aktywne powiadomienia</v:String>
     <v:String x:Key="active_notifications_select_all">Zaznacz wszystko</v:String>
-    <v:String x:Key="active_notifications_select_none">Nie wybierz żadnego</v:String>
+    <v:String x:Key="active_notifications_select_none">Odznacz wszystko</v:String>
     <v:String x:Key="active_notifications_reset_to_current">Przywróć bieżący</v:String>
     <v:String x:Key="active_notifications_reset_to_default">Przywróć domyślne</v:String>
     <v:String x:Key="active_notifications_save">Zapisz</v:String>
@@ -93,10 +93,10 @@ lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.
     <v:String x:Key="tray_menu_languages">Język</v:String>
     <v:String x:Key="tray_menu_languages_completion_hint">Postęp tłumaczenia (przetłumaczone % / zweryfikowane %)</v:String>
     <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
-    <v:String x:Key="tray_menu_check_updates">Sprawdź aktualizacje</v:String>
+    <v:String x:Key="tray_menu_check_updates">Sprawdź dostępność aktualizacji</v:String>
     <v:String x:Key="tray_menu_open_logs_folder">Otwórz folder dzienników</v:String>
     <v:String x:Key="tray_menu_about">O {0}</v:String>
-    <v:String x:Key="tray_menu_exit">Wyjście</v:String>
+    <v:String x:Key="tray_menu_exit">Wyjdź</v:String>
     <v:String x:Key="tray_menu_status_connected">Połączono</v:String>
     <v:String x:Key="tray_menu_status_not_connected">Nie połączono</v:String>
     <v:String x:Key="tray_menu_status_trying_to_reconnect">Próba ponownego połączenia</v:String>
@@ -106,13 +106,13 @@ lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.
     <v:String x:Key="notification_events_file_save_open_file">Otwórz plik</v:String>
     <v:String x:Key="notification_events_preview">Podgląd powiadomienia</v:String>
     <v:String x:Key="notification_events_preview_2nd_line">Opis</v:String>
-    <v:String x:Key="notification_events_connected">Połączono</v:String>
+    <v:String x:Key="notification_events_connected">Połączono z OBS</v:String>
     <v:String x:Key="notification_events_disconnected">Odłączony od OBS</v:String>
     <v:String x:Key="notification_events_lost_connection">Utracono połączenie z OBS</v:String>
-    <v:String x:Key="notification_events_lost_connection_2nd_line">Próba ponownego połączenia</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Łączenie ponownie</v:String>
     <v:String x:Key="notification_events_replay_started">Powtórka rozpoczęta</v:String>
     <v:String x:Key="notification_events_replay_stopped">Powtórka zatrzymana</v:String>
-    <v:String x:Key="notification_events_replay_saved">Replay zapisany</v:String>
+    <v:String x:Key="notification_events_replay_saved">Powtórka zapisana</v:String>
     <v:String x:Key="notification_events_recording_started">Nagrywanie rozpoczęte</v:String>
     <v:String x:Key="notification_events_recording_stopped">Nagrywanie zatrzymane</v:String>
     <v:String x:Key="notification_events_recording_paused">Nagrywanie wstrzymane</v:String>
@@ -125,7 +125,7 @@ lub zarejestrowana ścieżka do {0} nie pasuje do bieżącej ścieżki programu.
     <v:String x:Key="notification_events_scene_switched_2nd_line">Aktualnie: {0}</v:String>
     <v:String x:Key="notification_events_scene_collection_switched">Kolekcja scen przełączona</v:String>
     <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Aktualnie: {0}</v:String>
-    <v:String x:Key="notification_events_profile_switched">Profil przełączony</v:String>
+    <v:String x:Key="notification_events_profile_switched">Zmieniono profil</v:String>
     <v:String x:Key="notification_events_profile_switched_2nd_line">Aktualnie: {0}</v:String>
     <v:String x:Key="notification_events_audio_muted">Dźwięk jest wyciszony</v:String>
     <v:String x:Key="notification_events_audio_turned_on">Dźwięk jest włączony</v:String>

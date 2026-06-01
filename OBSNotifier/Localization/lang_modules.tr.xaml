@@ -4,12 +4,11 @@
  instead of \n -->
     
     <!-- Default Module -->
-    <v:String x:Key="default_module_name">Stack of notifications</v:String>
-    <v:String x:Key="default_module_desc">This is the default notification module.
-It displays one or more notifications located in the corner of the monitor.</v:String>
+    <v:String x:Key="default_module_name">Bildirim Yığını</v:String>
+    <v:String x:Key="default_module_desc">Bu varsayılan bildirim modülü.Mönitorün köşesinde bir veya birden fazla bildirim belirir.</v:String>
 
     <!-- Nvidia-Like Module -->
-    <v:String x:Key="nvidia_like_module_name">Nvidia-Like</v:String>
-    <v:String x:Key="nvidia_like_module_desc">Simple notification similar to Nvidia's notifications</v:String>
+    <v:String x:Key="nvidia_like_module_name">Nvidia-Tarzı</v:String>
+    <v:String x:Key="nvidia_like_module_desc">Nvidia'nın bildirimlerine benzer Basit bir bildirim</v:String>
 
 </ResourceDictionary>

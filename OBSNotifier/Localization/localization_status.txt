@@ -17,18 +17,18 @@ Translated:
 	- ko: 0%
 	- nl: 89%
 	- no: 88%
-	- pl: 89%
+	- pl: 100%
 	- pt-BR: 95%
 	- pt-PT: 95%
 	- ro: 100%
 	- ru: 100%
 	- sr: 0%
 	- sv-SE: 100%
-	- tr: 0%
+	- tr: 100%
 	- vi: 0%
-	- zh-CN: 93%
+	- zh-CN: 100%
 	- zh-TW: 0%
-Approved:
+Proofread:
 	- af: 0%
 	- ar: 0%
 	- ca: 0%
@@ -53,7 +53,7 @@ Approved:
 	- ru: 100%
 	- sr: 0%
 	- sv-SE: 0%
-	- tr: 0%
+	- tr: 100%
 	- vi: 0%
-	- zh-CN: 90%
+	- zh-CN: 100%
 	- zh-TW: 0%

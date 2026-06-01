@@ -4,132 +4,132 @@
  instead of \n -->
     
     <!-- Message Boxes -->
-    <v:String x:Key="message_box_error_title">Error</v:String>
-    <v:String x:Key="message_box_app_already_running">{0} is already running.
-This application instance will be closed.</v:String>
-    <v:String x:Key="message_box_app_already_running_title">Application is already running</v:String>
-    <v:String x:Key="message_box_app_auth_failed">Authentication failed</v:String>
-    <v:String x:Key="message_box_version_check_new_version_available">Current version: {0}
-New version: {1}
-Would you like to go to the download page?
+    <v:String x:Key="message_box_error_title">Hata</v:String>
+    <v:String x:Key="message_box_app_already_running">{0} zaten çalışıyor.
+Bu uygulama örneği kapatılacaktır.</v:String>
+    <v:String x:Key="message_box_app_already_running_title">Uygulama zaten çalışıyor.</v:String>
+    <v:String x:Key="message_box_app_auth_failed">Doğrulama başarısız oldu</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available">Şu anki sürüm: {0}
+Yeni sürüm: {1}
+İndirme sayfasına gitmek ister misiniz?
 
-Select 'No' to skip this version.</v:String>
-    <v:String x:Key="message_box_version_check_new_version_available_title">A new version of {0} is available</v:String>
-    <v:String x:Key="message_box_version_check_latest_version">You are using the latest version: {0}</v:String>
-    <v:String x:Key="message_box_version_check_failed_request">Failed to request info about the new version.</v:String>
-    <v:String x:Key="message_box_version_check_failed_parse_info">Failed to get information about the new version.</v:String>
-    <v:String x:Key="message_box_version_check_failed_to_check">Failed to check for update.</v:String>
-    <v:String x:Key="message_box_autostart_script_title">Complete the configuration</v:String>
-    <v:String x:Key="message_box_autostart_script_created">The autostart script was successfully created!</v:String>
-    <v:String x:Key="message_box_autostart_script_updated">The autostart script has been successfully updated!</v:String>
-    <v:String x:Key="message_box_autostart_script_path_copied">The path to the file has been copied to the clipboard.</v:String>
-    <v:String x:Key="message_box_autostart_script_already_added">If you have already added a script to OBS before, you can safely close this message.
-If not, follow the instructions below.</v:String>
-    <v:String x:Key="message_box_autostart_script_need_to_add">Now you need to add it to OBS.</v:String>
-    <v:String x:Key="message_box_autostart_script_instruction">You need to open OBS and go to the script settings window.
-Tools -&gt; Scripts.
-Then click on the + button, paste the path from the clipboard in the 'File Name' field and click Open.
+Bu sürümü atlamak için 'Hayır'ı seçin.</v:String>
+    <v:String x:Key="message_box_version_check_new_version_available_title">{0}'ın yeni bir sürümü çıktı</v:String>
+    <v:String x:Key="message_box_version_check_latest_version">En son sürümü kullanıyorsunuz: {0}</v:String>
+    <v:String x:Key="message_box_version_check_failed_request">Yeni sürümle ilgili bilgi istenemedi.</v:String>
+    <v:String x:Key="message_box_version_check_failed_parse_info">Yeni sürüm hakkında bilgi alınamadı.</v:String>
+    <v:String x:Key="message_box_version_check_failed_to_check">Güncelleme kontrolü yapılamadı.</v:String>
+    <v:String x:Key="message_box_autostart_script_title">Yapılandırmayı tamamlayın</v:String>
+    <v:String x:Key="message_box_autostart_script_created">Otomatik başlat betik başarıyla oluşturuldu!</v:String>
+    <v:String x:Key="message_box_autostart_script_updated">Otomatik başlat betik başarıyla güncellendi!</v:String>
+    <v:String x:Key="message_box_autostart_script_path_copied">Dosyanın yolu panoya kopyalandı.</v:String>
+    <v:String x:Key="message_box_autostart_script_already_added">Daha önce OBS'ye bir betik dosyası eklediyseniz, bu mesajı güvenle kapatabilirsiniz.
+Eklememişseniz, aşağıdaki talimatları izleyin.</v:String>
+    <v:String x:Key="message_box_autostart_script_need_to_add">Şimdi bunu OBS'ye eklemeniz gerekiyor.</v:String>
+    <v:String x:Key="message_box_autostart_script_instruction">OBS'yi açıp script ayarları penceresine gitmeniz gerekiyor.
+Araçlar -&gt; Betikler
+Ardından + butona, panodaki yolu ‘Dosya Adı’ alanına yapıştırın ve Aç'a tıklayın.
 
-Summary: Tools -&gt; Scripts -&gt; + button -&gt; Paste the path in the 'File Name' field -&gt; click Open.
+Özet: Araçlar -&gt; Betikler -&gt; + butonu -&gt; ‘Dosya Adı’ alanına yolu yapıştırın -&gt; Aç'a tıklayın.
 
-After that, {0} will automatically start with OBS.</v:String>
+Bundan sonra, {0} OBS ile birlikte otomatik olarak başlayacaktır</v:String>
 
     <!-- About Window -->
-    <v:String x:Key="about_window_description">This is a program for displaying notifications from OBS. In order for this program to work, you need to install OBS version 28+ with the built-in 'obs-websocket' version 5+.</v:String>
-    <v:String x:Key="about_window_view_source_code">View the source code</v:String>
+    <v:String x:Key="about_window_description">Bu, OBS'den gelen bildirimleri görüntülemek için tasarlanmış bir programdır. Bu programın çalışabilmesi için, yerleşik ‘obs-websocket’ sürüm 5+'ya sahip OBS sürüm 28+'yı yüklemeniz gerekir.</v:String>
+    <v:String x:Key="about_window_view_source_code">Kaynak kodunu görüntüle</v:String>
 
     <!-- Settings Window -->
-    <v:String x:Key="settings_window_top_hint">In order for this application to work you need to connect to the obs-websocket plugin.</v:String>
-    <v:String x:Key="settings_window_top_hint_how_to">How do I enable 'obs-websocket'?</v:String>
-    <v:String x:Key="settings_window_top_hint_tooltip">1. Tools - 2. WebSocket Server Settings - 3. Enable WebSocket server
-?. Optional 'Enable Authentication'. To find out the current password, click 'Show Connect Info'.
-Don't forget to click Apply after making changes to the server.</v:String>
-    <v:String x:Key="settings_window_support_developer">Support the developer!</v:String>
-    <v:String x:Key="settings_window_report_bug">Report a bug or suggest a feature.</v:String>
-    <v:String x:Key="settings_window_server_address_label">Server address:</v:String>
-    <v:String x:Key="settings_window_password_label">Password:</v:String>
-    <v:String x:Key="settings_window_password_warning">The password will be saved in a local file</v:String>
-    <v:String x:Key="settings_window_connect_button_connect">Connect</v:String>
-    <v:String x:Key="settings_window_connect_button_disconnect">Disconnect</v:String>
-    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Trying to reconnect... Cancel?</v:String>
-    <v:String x:Key="settings_window_run_with_windows">Run at Windows startup</v:String>
-    <v:String x:Key="settings_window_run_with_windows_admin_error">(unavailable due to an error.
-Try to run as administrator)</v:String>
-    <v:String x:Key="settings_window_run_with_windows_different_path">(a different path is used now)</v:String>
-    <v:String x:Key="settings_window_run_with_obs_hint">Create or update a script to run the program automatically.</v:String>
-    <v:String x:Key="settings_window_run_with_obs_hint_outdated">The script does not match the current version,
-or the registered path to {0} does not match the current program path.</v:String>
-    <v:String x:Key="settings_window_run_with_obs_button">Start with OBS</v:String>
-    <v:String x:Key="settings_window_run_with_obs_button_outdated">(script is outdated)</v:String>
-    <v:String x:Key="settings_window_close_on_obs_exit">Close this program when exiting OBS
-(when Settings window closed)</v:String>
-    <v:String x:Key="settings_window_notification_settings">Notification Settings</v:String>
-    <v:String x:Key="settings_window_preview">Preview</v:String>
-    <v:String x:Key="settings_window_screen_label">Screen:</v:String>
-    <v:String x:Key="settings_window_module_label">Module:</v:String>
-    <v:String x:Key="settings_window_select_active_notifications_button">Select Active Notifications</v:String>
-    <v:String x:Key="settings_window_use_safe_zone">Use safe display area
-(without the taskbar and other panels)</v:String>
-    <v:String x:Key="settings_window_style_options_label">Style Options:</v:String>
-    <v:String x:Key="settings_window_reset_hint">Reset</v:String>
-    <v:String x:Key="settings_window_reset_center_hint">Reset to the center</v:String>
-    <v:String x:Key="settings_window_fix_config_hint">Fix config</v:String>
-    <v:String x:Key="settings_window_position_offset_label">Position Offset:</v:String>
-    <v:String x:Key="settings_window_fade_delay_label">Fade Delay (Seconds):</v:String>
-    <v:String x:Key="settings_window_fade_delay_hint">Delay before hiding notification</v:String>
-    <v:String x:Key="settings_window_additional_label">Additional:</v:String>
-    <v:String x:Key="settings_window_open_module_settings">Open Module Settings</v:String>
+    <v:String x:Key="settings_window_top_hint">Bu uygulamanın çalışması için obs-websocket eklentisine bağlanmanız gerekir.</v:String>
+    <v:String x:Key="settings_window_top_hint_how_to">'obs-websocket'i nasıl etkinleştiririm?</v:String>
+    <v:String x:Key="settings_window_top_hint_tooltip">1. Araçlar - 2. WebSocket Sunucu Ayarları - 3. WebSocket sunucusunu etkinleştir
+?. İsteğe bağlı olarak ‘Kimlik Doğrulamayı Etkinleştir’ seçeneğini işaretleyin. Mevcut şifreyi öğrenmek için 'Bağlantı Bilgilerini Göster'e tıklayın.
+Sunucu ayarlarında değişiklik yaptıktan sonra 'Uygula'ya tıklamayı unutmayın.</v:String>
+    <v:String x:Key="settings_window_support_developer">Geliştiriciyi destekle!</v:String>
+    <v:String x:Key="settings_window_report_bug">Bir özellik öner veya bir hatayı bildir.</v:String>
+    <v:String x:Key="settings_window_server_address_label">Sunucu adresi:</v:String>
+    <v:String x:Key="settings_window_password_label">Şifre:</v:String>
+    <v:String x:Key="settings_window_password_warning">Şifre yerel bir dosyaya kaydedilecektir</v:String>
+    <v:String x:Key="settings_window_connect_button_connect">Bağlan</v:String>
+    <v:String x:Key="settings_window_connect_button_disconnect">Bağlantıyı kes</v:String>
+    <v:String x:Key="settings_window_connect_button_trying_to_reconnect">Yeniden bağlanılıyor... İptal etmek ister misiniz?</v:String>
+    <v:String x:Key="settings_window_run_with_windows">Windows başladığında çalıştır</v:String>
+    <v:String x:Key="settings_window_run_with_windows_admin_error">(Bir hata nedeniyle kullanılamıyor.
+Yönetici olarak çalıştırmayı deneyin)</v:String>
+    <v:String x:Key="settings_window_run_with_windows_different_path">(artık farklı bir yol kullanılıyor)</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint">Programı otomatik olarak çalıştırmak için bir script dosyası oluşturun veya güncelleyin.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_hint_outdated">Script dosyası mevcut sürümle uyuşmuyor,
+ya da {0} için kayıtlı yol mevcut program yoluyla uyuşmuyor.</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button">OBS ile başlat</v:String>
+    <v:String x:Key="settings_window_run_with_obs_button_outdated">(betik güncel değil)</v:String>
+    <v:String x:Key="settings_window_close_on_obs_exit">OBS'den çıkarken bu programı kapat
+(Ayarlar penceresi kapatıldığında)</v:String>
+    <v:String x:Key="settings_window_notification_settings">Bildirim ayarları</v:String>
+    <v:String x:Key="settings_window_preview">Ön izleme</v:String>
+    <v:String x:Key="settings_window_screen_label">Ekran:</v:String>
+    <v:String x:Key="settings_window_module_label">Modül:</v:String>
+    <v:String x:Key="settings_window_select_active_notifications_button">Etkin Bildirimleri Seç</v:String>
+    <v:String x:Key="settings_window_use_safe_zone">Güvenli görüntüleme alanını kullanın
+(görev çubuğu ve diğer paneller hariç)</v:String>
+    <v:String x:Key="settings_window_style_options_label">Tarz Seçenekleri:</v:String>
+    <v:String x:Key="settings_window_reset_hint">Sıfırla</v:String>
+    <v:String x:Key="settings_window_reset_center_hint">Ortaya sıfırla</v:String>
+    <v:String x:Key="settings_window_fix_config_hint">Yapılandırmayı düzelt</v:String>
+    <v:String x:Key="settings_window_position_offset_label">Konum Kaydırma:</v:String>
+    <v:String x:Key="settings_window_fade_delay_label">Belirme Süresi (Saniye):</v:String>
+    <v:String x:Key="settings_window_fade_delay_hint">Bildirimin gizlenmesinden önceki gecikme süresi</v:String>
+    <v:String x:Key="settings_window_additional_label">Ek olarak:</v:String>
+    <v:String x:Key="settings_window_open_module_settings">Modül ayarlarını aç</v:String>
 
     <!-- Active Notifications -->
-    <v:String x:Key="active_notifications_title">Select Active Notifications</v:String>
-    <v:String x:Key="active_notifications_select_all">Select All</v:String>
-    <v:String x:Key="active_notifications_select_none">Select None</v:String>
-    <v:String x:Key="active_notifications_reset_to_current">Reset to current</v:String>
-    <v:String x:Key="active_notifications_reset_to_default">Reset to default</v:String>
-    <v:String x:Key="active_notifications_save">Save</v:String>
+    <v:String x:Key="active_notifications_title">Aktif bildirimleri seç</v:String>
+    <v:String x:Key="active_notifications_select_all">Tümünü seç</v:String>
+    <v:String x:Key="active_notifications_select_none">Hiçbirini seç</v:String>
+    <v:String x:Key="active_notifications_reset_to_current">Şu anki duruma sıfırla</v:String>
+    <v:String x:Key="active_notifications_reset_to_default">Varsayılan duruma sıfırla</v:String>
+    <v:String x:Key="active_notifications_save">Kaydet</v:String>
 
     <!-- Tray Icon menu -->
-    <v:String x:Key="tray_menu_open_settings">Open Settings</v:String>
-    <v:String x:Key="tray_menu_languages">Language</v:String>
-    <v:String x:Key="tray_menu_languages_completion_hint">Translation progress (translated % / verified %)</v:String>
+    <v:String x:Key="tray_menu_open_settings">Ayarları aç</v:String>
+    <v:String x:Key="tray_menu_languages">Dil</v:String>
+    <v:String x:Key="tray_menu_languages_completion_hint">Çeviri süreci (çevirildi % / doğrulandı %)</v:String>
     <v:String x:Key="tray_menu_languages_completion_template">{0} ({1}% / {2}%)</v:String>
-    <v:String x:Key="tray_menu_check_updates">Check for updates</v:String>
-    <v:String x:Key="tray_menu_open_logs_folder">Open logs folder</v:String>
-    <v:String x:Key="tray_menu_about">About {0}</v:String>
-    <v:String x:Key="tray_menu_exit">Exit</v:String>
-    <v:String x:Key="tray_menu_status_connected">Connected</v:String>
-    <v:String x:Key="tray_menu_status_not_connected">Not connected</v:String>
-    <v:String x:Key="tray_menu_status_trying_to_reconnect">Trying to reconnect</v:String>
+    <v:String x:Key="tray_menu_check_updates">Güncellemeri kontrol et</v:String>
+    <v:String x:Key="tray_menu_open_logs_folder">Günlük klasörünü aç</v:String>
+    <v:String x:Key="tray_menu_about">{0} Hakkında</v:String>
+    <v:String x:Key="tray_menu_exit">Çıkış</v:String>
+    <v:String x:Key="tray_menu_status_connected">Bağlandı</v:String>
+    <v:String x:Key="tray_menu_status_not_connected">Bağlı değil</v:String>
+    <v:String x:Key="tray_menu_status_trying_to_reconnect">Yeniden bağlanılıyor</v:String>
     
     <!-- Notification Types -->
-    <v:String x:Key="notification_events_file_save_open_folder">Open folder</v:String>
-    <v:String x:Key="notification_events_file_save_open_file">Open file</v:String>
-    <v:String x:Key="notification_events_preview">Preview Notification</v:String>
-    <v:String x:Key="notification_events_preview_2nd_line">Some description</v:String>
-    <v:String x:Key="notification_events_connected">Connected to OBS</v:String>
-    <v:String x:Key="notification_events_disconnected">Disconnected from OBS</v:String>
-    <v:String x:Key="notification_events_lost_connection">Lost Connection to OBS</v:String>
-    <v:String x:Key="notification_events_lost_connection_2nd_line">Trying to reconnect</v:String>
-    <v:String x:Key="notification_events_replay_started">Replay Started</v:String>
-    <v:String x:Key="notification_events_replay_stopped">Replay Stopped</v:String>
-    <v:String x:Key="notification_events_replay_saved">Replay Saved</v:String>
-    <v:String x:Key="notification_events_recording_started">Recording Started</v:String>
-    <v:String x:Key="notification_events_recording_stopped">Recording Stopped</v:String>
-    <v:String x:Key="notification_events_recording_paused">Recording Paused</v:String>
-    <v:String x:Key="notification_events_recording_resumed">Recording Resumed</v:String>
-    <v:String x:Key="notification_events_streaming_started">Streaming Started</v:String>
-    <v:String x:Key="notification_events_streaming_stopped">Streaming Stopped</v:String>
-    <v:String x:Key="notification_events_virtual_camera_started">Virtual Camera Started</v:String>
-    <v:String x:Key="notification_events_virtual_camera_stopped">Virtual Camera Stopped</v:String>
-    <v:String x:Key="notification_events_scene_switched">Scene Switched</v:String>
-    <v:String x:Key="notification_events_scene_switched_2nd_line">Current: {0}</v:String>
-    <v:String x:Key="notification_events_scene_collection_switched">Scene Collection Switched</v:String>
-    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Current: {0}</v:String>
-    <v:String x:Key="notification_events_profile_switched">Profile Switched</v:String>
-    <v:String x:Key="notification_events_profile_switched_2nd_line">Current: {0}</v:String>
-    <v:String x:Key="notification_events_audio_muted">Audio is Muted</v:String>
-    <v:String x:Key="notification_events_audio_turned_on">Audio is Turned On</v:String>
-    <v:String x:Key="notification_events_audio_2nd_line">Source: {0}</v:String>
-    <v:String x:Key="notification_events_screenshot_saved">Screenshot saved</v:String>
+    <v:String x:Key="notification_events_file_save_open_folder">Klasörü aç</v:String>
+    <v:String x:Key="notification_events_file_save_open_file">Dosyayı aç</v:String>
+    <v:String x:Key="notification_events_preview">Bildirim ön izlemesi</v:String>
+    <v:String x:Key="notification_events_preview_2nd_line">Kısa Açıklama</v:String>
+    <v:String x:Key="notification_events_connected">OBS'e bağlanıldı</v:String>
+    <v:String x:Key="notification_events_disconnected">OBS ile bağlantı kesildi</v:String>
+    <v:String x:Key="notification_events_lost_connection">OBS bağlantısı kaybedildi</v:String>
+    <v:String x:Key="notification_events_lost_connection_2nd_line">Yeniden bağlanılıyor</v:String>
+    <v:String x:Key="notification_events_replay_started">Anında Yeniden Oynatma Başlatıldı</v:String>
+    <v:String x:Key="notification_events_replay_stopped">Anında Yeniden Oynatma Durduruldu</v:String>
+    <v:String x:Key="notification_events_replay_saved">Anında Yeniden Oynatma Kaydedildi</v:String>
+    <v:String x:Key="notification_events_recording_started">Kayıt Başlatıldı</v:String>
+    <v:String x:Key="notification_events_recording_stopped">Kayıt Durduruldu</v:String>
+    <v:String x:Key="notification_events_recording_paused">Kayıt Duraklatıldı</v:String>
+    <v:String x:Key="notification_events_recording_resumed">Kayıt Devam Ediyor</v:String>
+    <v:String x:Key="notification_events_streaming_started">Yayın Başlatıldı</v:String>
+    <v:String x:Key="notification_events_streaming_stopped">Yayın Durduruldu</v:String>
+    <v:String x:Key="notification_events_virtual_camera_started">Sanal Kamera Başlatıldı</v:String>
+    <v:String x:Key="notification_events_virtual_camera_stopped">Sana Kamera Durduruldu</v:String>
+    <v:String x:Key="notification_events_scene_switched">Sahne Değiştirildi</v:String>
+    <v:String x:Key="notification_events_scene_switched_2nd_line">Şu anki: {0}</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched">Sahne Koleksiyonu Değiştirildi</v:String>
+    <v:String x:Key="notification_events_scene_collection_switched_2nd_line">Şu anki: {0}</v:String>
+    <v:String x:Key="notification_events_profile_switched">Profil Değiştirildi</v:String>
+    <v:String x:Key="notification_events_profile_switched_2nd_line">Şu anki: {0}</v:String>
+    <v:String x:Key="notification_events_audio_muted">Ses Susturuldu</v:String>
+    <v:String x:Key="notification_events_audio_turned_on">Ses Açıldı</v:String>
+    <v:String x:Key="notification_events_audio_2nd_line">Kaynak: {0}</v:String>
+    <v:String x:Key="notification_events_screenshot_saved">Ekran görüntüsü kaydedildi</v:String>
     
 </ResourceDictionary>
