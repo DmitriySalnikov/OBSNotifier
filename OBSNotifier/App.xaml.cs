@@ -1,5 +1,6 @@
 using AnimatedImage;
 using OBSNotifier.Modules;
+using OBSNotifier.Modules.NvidiaLike;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using System;
@@ -179,6 +180,26 @@ namespace OBSNotifier
                 Path.GetDirectoryName(GetType().Assembly.Location),
                 "runtimes/" + arch_to_folder[proc_arch] + "/native"
                 ));
+
+            // Warm-up: create and immediately hide/close NvidiaNotificationWindow once to initialize WPF resources.
+            try
+            {
+                var __tmpModuleForWarmup = new NvidiaNotification();
+                var __tmpNvidiaWindow = new NvidiaNotificationWindow(__tmpModuleForWarmup);
+                // Ensure the warm-up window is invisible and off-screen before showing
+                __tmpNvidiaWindow.ShowInTaskbar = false;
+                __tmpNvidiaWindow.Opacity = 0;
+                __tmpNvidiaWindow.WindowStartupLocation = WindowStartupLocation.Manual;
+                __tmpNvidiaWindow.Left = -10000;
+                __tmpNvidiaWindow.Top = -10000;
+                __tmpNvidiaWindow.Show();
+                __tmpNvidiaWindow.Hide();
+                __tmpNvidiaWindow.Close();
+            }
+            catch
+            {
+                // Intentionally ignore any exceptions during warm-up.
+            }
 
             // Debug print all languages
 #if false
